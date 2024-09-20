@@ -12,4 +12,5 @@ This repository is meant to be used throughout the semester to help you organize
 Krishna Bhanderi
 Li-Chen Chang
 Abner Noel
-Murtallah Maninga Bakanja Omtatah
+Tygr-(Omtatah)
+Ria Kaimal
