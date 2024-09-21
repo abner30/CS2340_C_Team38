@@ -1,4 +1,4 @@
-# CS 2340 Fall 2024 Repository
+# CS 2340 Fall 2024 Repository Abner Noel
 > Please read these instructions then replace this `README.md` file with your own repository documentation as you see fit.
 
 This repository is meant to be used throughout the semester to help you organize your work. This will be the repository you send out to your teammates as you work on your various group assignments throught the semester.
