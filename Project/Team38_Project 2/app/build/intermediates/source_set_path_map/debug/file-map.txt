@@ -25,10 +25,10 @@ com.example.team38_project.app-annotation-experimental-1.4.0-23 /Users/test/.gra
 com.example.team38_project.app-recyclerview-1.1.0-24 /Users/test/.gradle/caches/transforms-3/e3eef4b78bf0d50dbb2eee57d07da5bb/transformed/recyclerview-1.1.0/res
 com.example.team38_project.app-savedstate-1.2.1-25 /Users/test/.gradle/caches/transforms-3/e5f02973c17037b0afe8170a4ee09dd5/transformed/savedstate-1.2.1/res
 com.example.team38_project.app-core-ktx-1.13.0-26 /Users/test/.gradle/caches/transforms-3/fb91900f512a5eec89010b5ebc462d87/transformed/core-ktx-1.13.0/res
-com.example.team38_project.app-pngs-27 /Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Team38_Project/app/build/generated/res/pngs/debug
-com.example.team38_project.app-resValues-28 /Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Team38_Project/app/build/generated/res/resValues/debug
-com.example.team38_project.app-packageDebugResources-29 /Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Team38_Project/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
-com.example.team38_project.app-packageDebugResources-30 /Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Team38_Project/app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
-com.example.team38_project.app-merged_res-31 /Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Team38_Project/app/build/intermediates/merged_res/debug
-com.example.team38_project.app-debug-32 /Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Team38_Project/app/src/debug/res
-com.example.team38_project.app-main-33 /Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Team38_Project/app/src/main/res
+com.example.team38_project.app-pngs-27 /Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Project/Team38_Project 2/app/build/generated/res/pngs/debug
+com.example.team38_project.app-resValues-28 /Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Project/Team38_Project 2/app/build/generated/res/resValues/debug
+com.example.team38_project.app-packageDebugResources-29 /Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Project/Team38_Project 2/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.example.team38_project.app-packageDebugResources-30 /Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Project/Team38_Project 2/app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.example.team38_project.app-merged_res-31 /Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Project/Team38_Project 2/app/build/intermediates/merged_res/debug
+com.example.team38_project.app-debug-32 /Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Project/Team38_Project 2/app/src/debug/res
+com.example.team38_project.app-main-33 /Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Project/Team38_Project 2/app/src/main/res

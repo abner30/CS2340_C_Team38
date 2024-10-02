@@ -4,6 +4,23 @@
             "outputFile": "com.example.team38_project.app-mergeDebugResources-29:/values/values.xml",
             "map": [
                 {
+                    "source": "/Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Project/Team38_Project 2/app/src/main/res/values/colors.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,97",
+                        "endColumns": "41,41",
+                        "endOffsets": "92,134"
+                    },
+                    "to": {
+                        "startLines": "641,960",
+                        "startColumns": "4,4",
+                        "startOffsets": "32859,56535",
+                        "endColumns": "41,41",
+                        "endOffsets": "32896,56572"
+                    }
+                },
+                {
                     "source": "/Users/test/.gradle/caches/transforms-3/e5f02973c17037b0afe8170a4ee09dd5/transformed/savedstate-1.2.1/res/values/values.xml",
                     "from": {
                         "startLines": "2",
@@ -131,7 +148,7 @@
                     }
                 },
                 {
-                    "source": "/Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Team38_Project/app/src/main/res/values/strings.xml",
+                    "source": "/Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Project/Team38_Project 2/app/src/main/res/values/strings.xml",
                     "from": {
                         "startLines": "1",
                         "startColumns": "4",
@@ -145,6 +162,25 @@
                         "startOffsets": "131043",
                         "endColumns": "51",
                         "endOffsets": "131090"
+                    }
+                },
+                {
+                    "source": "/Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Project/Team38_Project 2/app/src/main/res/values/themes.xml",
+                    "from": {
+                        "startLines": "2,7",
+                        "startColumns": "4,4",
+                        "startOffsets": "100,329",
+                        "endLines": "5,7",
+                        "endColumns": "12,76",
+                        "endOffsets": "323,401"
+                    },
+                    "to": {
+                        "startLines": "2554,6542",
+                        "startColumns": "4,4",
+                        "startOffsets": "179628,459305",
+                        "endLines": "2557,6542",
+                        "endColumns": "12,75",
+                        "endOffsets": "179745,459376"
                     }
                 },
                 {
@@ -219,23 +255,6 @@
                         "endLines": "138,141,1054,11332",
                         "endColumns": "55,47,51,24",
                         "endOffsets": "7047,7203,62851,719227"
-                    }
-                },
-                {
-                    "source": "/Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Team38_Project/app/src/main/res/values/colors.xml",
-                    "from": {
-                        "startLines": "2,3",
-                        "startColumns": "4,4",
-                        "startOffsets": "55,97",
-                        "endColumns": "41,41",
-                        "endOffsets": "92,134"
-                    },
-                    "to": {
-                        "startLines": "641,960",
-                        "startColumns": "4,4",
-                        "startOffsets": "32859,56535",
-                        "endColumns": "41,41",
-                        "endOffsets": "32896,56572"
                     }
                 },
                 {
@@ -346,25 +365,6 @@
                         "endLines": "506,1105,1106,1107,1115,1116,1117,1809,12702",
                         "endColumns": "55,58,47,55,74,75,71,65,24",
                         "endOffsets": "25672,66183,66231,66287,66973,67049,67121,120678,769419"
-                    }
-                },
-                {
-                    "source": "/Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Team38_Project/app/src/main/res/values/themes.xml",
-                    "from": {
-                        "startLines": "2,7",
-                        "startColumns": "4,4",
-                        "startOffsets": "100,329",
-                        "endLines": "5,7",
-                        "endColumns": "12,76",
-                        "endOffsets": "323,401"
-                    },
-                    "to": {
-                        "startLines": "2554,6542",
-                        "startColumns": "4,4",
-                        "startOffsets": "179628,459305",
-                        "endLines": "2557,6542",
-                        "endColumns": "12,75",
-                        "endOffsets": "179745,459376"
                     }
                 }
             ]
