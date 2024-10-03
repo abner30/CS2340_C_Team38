@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=" .view.MainActivity">
+    tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
             android:id="@+id/welcome_to"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="25dp"
+            android:textSize="25sp"
             android:textStyle="bold"
             android:text="Welcome to"
             app:layout_constraintBottom_toTopOf="@id/wandersync"
@@ -24,7 +24,7 @@
             android:id="@+id/wandersync"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="40dp"
+            android:textSize="40sp"
             android:textStyle="bold"
             android:text="WanderSync"
             app:layout_constraintBottom_toBottomOf="parent"
