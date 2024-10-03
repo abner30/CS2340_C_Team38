@@ -42,6 +42,7 @@ public class RegistrationActivity extends AppCompatActivity {
         buttonLogin = findViewById(R.id.btn_login_switch);
         progressBar = findViewById(R.id.progressBar);
 
+        //If Login clicked, move to Login Activity
         buttonLogin.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -50,6 +51,8 @@ public class RegistrationActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        //If Register is clicked, extract info from textboxes to complete registration.
         buttonReg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -31,6 +31,7 @@ public class LoginActivity extends AppCompatActivity {
     ProgressBar progressBar;
     Button buttonRegister;
 
+    //If user is logged in, move to Main Activity
     @Override
     public void onStart() {
         super.onStart();
@@ -55,7 +56,8 @@ public class LoginActivity extends AppCompatActivity {
         buttonRegister = findViewById(R.id.btn_register_switch);
         progressBar = findViewById(R.id.progressBar);
 
-        buttonLogin.setOnClickListener(new View.OnClickListener(){
+        //If Create an Account is clicked, move to RegistrationActivity
+        buttonRegister.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), RegistrationActivity.class);
@@ -63,6 +65,8 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        //If Login is clicked, extract info from textboxes to complete Login
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
