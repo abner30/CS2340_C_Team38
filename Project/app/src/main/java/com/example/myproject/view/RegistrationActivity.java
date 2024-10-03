@@ -28,7 +28,6 @@ public class RegistrationActivity extends AppCompatActivity {
     TextInputEditText editTextEmail, editTextPassword;
     Button buttonReg;
     FirebaseAuth mAuth;
-    ProgressBar progressBar;
     Button buttonLogin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +39,6 @@ public class RegistrationActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.password);
         buttonReg = findViewById(R.id.btn_register);
         buttonLogin = findViewById(R.id.btn_login_switch);
-        progressBar = findViewById(R.id.progressBar);
 
         //If Login clicked, move to Login Activity
         buttonLogin.setOnClickListener(new View.OnClickListener(){
@@ -56,7 +54,6 @@ public class RegistrationActivity extends AppCompatActivity {
         buttonReg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                progressBar.setVisibility(View.VISIBLE);
                 String email = String.valueOf(editTextEmail.getText());
                 String password = String.valueOf(editTextEmail.getText());
                 //check valid email
@@ -73,7 +70,6 @@ public class RegistrationActivity extends AppCompatActivity {
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
                                     Toast.makeText(RegistrationActivity.this, "Account created",
                                             Toast.LENGTH_SHORT).show();

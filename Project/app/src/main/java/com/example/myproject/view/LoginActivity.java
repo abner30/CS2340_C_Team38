@@ -24,7 +24,6 @@ public class LoginActivity extends AppCompatActivity {
     TextInputEditText editTextEmail, editTextPassword;
     Button buttonLogin;
     FirebaseAuth mAuth;
-    ProgressBar progressBar;
     Button buttonRegister;
 
     //If user is logged in, move to Main Activity
@@ -50,7 +49,6 @@ public class LoginActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.password);
         buttonLogin = findViewById(R.id.btn_login);
         buttonRegister = findViewById(R.id.btn_register_switch);
-        progressBar = findViewById(R.id.progressBar);
 
         //If Create an Account is clicked, move to RegistrationActivity
         buttonRegister.setOnClickListener(new View.OnClickListener(){
@@ -66,7 +64,6 @@ public class LoginActivity extends AppCompatActivity {
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                progressBar.setVisibility(View.VISIBLE);
                 String email = String.valueOf(editTextEmail.getText());
                 String password = String.valueOf(editTextEmail.getText());
                 //check valid email
@@ -84,7 +81,6 @@ public class LoginActivity extends AppCompatActivity {
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
                                     // Sign in success, update UI with the signed-in user's information
                                     Toast.makeText(LoginActivity.this, "Login Successfull.",
