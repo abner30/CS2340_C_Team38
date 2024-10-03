@@ -13,7 +13,22 @@
         android:theme="@style/Theme.MyProject"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".model.Accommodation"
+            android:exported="false" />
+        <activity
+            android:name=".model.TravelCommunity"
+            android:exported="false" />
+        <activity
+            android:name=".model.Dining"
+            android:exported="false" />
+        <activity
+            android:name=".model.Destination"
+            android:exported="false" />
+        <activity
+            android:name=".model.Logistics"
+            android:exported="false" />
+        <activity
+            android:name=".model.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
