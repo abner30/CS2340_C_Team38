@@ -1,0 +1,13 @@
+Index: .gradle/config.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#Wed Oct 02 00:02:49 EDT 2024\r\njava.home=/Applications/Android Studio 2.app/Contents/jbr/Contents/Home\r\n
+===================================================================
+diff --git a/.gradle/config.properties b/.gradle/config.properties
+--- a/.gradle/config.properties	
++++ b/.gradle/config.properties	
+@@ -1,2 +1,2 @@
+-#Wed Oct 02 00:02:49 EDT 2024
+-java.home=/Applications/Android Studio 2.app/Contents/jbr/Contents/Home
++#Thu Oct 03 11:09:43 EDT 2024
++java.home=C\:\\Program Files\\Android\\Android Studio\\jbr
