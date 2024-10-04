@@ -10,8 +10,12 @@ import android.widget.Button;
 import com.example.myproject.R;
 
 public class MainActivity extends AppCompatActivity {
+    /**
+     * The method runs on create. It controls the whole activity.
+     * @param savedInstanceState
+     */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -20,10 +24,11 @@ public class MainActivity extends AppCompatActivity {
 
         quit.setOnClickListener(v -> finish());
 
-        startButton.setOnClickListener(new View.OnClickListener(){
+        startButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            public void onClick(final View v) {
+                Intent intent = new Intent(MainActivity.this,
+                        LoginActivity.class);
                 startActivity(intent);
             }
         });
