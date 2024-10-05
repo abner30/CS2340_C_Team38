@@ -93,14 +93,17 @@ public class RegistrationActivity extends AppCompatActivity {
                                 new OnCompleteListener<AuthResult>() {
                                     @Override
                                     public void onComplete(
-                                            @NonNull final Task<AuthResult> task) {
+                                            @NonNull final
+                                            Task<AuthResult> task) {
                                         if (task.isSuccessful()) {
-                                            Toast.makeText(RegistrationActivity.this,
+                                            Toast.makeText(
+                                                    RegistrationActivity.this,
                                                     "Account created",
                                                     Toast.LENGTH_SHORT).show();
                                         } else {
                                             // display message if register fails
-                                            Toast.makeText(RegistrationActivity.this,
+                                            Toast.makeText(
+                                                    RegistrationActivity.this,
                                                     "Authentication failed.",
                                                     Toast.LENGTH_SHORT).show();
                                         }

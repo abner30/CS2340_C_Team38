@@ -111,7 +111,8 @@ public class LoginActivity extends AppCompatActivity {
                                 new OnCompleteListener<AuthResult>() {
                                     @Override
                                     public void onComplete(
-                                            @NonNull final Task<AuthResult> task) {
+                                            @NonNull final
+                                            Task<AuthResult> task) {
                                         if (task.isSuccessful()) {
                                             // Sign in success
                                             Toast.makeText(LoginActivity.this,
