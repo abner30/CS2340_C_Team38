@@ -1,0 +1,17 @@
+Index: app/src/main/java/com/example/myproject/view/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.myproject.view;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport android.os.Bundle;\r\n\r\npublic class MainActivity extends AppCompatActivity {\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_main);\r\n    }\r\n}
+===================================================================
+diff --git a/app/src/main/java/com/example/myproject/view/MainActivity.java b/app/src/main/java/com/example/myproject/view/MainActivity.java
+--- a/app/src/main/java/com/example/myproject/view/MainActivity.java	
++++ b/app/src/main/java/com/example/myproject/view/MainActivity.java	
+@@ -4,6 +4,8 @@
+ 
+ import android.os.Bundle;
+ 
++import com.example.myproject.R;
++
+ public class MainActivity extends AppCompatActivity {
+ 
+     @Override
