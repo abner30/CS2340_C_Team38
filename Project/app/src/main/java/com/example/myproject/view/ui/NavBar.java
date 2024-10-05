@@ -1,22 +1,11 @@
 package com.example.myproject.view.ui;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
-
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.view.View;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
 
 import com.example.myproject.databinding.ActivityNavBarBinding;
 
@@ -24,10 +13,17 @@ import com.example.myproject.R;
 
 public class NavBar extends AppCompatActivity {
 
-    ActivityNavBarBinding binding;
+    /**
+     * binding completes navigation bar binding.
+     */
+    private ActivityNavBarBinding binding;
 
+    /**
+     * The methods run on create.
+     * @param savedInstanceState
+     */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityNavBarBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -52,9 +48,14 @@ public class NavBar extends AppCompatActivity {
         });
     }
 
-    private void replaceFragment (Fragment fragment) {
+    /**
+     * The method deals with fragment, combine them into nav bar.
+     * @param fragment
+     */
+    private void replaceFragment(final Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction =
+                fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
     }
