@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -21,7 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
-    TextInputEditText editTextEmail, editTextPassword;
+    EditText editTextEmail, editTextPassword;
     Button buttonLogin;
     FirebaseAuth mAuth;
     Button buttonRegister;
@@ -65,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String email = String.valueOf(editTextEmail.getText());
-                String password = String.valueOf(editTextEmail.getText());
+                String password = String.valueOf(editTextPassword.getText());
                 //check valid email
                 if (TextUtils.isEmpty(email) || email.contains(" ")){
                     Toast.makeText(LoginActivity.this, "Enter valid email", Toast.LENGTH_SHORT).show();
