@@ -19,15 +19,6 @@
             android:exported="false"
             android:theme="@style/Theme.MyProject" />
         <activity
-            android:name=".view.ui.NavigationBar"
-            android:exported="false"
-            android:label="@string/title_activity_navigation_bar"
-            android:theme="@style/Theme.MyProject" />
-        <activity
-            android:name=".view.NavigationBar"
-            android:exported="false"
-            android:label="@string/title_activity_navigation_bar" />
-        <activity
             android:name=".view.LoginActivity"
             android:exported="false" />
         <activity

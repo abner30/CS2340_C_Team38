@@ -6,8 +6,14 @@
   <component name="ChangeListManager">
 <<<<<<< Updated upstream
     <list default="true" id="89874580-195c-437f-beab-0c4fa3cbb56f" name="Changes" comment="">
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/Project/.gradle/8.2/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Project/.gradle/8.2/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/myproject/view/LoginActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/myproject/view/LoginActivity.java" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/.gradle/8.2/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Project/.gradle/8.2/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_registration.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_registration.xml" afterDir="false" />
+>>>>>>> Stashed changes
     </list>
 =======
     <list default="true" id="89874580-195c-437f-beab-0c4fa3cbb56f" name="Changes" comment="" />
@@ -50,7 +56,11 @@
     "RunOnceActivity.cidr.known.project.marker": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
+<<<<<<< Updated upstream
     "git-widget-placeholder": "Checkstyle__Fix"
+>>>>>>> Stashed changes
+=======
+    "git-widget-placeholder": "main"
 >>>>>>> Stashed changes
   }
 }</component>
