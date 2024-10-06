@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -27,11 +26,11 @@ public class RegistrationActivity extends AppCompatActivity {
     /**
      * editTextEmail stores value from textbox of email.
      */
-    private EditText editTextEmail;
+    private TextInputEditText editTextEmail;
     /**
      * editTextEmail stores value from textbox of password.
      */
-    private EditText editTextPassword;
+    private TextInputEditText editTextPassword;
     /**
      * buttonReg is a button that registers users when clicked.
      */
