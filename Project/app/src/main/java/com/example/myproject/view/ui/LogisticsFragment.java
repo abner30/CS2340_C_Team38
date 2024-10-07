@@ -17,15 +17,27 @@ import com.example.myproject.R;
  */
 public class LogisticsFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    /**
+     * Naming of variable.
+     */
     private static final String ARG_PARAM1 = "param1";
+    /**
+     * Naming of variable.
+     */
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
+    /**
+     * Naming of variable.
+     */
     private String mParam1;
+    /**
+     * Naming of variable.
+     */
     private String mParam2;
 
+    /**
+     * Fragment class for logistics.
+     */
     public LogisticsFragment() {
         // Required empty public constructor
     }
@@ -38,8 +50,8 @@ public class LogisticsFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment LogisticsFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static LogisticsFragment newInstance(String param1, String param2) {
+    public static LogisticsFragment newInstance(final String param1,
+                                                final String param2) {
         LogisticsFragment fragment = new LogisticsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -48,8 +60,13 @@ public class LogisticsFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * This method runs on create.
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -57,10 +74,25 @@ public class LogisticsFragment extends Fragment {
         }
     }
 
+    /**
+     * Returns a View for NavBar.
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null,
+     *                          this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater,
+                             final ViewGroup container,
+                             final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_logistics, container, false);
+        return inflater.inflate(R.layout.fragment_logistics,
+                container, false);
     }
 }
