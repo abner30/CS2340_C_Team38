@@ -120,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
                                                     Toast.LENGTH_SHORT).show();
                                             Intent intent = new Intent(
                                                     getApplicationContext(),
-                                                    MainActivity.class);
+                                                    NavBar.class);
                                             startActivity(intent);
                                             finish();
 
