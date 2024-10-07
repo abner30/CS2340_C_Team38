@@ -19,3 +19,12 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Keep lifecycle and startup classes
+-keep class androidx.lifecycle.** { *; }
+-keep class androidx.fragment.app.** { *; }
+-keep class androidx.startup.** { *; }
+
+-keepattributes *Annotation*
+
+
