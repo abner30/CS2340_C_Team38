@@ -45,17 +45,17 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * If user already exists/logged in, then skip login process.
      */
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        if (currentUser != null) {
-//            Intent intent = new Intent(getApplicationContext(),
-//                    NavBar.class);
-//            startActivity(intent);
-//            finish();
-//        }
-//    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            Intent intent = new Intent(getApplicationContext(),
+                    NavBar.class);
+            startActivity(intent);
+            finish();
+        }
+    }
 
     /**
      * The method runs on create. It controls the whole activity.
