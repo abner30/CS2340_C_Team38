@@ -1,0 +1,21 @@
+
+package com.example.myproject.view;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+
+import com.example.myproject.R;
+
+public class DestinationActivity extends AppCompatActivity {
+    /**
+     * The method runs on create. It controls the whole activity.
+     *
+     * @param savedInstanceState
+     */
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_destination);
+    }
+}

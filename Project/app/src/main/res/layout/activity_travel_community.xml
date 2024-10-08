@@ -4,15 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/diningUI"
-    tools:context=".view.DiningActivity">
+    android:id="@+id/travelCommunityUI"
+    tools:context=".view.TravelCommunityActivity">
 
     <TextView
-        android:id="@+id/diningText"
+        android:id="@+id/travelCommunityText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="40sp"
-        android:text="dining activity"
+        android:text="travel community activity"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
