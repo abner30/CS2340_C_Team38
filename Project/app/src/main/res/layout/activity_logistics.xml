@@ -16,4 +16,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+<!--    <fragment-->
+<!--        android:id="@+id/navFrag"-->
+<!--        android:name="com.example.myproject.view.NavBar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"/>-->
+
+<!--    <include-->
+<!--        layout="@layout/nav_bar"-->
+<!--        android:id="@+id/navFrag"/>-->
+
 </androidx.constraintlayout.widget.ConstraintLayout>

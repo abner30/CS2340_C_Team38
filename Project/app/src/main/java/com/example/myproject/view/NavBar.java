@@ -1,15 +1,76 @@
 package com.example.myproject.view;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
+
+import androidx.fragment.app.Fragment;
 
 import com.example.myproject.R;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.example.myproject.view.fragments.LogisticsFragment;
+import com.example.myproject.view.fragments.DestinationFragment;
+import com.example.myproject.view.fragments.DiningFragment;
+import com.example.myproject.view.fragments.AccommodationsFragment;
+import com.example.myproject.view.fragments.TravelCommunityFragment;
+
+public class NavBar extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.nav_bar);  // Make sure this layout file exists
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
+
+        // Load the default fragment on startup
+        if (savedInstanceState == null) {
+            loadFragment(new LogisticsFragment());
+        }
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Fragment selectedFragment = null;
+            switch (item.getItemId()) {
+                case R.id.logistics:
+                    selectedFragment = new LogisticsFragment();
+                    break;
+                case R.id.destination:
+                    selectedFragment = new DestinationFragment();
+                    break;
+                case R.id.dining:
+                    selectedFragment = new DiningFragment();
+                    break;
+                case R.id.accommodations:
+                    selectedFragment = new AccommodationsFragment();
+                    break;
+                case R.id.travelCommunity:
+                    selectedFragment = new TravelCommunityFragment();
+                    break;
+                default:
+                    return false;
+            }
+            return loadFragment(selectedFragment);
+        });
+    }
+
+    // Helper method to load the selected fragment
+    private boolean loadFragment(Fragment fragment) {
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.nav_frame_layout, fragment)
+                    .commit();
+            return true;
+        }
+        return false;
+    }
+}
+
+
+
+/**
 public class NavBar extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -25,6 +86,7 @@ public class NavBar extends AppCompatActivity {
         final BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
+            Log.d("itemId", String.format("%d", item.getItemId()));
             switch (item.getItemId()) {
                 case R.id.logistics:
                     startActivity(new Intent(getApplicationContext(), LogisticsActivity.class));
@@ -45,4 +107,4 @@ public class NavBar extends AppCompatActivity {
             return false;
         });
     }
-}
+} */
