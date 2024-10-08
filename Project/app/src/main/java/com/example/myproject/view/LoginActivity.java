@@ -20,9 +20,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import androidx.lifecycle.ProcessLifecycleOwner;
-
-
 public class LoginActivity extends AppCompatActivity {
     /**
      * editTextEmail stores value from text input.
@@ -48,18 +45,17 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * If user already exists/logged in, then skip login process.
      */
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            Intent intent = new Intent(getApplicationContext(),
-                    MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
-
-    }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        if (currentUser != null) {
+//            Intent intent = new Intent(getApplicationContext(),
+//                    NavBar.class);
+//            startActivity(intent);
+//            finish();
+//        }
+//    }
 
     /**
      * The method runs on create. It controls the whole activity.
@@ -76,8 +72,6 @@ public class LoginActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.password);
         buttonLogin = findViewById(R.id.btn_login);
         buttonRegister = findViewById(R.id.btn_register_switch);
-        ProcessLifecycleOwner.get().getLifecycle();
-
 
         //If Create an Account is clicked, move to RegistrationActivity
         buttonRegister.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +119,7 @@ public class LoginActivity extends AppCompatActivity {
                                                     Toast.LENGTH_SHORT).show();
                                             Intent intent = new Intent(
                                                     getApplicationContext(),
-                                                    MainActivity.class);
+                                                    NavBar.class);
                                             startActivity(intent);
                                             finish();
 
