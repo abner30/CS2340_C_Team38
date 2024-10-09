@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     private Button buttonRegister;
 
-    /**
+    /*
      * If user already exists/logged in, then skip login process.
      */
     /*
