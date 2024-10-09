@@ -27,7 +27,7 @@ public class TravelCommunityFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater,
                              final ViewGroup container,
                              final Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_accommodations,
+        return inflater.inflate(R.layout.fragment_travel_community,
                 container, false);
     }
 }
