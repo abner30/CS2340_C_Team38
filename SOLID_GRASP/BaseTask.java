@@ -28,19 +28,15 @@ abstract class BaseTask implements Task {
     public int getPriority() {
         return priority;
     }
-
     public void setPriority(int priority) {
         this.priority = priority;
     }
-
     public void setStatus(TaskStatus status) {
         this.status = status;
     }
-
     public void complete() {
         setStatus(TaskStatus.COMPLETED);
     }
-
     public boolean isComplete() {
         return status.compareTo(TaskStatus.COMPLETED) == 0;
     }

@@ -63,8 +63,8 @@ class Project {
     //Add to Strings to other classes to make it return something meaningful.
     public boolean isComplete() {
         boolean allComplete = true;
-        for (int i = 0; i < tasks.size(); i++) {
-            if (!tasks.get(i).isComplete()) {
+        for (Task task : tasks) {
+            if (!task.isComplete()) {
                 allComplete = false;
             }
         }
