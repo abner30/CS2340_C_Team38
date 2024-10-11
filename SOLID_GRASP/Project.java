@@ -6,7 +6,7 @@ class Project {
     private String description;
     private String startDate;
     private String endDate;
-    private List<Task> tasks;
+    private List<BaseTask> tasks;
     private List<TeamMember> teamMembers;
 
     public Project(String name, String description,
@@ -15,14 +15,14 @@ class Project {
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.tasks = new ArrayList<Task>();
+        this.tasks = new ArrayList<BaseTask>();
         this.teamMembers = new ArrayList<TeamMember>();
     }
 
-    public void addTask(Task task) {
+    public void addTask(BaseTask task) {
         tasks.add(task);
     }
-    public void removeTask(Task task) {
+    public void removeTask(BaseTask task) {
         tasks.remove(task);
     }
     public void addTeamMember(TeamMember member) {
@@ -63,7 +63,7 @@ class Project {
     //Add to Strings to other classes to make it return something meaningful.
     public boolean isComplete() {
         boolean allComplete = true;
-        for (Task task : tasks) {
+        for (Completable task : tasks) {
             if (!task.isComplete()) {
                 allComplete = false;
             }

@@ -1,4 +1,4 @@
-abstract class BaseTask implements Task {
+abstract class BaseTask implements Completable {
     protected String title;
     protected String description;
     protected String dueDate;
