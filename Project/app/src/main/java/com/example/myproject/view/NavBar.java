@@ -19,12 +19,17 @@ import com.example.myproject.view.fragments.TravelCommunityFragment;
 
 public class NavBar extends AppCompatActivity {
 
+    /**
+     * This method runs on create.
+     * @param savedInstanceState
+     */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.nav_bar);  // Make sure this layout file exists
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
+        BottomNavigationView bottomNavigationView = findViewById(
+                R.id.bottom_navigation_view);
 
         // Load the default fragment on startup
         if (savedInstanceState == null) {
@@ -57,7 +62,7 @@ public class NavBar extends AppCompatActivity {
     }
 
     // Helper method to load the selected fragment
-    private boolean loadFragment(Fragment fragment) {
+    private boolean loadFragment(final Fragment fragment) {
         if (fragment != null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.nav_frame_layout, fragment)
@@ -70,7 +75,7 @@ public class NavBar extends AppCompatActivity {
 
 
 
-/**
+/*
  public class NavBar extends AppCompatActivity {
 @Override
 public boolean onCreateOptionsMenu(Menu menu) {
@@ -83,25 +88,31 @@ protected void onCreate(Bundle savedInstanceState) {
 super.onCreate(savedInstanceState);
 setContentView(R.layout.nav_bar);  // Make sure this layout file exists
 
-final BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
+final BottomNavigationView bottomNavigationView = findViewById(
+R.id.bottom_navigation_view);
 
 bottomNavigationView.setOnItemSelectedListener(item -> {
 Log.d("itemId", String.format("%d", item.getItemId()));
 switch (item.getItemId()) {
 case R.id.logistics:
-startActivity(new Intent(getApplicationContext(), LogisticsActivity.class));
+startActivity(new Intent(getApplicationContext(),
+ LogisticsActivity.class));
 return true;
 case R.id.destination:
-startActivity(new Intent(getApplicationContext(), DestinationActivity.class));
+startActivity(new Intent(getApplicationContext(),
+ DestinationActivity.class));
 return true;
 case R.id.dining:
-startActivity(new Intent(getApplicationContext(), DiningActivity.class));
+startActivity(new Intent(getApplicationContext(),
+ DiningActivity.class));
 return true;
 case R.id.accommodations:
-startActivity(new Intent(getApplicationContext(), AccommodationsActivity.class));
+startActivity(new Intent(getApplicationContext()
+, AccommodationsActivity.class));
 return true;
 case R.id.travelCommunity:
-startActivity(new Intent(getApplicationContext(), TravelCommunityActivity.class));
+startActivity(new Intent(getApplicationContext(),
+ TravelCommunityActivity.class));
 return true;
 }
 return false;

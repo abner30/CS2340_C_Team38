@@ -1,0 +1,83 @@
+Coding Contribution: Everyone
+Class Diagram Contribution: Everyone
+
+Information Expert (GRASP)
+Contributor: Li-Chen Chang
+The Information Expert principle states that a class that has the necessary information to perform a
+task should be responsible for doing so. In our design, the Project class acts as the information
+expert for managing tasks and team members. It knows about the list of tasks and team members,
+making it the best candidate to handle operations such as addTask() or addTeamMember(). In this
+case, it is the information expert for Tasks and TeamMembers. By following this principle, we ensure
+that each responsibility is assigned to the class with the most knowledge about it.
+
+Low Coupling (GRASP)
+Contributor: Krishna Bhanderi
+The Low Coupling principle includes minimizing dependencies between classes to reduce the risk of
+changes throughout the entire code. Our system implements low coupling through the Project class
+depending on interfaces called BaseTask and Completable rather than concrete task implementations,
+reducing dependency on specific task types. The use of abstract classes makes the code more
+adaptable to future changes due to there not being a need to individually change related classes.
+Through the diagram it is clearly shown how the grouped classes are simply connected through the
+Project class instead of intertwining between each other. Classes like TeamMember, which is a parent
+to Project Manager and Developer, all fall within the Role interface, and the classes BaseTask,
+which is a parent to HighPriorityTask and RecurringTask, fall within the Completable interface and
+the interfaces contribute to the Project.
+
+Liskov Substitution Principle (SOLID)
+Contributor: Murtallah “Tygr” Omtatah
+The Liskov Substitution Principle ensures that derived classes can be substituted for their base
+class. Our design allows this by treating RecurringTask and HighPriorityTask as interchangeable with
+BaseTask in the context of the Project class. Anywhere a BaseTask is used, its subclasses can be
+seamlessly substituted without breaking the system. This promotes flexibility in handling different
+task types while maintaining consistent behavior. This is maintained throughout the project with
+every child class implementing/using every method from the parent class [and its interface].
+
+Single Responsibility Principle (SOLID)
+Contributor: Ria Kaimal
+The Single Responsibility Principle states that a class should only have one single functionality or
+responsibility. In our design, we adhered to this by ensuring that each class has a well-defined
+focus, which makes the system easier to maintain and adapt. The Project class is solely responsible
+for managing project-specific details, including tasks, team members, and project timelines,
+ensuring that all aspects of a project remain organized. The BaseTask class and its subclasses,
+such as RecurringTask and HighPriorityTask, manage task-specific data like titles, due dates,
+priorities, and statuses. This allows for easy extension or refinement of behaviors, such as the
+HighPriorityTask restricting priority changes. The TeamMember class is focused on managing team
+member data, including their names and emails, and handling project-related actions like joining or
+leaving projects. To maintain flexibility in role definitions, we use the Role interface, allowing
+roles like ProjectManager and Developer to define their responsibilities without altering the core
+TeamMember class. Additionally, the Completable interface ensures that tasks provide a consistent
+way to make their completion, adding flexibility to the task management system without affecting
+other components. This clear separation of responsibilities allows us to modify or expand each part
+of the system independently, making it easier to add new task types or change team behaviors without
+impacting unrelated areas, thereby fully embracing SRP.
+
+Open/Closed Principle (SOLID)
+Contributor: Abner Noel
+The Open/Closed Principle states that classes should be open to extension but closed to
+modification. In the design that we created we can see this applied through the use of the abstract
+class BaseTask. This class encapsulates core functionality such as handling title, description,
+dueDate, status, and priority. By defining the base functionality and marking BaseTask as an
+abstract class we are able to ensure that new task types such as RecurringTask and HighPriorityTask
+have the ability to extend to BaseTask without any required modification of the existing code. For
+example, HighPriorityTask inherits all the core behaviors and functionality from BaseTask, such as
+managing task statues, while adding its own specific features like being able to handle urgent
+tasks. Our design’s extensibility is further shown through the complete() method which marks
+whatever tasks that have been completed as complete. This method can be overridden in specialized
+tasks to provide any unique completion behavior without altering the core. This then allows
+potentially new task types to be introduced easily with no requirement for any modification of the
+existing class structure. By adhering to this principle our design ensures that whatever future
+modifications were to take place nothing will affect the existing functionality, hence allowing for
+a stable code growth.
+
+Interface Segregation Principle (SOLID)
+Contributor: Ayaan Ajaney
+The Interface Segregation Principle states that a class should never be forced to implement
+interfaces it does not use. Instead, interfaces should be divided into smaller, more specific ones,
+allowing classes to be more focused. By avoiding interfaces that contain too many methods, ISP
+helps in reducing dependencies and unnecessary code. In our design we applied ISP by creating two
+key interfaces: Completable for classes that need task completion behavior, and and Role for those
+that handle members within the system. This way, each class only implements what's relevant to it,
+keeping our system modular, easier to maintain and thus more efficient. As a result, the system is
+more adaptable to change making future updates simpler to manage.
+
+
