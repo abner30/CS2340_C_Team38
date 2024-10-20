@@ -7,7 +7,7 @@ class HighPriorityTask extends BaseTask {
 
     @Override
     public void setPriority(int priority) {
-        System.out.println("This is a high priority task,so you cannot change its priorit");
+        System.out.println("This is a high priority task,so you cannot change its priority");
     }
     // You can add behavior unique to high-priority tasks, if needed
 }
