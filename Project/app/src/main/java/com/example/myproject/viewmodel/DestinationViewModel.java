@@ -92,7 +92,7 @@ public class DestinationViewModel extends ViewModel{
         database.child("destinations").child("counter").addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     Integer firebaseCounter = dataSnapshot.getValue(Integer.class);
                     if (firebaseCounter != null) {
@@ -127,7 +127,7 @@ public class DestinationViewModel extends ViewModel{
         ArrayList<Destination> list = new ArrayList<>();
         database.child("destinations").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     String user = userSnapshot.child("user").getValue(String.class);
                     if (user != null && user.equals(uid)) {
