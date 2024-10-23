@@ -1,7 +1,5 @@
 package com.example.myproject.model;
 
-import java.util.Date;
-
 public class Destination {
     private String location;
     private int duration;

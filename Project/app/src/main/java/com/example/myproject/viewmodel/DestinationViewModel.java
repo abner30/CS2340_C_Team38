@@ -20,8 +20,18 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class DestinationViewModel extends ViewModel{
-    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+    /**
+     * reference to database. Initiates once.
+     */
+    private DatabaseReference database = FirebaseDatabase.getInstance().getReference();
 
+    /**
+     * Given two dates, calculate difference.
+     * @param first date
+     * @param second date
+     * @return duraiton
+     * @throws ParseException
+     */
     public int calculateDuration(String first, String second) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
         Date firstDate = sdf.parse(first);
@@ -31,7 +41,14 @@ public class DestinationViewModel extends ViewModel{
         return (int) diff;
     }
 
-    public String calculateStart(String startDate, int duration) throws ParseException {
+    /**
+     * Given start date, and duration, find end date.
+     * @param startDate date
+     * @param duration days
+     * @return end date
+     * @throws ParseException
+     */
+    public String calculateEnd(String startDate, int duration) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         Date date = sdf.parse(startDate);
         Calendar c = Calendar.getInstance();
@@ -41,7 +58,14 @@ public class DestinationViewModel extends ViewModel{
         return output;
     }
 
-    public String calculateEnd(String endDate, int duration) throws ParseException {
+    /**
+     * Given end date, and duration, find start date.
+     * @param endDate date
+     * @param duration days
+     * @return start date
+     * @throws ParseException
+     */
+    public String calculateStart(String endDate, int duration) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         Date date = sdf.parse(endDate);
         Calendar c = Calendar.getInstance();
@@ -51,6 +75,18 @@ public class DestinationViewModel extends ViewModel{
         return output;
     }
 
+    /**
+     * Adds a destination to database in following format:
+     * destination(counter)
+     *      "location" = String
+     *      "start date" = String
+     *      "end date" = String
+     *      "duration" = int
+     *      "uid" = String
+     *
+     * @param destination
+     * @param uid
+     */
     public void addDestination(Destination destination, String uid) {
         final String[] location = new String[1];
         database.child("destinations").child("counter").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -82,6 +118,11 @@ public class DestinationViewModel extends ViewModel{
         database.child("destinations").child(location[0]).setValue(map);
     }
 
+    /**
+     * Returns an ArrayList of all destinations associate with a given user.
+     * @param uid
+     * @return list of destinations
+     */
     public ArrayList<Destination> getDestinations(String uid) {
         ArrayList<Destination> list = new ArrayList<>();
         database.child("destinations").addListenerForSingleValueEvent(new ValueEventListener() {
