@@ -1,28 +1,38 @@
 package com.example.myproject.model;
 
-/**
- * Destination Class
- */
 public class Destination {
+    /**
+     * location.
+     */
     private String location;
+    /**
+     * startDate.
+     */
     private String startDate;
+    /**
+     * endDate.
+     */
     private String endDate;
+    /**
+     * destinationCounter.
+     */
     private int destinationCounter;
 
     /**
-     * Destination Constructor
+     * No args constructor.
      */
     public Destination() {
     }
 
     /**
-     * Destination Constructor with parameters
-     * @param location the location
-     * @param start the start date
-     * @param end the end date
-     * @param destinationCounter the destination counter
+     * All args constructor.
+     * @param location location of place
+     * @param start start
+     * @param end end time
+     * @param destinationCounter counter
      */
-    public Destination(String location, String start, String end, int destinationCounter) {
+    public Destination(final String location, final String start,
+                       final String end, final int destinationCounter) {
         this.location = location;
         this.startDate = start;
         this.endDate = end;
@@ -30,66 +40,65 @@ public class Destination {
     }
 
     /**
-     * Gets the location.
-     * @return the location.
+     * Getter for location.
+     * @return location.
      */
     public String getLocation() {
         return location;
     }
 
     /**
-     * Gets the start date.
-     * @return the start date.
+     * Getter for startDate.
+     * @return startDate
      */
     public String getStartDate() {
         return startDate;
     }
-
     /**
-     * Gets the end date.
-     * @return the end date.
+     * Getter for endDate.
+     * @return endDate
      */
     public String getEndDate() {
         return endDate;
     }
 
     /**
-     * Sets the location.
-     * @param location the location to set.
+     * Setter for location.
+     * @param location location of place
      */
-    public void setLocation(String location) {
+    public void setLocation(final String location) {
         this.location = location;
     }
 
     /**
-     * Sets the start date.
-     * @param startDate the start date to set.
+     * Setter for startDate.
+     * @param startDate strat date
      */
-    public void setStartDate(String startDate) {
+    public void setStartDate(final String startDate) {
         this.startDate = startDate;
     }
 
     /**
-     * Sets the end date.
-     * @param endDate the end date to set.
+     * Setter for endDate.
+     * @param endDate end time
      */
-    public void setEndDate(String endDate) {
+    public void setEndDate(final String endDate) {
         this.endDate = endDate;
     }
 
     /**
-     * Gets the destination counter.
-     * @return the destination counter.
+     * Getter for destinationCounter.
+     * @return destinationCounter
      */
     public int getDestinationCounter() {
         return destinationCounter;
     }
 
     /**
-     * Sets the destination counter.
-     * @param destinationCounter the destination counter to set.
+     * Setter for destinationCounter.
+     * @param destinationCounter counter
      */
-    public void setDestinationCounter(int destinationCounter) {
+    public void setDestinationCounter(final int destinationCounter) {
         this.destinationCounter = destinationCounter;
     }
 }

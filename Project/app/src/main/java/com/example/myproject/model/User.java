@@ -4,15 +4,38 @@ package com.example.myproject.model;
  * User Class
  */
 public class User {
+    /**
+     * The user ID.
+     */
     private String uid;
+
+    /**
+     * The user's email.
+     */
     private String email;
+
+    /**
+     * The duration.
+     */
     private int duration;
+
+    /**
+     * The start date.
+     */
     private String startDate;
+
+    /**
+     * The end date.
+     */
     private String endDate;
+
+    /**
+     * The destination counter.
+     */
     private int destinationCounter;
 
     /**
-     * User Constructor
+     * Constructor with two parameters.
      * @param uid the user ID
      * @param email the user's email
      */
@@ -24,7 +47,7 @@ public class User {
 
     /**
      * Gets the user's email.
-     * @return the email.
+     * @return the email
      */
     public String getEmail() {
         return email;
@@ -32,7 +55,7 @@ public class User {
 
     /**
      * Sets the user's email.
-     * @param email the email to set.
+     * @param email the email to set
      */
     public void setEmail(String email) {
         this.email = email;
@@ -40,7 +63,7 @@ public class User {
 
     /**
      * Gets the user ID.
-     * @return the user ID.
+     * @return the user ID
      */
     public String getUid() {
         return uid;
@@ -48,7 +71,7 @@ public class User {
 
     /**
      * Sets the user ID.
-     * @param uid the user ID to set.
+     * @param uid the user ID to set
      */
     public void setUid(String uid) {
         this.uid = uid;
@@ -56,7 +79,7 @@ public class User {
 
     /**
      * Gets the duration.
-     * @return the duration.
+     * @return the duration
      */
     public int getDuration() {
         return duration;
@@ -64,7 +87,7 @@ public class User {
 
     /**
      * Sets the duration.
-     * @param duration the duration to set.
+     * @param duration the duration to set
      */
     public void setDuration(int duration) {
         this.duration = duration;
@@ -72,7 +95,7 @@ public class User {
 
     /**
      * Gets the end date.
-     * @return the end date.
+     * @return the end date
      */
     public String getEndDate() {
         return endDate;
@@ -80,7 +103,7 @@ public class User {
 
     /**
      * Sets the end date.
-     * @param endDate the end date to set.
+     * @param endDate the end date to set
      */
     public void setEndDate(String endDate) {
         this.endDate = endDate;
@@ -88,7 +111,7 @@ public class User {
 
     /**
      * Gets the start date.
-     * @return the start date.
+     * @return the start date
      */
     public String getStartDate() {
         return startDate;
@@ -96,7 +119,7 @@ public class User {
 
     /**
      * Sets the start date.
-     * @param startDate the start date to set.
+     * @param startDate the start date to set
      */
     public void setStartDate(String startDate) {
         this.startDate = startDate;
@@ -104,7 +127,7 @@ public class User {
 
     /**
      * Gets the destination counter.
-     * @return the destination counter.
+     * @return the destination counter
      */
     public int getDestinationCounter() {
         return destinationCounter;
@@ -112,7 +135,7 @@ public class User {
 
     /**
      * Sets the destination counter.
-     * @param destinationCounter the destination counter to set.
+     * @param destinationCounter the destination counter to set
      */
     public void setDestinationCounter(int destinationCounter) {
         this.destinationCounter = destinationCounter;
