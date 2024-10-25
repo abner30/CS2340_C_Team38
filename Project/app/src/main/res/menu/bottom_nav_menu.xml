@@ -12,7 +12,7 @@
         android:title="Destination" />
 
     <item
-        android:id="@+id/diningEstablishments"
+        android:id="@+id/dining"
         android:icon="@drawable/baseline_fastfood_24"
         android:title="Dining" />
 

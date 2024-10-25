@@ -1,4 +1,4 @@
 /**
- * This package contains Views of the project.
+ * Files of view.
  */
 package com.example.myproject.view;

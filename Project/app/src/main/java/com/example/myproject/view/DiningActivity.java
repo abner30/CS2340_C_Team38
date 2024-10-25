@@ -1,22 +1,21 @@
+
 package com.example.myproject.view;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.myproject.R;
 
-public class Dining extends AppCompatActivity {
-
+public class DiningActivity extends AppCompatActivity {
     /**
-     * This method runs on create.
+     * The method runs on create. It controls the whole activity.
+     *
      * @param savedInstanceState
      */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dining);
     }
 }
