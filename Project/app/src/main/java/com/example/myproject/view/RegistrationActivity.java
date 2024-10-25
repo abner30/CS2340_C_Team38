@@ -16,9 +16,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myproject.R;
 import com.example.myproject.database.DatabaseManager;
+import com.example.myproject.model.User;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseUser;
 
 
 public class RegistrationActivity extends AppCompatActivity {
@@ -83,15 +86,19 @@ public class RegistrationActivity extends AppCompatActivity {
                             "Enter valid password", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Boolean[] result = new Boolean[1];
-                result[0] = false;
                 OnCompleteListener<AuthResult> listener = new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(
                             @NonNull final
                             Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            result[0] = true;
+                            FirebaseUser firebaseUser = task.getResult().getUser();
+                            if (firebaseUser != null) {
+                                User user = new User(firebaseUser.getUid(),
+                                        firebaseUser.getEmail());
+                                DatabaseManager.getInstance().getReference()
+                                        .child("users").child(user.getUid()).setValue(user);
+                            }
                             Toast.makeText(
                                     RegistrationActivity.this,
                                     "Account created",
@@ -106,10 +113,6 @@ public class RegistrationActivity extends AppCompatActivity {
                     }
                 };
                 DatabaseManager.getInstance().createUser(email, password, listener);
-                if (result[0]) {
-                    //find uid by email;
-                    //add user to userdatabase;
-                }
             }
         });
     }
