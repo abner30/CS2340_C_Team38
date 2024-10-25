@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 //import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
@@ -46,7 +47,6 @@ public class LoginActivity extends AppCompatActivity {
     /*
      * If user already exists/logged in, then skip login process.
      */
-    /*
     @Override
     public void onStart() {
         super.onStart();
@@ -58,7 +58,6 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
     }
-    */
 
     /**
      * The method runs on create. It controls the whole activity.
