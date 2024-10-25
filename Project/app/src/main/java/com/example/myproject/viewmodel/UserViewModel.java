@@ -2,6 +2,7 @@ package com.example.myproject.viewmodel;
 
 import androidx.annotation.NonNull;
 
+import com.example.myproject.database.DatabaseManager;
 import com.example.myproject.model.Destination;
 import com.example.myproject.model.User;
 import com.google.firebase.database.DataSnapshot;
@@ -21,7 +22,7 @@ public class UserViewModel {
     /**
      * reference to database. Initiates once.
      */
-    private DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference database = DatabaseManager.getInstance().getReference();
 
     /**
      * No args constructor.

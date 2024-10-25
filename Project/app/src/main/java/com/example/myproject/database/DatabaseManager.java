@@ -35,7 +35,7 @@ public class DatabaseManager {
     }
 
     // method to get the Firebase Database reference.
-    public DatabaseReference getDatabaseReference() {
+    public DatabaseReference getReference() {
         return databaseReference;
     }
 

@@ -3,6 +3,7 @@ package com.example.myproject.viewmodel;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 
+import com.example.myproject.database.DatabaseManager;
 import com.example.myproject.model.Destination;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,7 +19,7 @@ public class DestinationViewModel extends ViewModel{
     /**
      * reference to database. Initiates once.
      */
-    private DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference database = DatabaseManager.getInstance().getReference();
 
     /**
      * No args constructor.

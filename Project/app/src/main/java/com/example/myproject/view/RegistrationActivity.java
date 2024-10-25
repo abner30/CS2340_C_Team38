@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 
+
 public class RegistrationActivity extends AppCompatActivity {
 
     /**
@@ -82,12 +83,15 @@ public class RegistrationActivity extends AppCompatActivity {
                             "Enter valid password", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                Boolean[] result = new Boolean[1];
+                result[0] = false;
                 OnCompleteListener<AuthResult> listener = new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(
                             @NonNull final
                             Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            result[0] = true;
                             Toast.makeText(
                                     RegistrationActivity.this,
                                     "Account created",
@@ -102,6 +106,10 @@ public class RegistrationActivity extends AppCompatActivity {
                     }
                 };
                 DatabaseManager.getInstance().createUser(email, password, listener);
+                if (result[0]) {
+                    //find uid by email;
+                    //add user to userdatabase;
+                }
             }
         });
     }
