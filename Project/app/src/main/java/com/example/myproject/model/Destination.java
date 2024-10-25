@@ -2,26 +2,22 @@ package com.example.myproject.model;
 
 public class Destination {
     private String location;
-    private int duration;
     private String startDate;
     private String endDate;
+    private int destinationCounter;
 
     public Destination() {
     }
 
-    public Destination (String location, int duration, String start, String end) {
+    public Destination (String location, String start, String end, int destinationCounter) {
         this.location = location;
-        this.duration = duration;
         this.startDate = start;
         this.endDate = end;
+        this.destinationCounter = destinationCounter;
     }
 
     public String getLocation () {
         return location;
-    }
-
-    public int getDuration () {
-        return duration;
     }
 
     public String getStartDate () {
@@ -30,10 +26,6 @@ public class Destination {
 
     public String getEndDate () {
         return endDate;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
     }
 
     public void setLocation(String location) {
@@ -46,5 +38,13 @@ public class Destination {
 
     public void setEndDate(String endDate) {
         this.endDate = endDate;
+    }
+
+    public int getDestinationCounter() {
+        return destinationCounter;
+    }
+
+    public void setDestinationCounter(int destinationCounter) {
+        this.destinationCounter = destinationCounter;
     }
 }
