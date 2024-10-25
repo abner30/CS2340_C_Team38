@@ -1,15 +1,37 @@
 package com.example.myproject.model;
 
-import java.util.List;
 
 public class User {
+    /**
+     * uid.
+     */
     private String uid;
+    /**
+     * email.
+     */
     private String email;
+    /**
+     * duration.
+     */
     private int duration;
+    /**
+     * startDate.
+     */
     private String startDate;
+    /**
+     * endDate.
+     */
     private String endDate;
+    /**
+     * destinationCounter.
+     */
     private int destinationCounter;
 
+    /**
+     * Constructor with two parameters.
+     * @param uid
+     * @param email
+     */
     public User(String uid, String email) {
         this.uid = uid;
         this.email = email;
