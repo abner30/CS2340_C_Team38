@@ -14,11 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myproject.R;
+import com.example.myproject.database.DatabaseManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-//import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
     /**
@@ -34,14 +33,9 @@ public class LoginActivity extends AppCompatActivity {
      */
     private Button buttonLogin;
     /**
-     * mAuth is variable for firebase authentication.
-     */
-    private FirebaseAuth mAuth;
-    /**
      * buttonRegister use to move to RegistrationActivity.
      */
     private Button buttonRegister;
-
 
     /**
      * The method runs on create. It controls the whole activity.
@@ -53,7 +47,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
-        mAuth = FirebaseAuth.getInstance();
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         buttonLogin = findViewById(R.id.btn_login);
@@ -90,34 +83,33 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
+                OnCompleteListener<AuthResult> listener = new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(
+                            @NonNull final
+                            Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success
+                            Toast.makeText(LoginActivity.this,
+                                    "Login Successfull.",
+                                    Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(
+                                    getApplicationContext(),
+                                    NavBar.class);
+                            startActivity(intent);
+                            finish();
 
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(
-                                new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(
-                                            @NonNull final
-                                            Task<AuthResult> task) {
-                                        if (task.isSuccessful()) {
-                                            // Sign in success
-                                            Toast.makeText(LoginActivity.this,
-                                                    "Login Successfull.",
-                                                    Toast.LENGTH_SHORT).show();
-                                            Intent intent = new Intent(
-                                                    getApplicationContext(),
-                                                    NavBar.class);
-                                            startActivity(intent);
-                                            finish();
+                        } else {
+                            // If sign in fails
+                            Toast.makeText(LoginActivity.this,
+                                    "Login Failed.",
+                                    Toast.LENGTH_SHORT).show();
 
-                                        } else {
-                                            // If sign in fails
-                                            Toast.makeText(LoginActivity.this,
-                                                    "Login Failed.",
-                                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                };
+                DatabaseManager.getInstance().loginUser(email, password, listener);
 
-                                        }
-                                    }
-                                });
             }
         });
     }

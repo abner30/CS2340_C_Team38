@@ -15,11 +15,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myproject.R;
+import com.example.myproject.database.DatabaseManager;
+import com.example.myproject.model.User;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-//import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.FirebaseUser;
+
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -36,10 +39,6 @@ public class RegistrationActivity extends AppCompatActivity {
      */
     private Button buttonReg;
     /**
-     * mAuth is the firebase authentication system.
-     */
-    private FirebaseAuth mAuth;
-    /**
      * buttonLogin is the button to move from registration page to login page.
      */
     private Button buttonLogin;
@@ -54,7 +53,6 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_registration);
-        mAuth = FirebaseAuth.getInstance();
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         buttonReg = findViewById(R.id.btn_register);
@@ -88,28 +86,33 @@ public class RegistrationActivity extends AppCompatActivity {
                             "Enter valid password", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                mAuth.createUserWithEmailAndPassword(email,
-                                password)
-                        .addOnCompleteListener(
-                                new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(
-                                            @NonNull final
-                                            Task<AuthResult> task) {
-                                        if (task.isSuccessful()) {
-                                            Toast.makeText(
-                                                    RegistrationActivity.this,
-                                                    "Account created",
-                                                    Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            // display message if register fails
-                                            Toast.makeText(
-                                                    RegistrationActivity.this,
-                                                    "Authentication failed.",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
+                OnCompleteListener<AuthResult> listener = new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(
+                            @NonNull final
+                            Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            FirebaseUser firebaseUser = task.getResult().getUser();
+                            if (firebaseUser != null) {
+                                User user = new User(firebaseUser.getUid(),
+                                        firebaseUser.getEmail());
+                                DatabaseManager.getInstance().getReference()
+                                        .child("users").child(user.getUid()).setValue(user);
+                            }
+                            Toast.makeText(
+                                    RegistrationActivity.this,
+                                    "Account created",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            // display message if register fails
+                            Toast.makeText(
+                                    RegistrationActivity.this,
+                                    "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                };
+                DatabaseManager.getInstance().createUser(email, password, listener);
             }
         });
     }
