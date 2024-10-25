@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * The method runs on create. It controls the whole activity.
      *
-     * @param savedInstanceState
+     * @param savedInstanceState the saved instance state
      */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
