@@ -66,6 +66,7 @@ public class DestinationViewModel extends ViewModel{
         });
 
         int[] counter = new int[1];
+        counter[0] = 0;
         database.child("users").child(uid).child("destinationCounter")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
