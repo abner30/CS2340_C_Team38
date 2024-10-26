@@ -1,7 +1,6 @@
 package com.example.myproject.view.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,26 +20,14 @@ import java.util.Date;
 import java.util.Locale;
 
 public class DestinationFragment extends Fragment {
-    private LinearLayout formLayout, vacationFormLayout;
-    private Button buttonLogTravel, buttonCalculateVacationTime;
+    private LinearLayout formLayout, vacationFormLayout, resultCard;
+    private Button buttonLogTravel, buttonCalculateVacationTime, buttonReset;
     private EditText editTextTravelLocation, editTextStartDate, editTextStopDate;
     private Button buttonCancel, buttonSubmit;
     private EditText editTextVacationStartDate, editTextVacationEndDate;
     private Button buttonVacationSubmit;
-    private TextView textViewResult; // Added for displaying the result
-    /**
-     * This method runs on create.
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null,
-     *                          this fragment is being re-constructed
-     * from a previous saved state as given here.
-     *
-     * @return
-     */
+    private TextView resultDays;
+
     @Override
     public View onCreateView(final LayoutInflater inflater,
                              final ViewGroup container,
@@ -60,8 +47,10 @@ public class DestinationFragment extends Fragment {
     private void initializeViews() {
         formLayout = getView().findViewById(R.id.formLayout);
         vacationFormLayout = getView().findViewById(R.id.vacationFormLayout);
+        resultCard = getView().findViewById(R.id.resultCard);
         buttonLogTravel = getView().findViewById(R.id.buttonLogTravel);
         buttonCalculateVacationTime = getView().findViewById(R.id.buttonCalculateVacationTime);
+        buttonReset = getView().findViewById(R.id.buttonReset);
         editTextTravelLocation = getView().findViewById(R.id.editTextTravelLocation);
         editTextStartDate = getView().findViewById(R.id.editTextStartDate);
         editTextStopDate = getView().findViewById(R.id.editTextStopDate);
@@ -70,127 +59,55 @@ public class DestinationFragment extends Fragment {
         editTextVacationStartDate = getView().findViewById(R.id.editTextVacationStartDate);
         editTextVacationEndDate = getView().findViewById(R.id.editTextVacationEndDate);
         buttonVacationSubmit = getView().findViewById(R.id.buttonVacationSubmit);
-        textViewResult = getView().findViewById(R.id.textViewResult); // Initialize result TextView
+        resultDays = getView().findViewById(R.id.resultDays);
     }
 
     private void setupClickListeners() {
-        Log.d("Happy", "I am not");
         buttonLogTravel.setOnClickListener(v -> {
-            Log.d("Happy", "I am not");
-
             formLayout.setVisibility(View.VISIBLE);
+            vacationFormLayout.setVisibility(View.GONE);
+            resultCard.setVisibility(View.GONE);
         });
 
         buttonCalculateVacationTime.setOnClickListener(v -> {
-
+            formLayout.setVisibility(View.GONE);
             vacationFormLayout.setVisibility(View.VISIBLE);
+            resultCard.setVisibility(View.GONE);
         });
 
-        buttonSubmit.setOnClickListener(v -> validateAndSubmitTravelLog());
+        buttonSubmit.setOnClickListener(v -> formLayout.setVisibility(View.GONE));
+        buttonCancel.setOnClickListener(v -> formLayout.setVisibility(View.GONE));
 
-        buttonCancel.setOnClickListener(v -> {
-            clearFormFields();
+        buttonVacationSubmit.setOnClickListener(v -> calculateDays());
+
+        buttonReset.setOnClickListener(v -> {
+            formLayout.setVisibility(View.GONE);
+            vacationFormLayout.setVisibility(View.GONE);
+            resultCard.setVisibility(View.GONE);
+            clearEditTextFields();
         });
-
-        buttonVacationSubmit.setOnClickListener(v -> validateAndSubmitVacation());
     }
 
-    private void validateAndSubmitVacation() {
-        String startDateStr = editTextVacationStartDate.getText().toString().trim();
-        String endDateStr = editTextVacationEndDate.getText().toString().trim();
+    private void calculateDays() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
-        // Validate dates if they're not empty
-        if (!startDateStr.isEmpty() && !isValidDateFormat(startDateStr)) {
-            Toast.makeText(getView().getContext(), "Invalid start date format. Use YYYY-MM-DD", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        try {
+            Date startDate = dateFormat.parse(editTextVacationStartDate.getText().toString());
+            Date endDate = dateFormat.parse(editTextVacationEndDate.getText().toString());
 
-        if (!endDateStr.isEmpty() && !isValidDateFormat(endDateStr)) {
-            Toast.makeText(getView().getContext(), "Invalid end date format. Use YYYY-MM-DD", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Check date order if both dates are provided
-        if (!startDateStr.isEmpty() && !endDateStr.isEmpty()) {
-            if (!isEndDateAfterStartDate(startDateStr, endDateStr)) {
-                Toast.makeText(getView().getContext(), "End date must be after start date", Toast.LENGTH_SHORT).show();
-                return;
+            if (startDate != null && endDate != null) {
+                long diffMillis = endDate.getTime() - startDate.getTime();
+                long diffDays = diffMillis / (24 * 60 * 60 * 1000);
+                resultDays.setText(String.valueOf(diffDays));
+                resultCard.setVisibility(View.VISIBLE);
             }
-        }
-
-        // Calculate the number of days between the two dates
-        if (!startDateStr.isEmpty() && !endDateStr.isEmpty()) {
-            long daysBetween = calculateDaysBetween(startDateStr, endDateStr);
-            showResult(daysBetween); // Display the result
-        }
-
-        // If all validations pass
-        Toast.makeText(getView().getContext(), "Vacation time calculated successfully!", Toast.LENGTH_SHORT).show();
-        clearVacationFields();
-        hideAllForms();
-    }
-
-    private long calculateDaysBetween(String startDateStr, String endDateStr) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            Date startDate = sdf.parse(startDateStr);
-            Date endDate = sdf.parse(endDateStr);
-            long difference = endDate.getTime() - startDate.getTime();
-            return difference / (1000 * 60 * 60 * 24); // Convert milliseconds to days
         } catch (ParseException e) {
-            return 0; // If there's an error, return 0
+            Toast.makeText(getContext(), "Invalid date format. Use YYYY-MM-DD.", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void showResult(long days) {
-        textViewResult.setText("RESULT: " + days + " days");
-        textViewResult.setVisibility(View.VISIBLE); // Show the result
-        vacationFormLayout.setVisibility(View.GONE); // Hide the vacation form
-    }
-
-    private boolean isValidDateFormat(String dateStr) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        sdf.setLenient(false);
-        try {
-            sdf.parse(dateStr);
-            return true;
-        } catch (ParseException e) {
-            return false;
-        }
-    }
-
-    private boolean isEndDateAfterStartDate(String startDateStr, String endDateStr) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        try {
-            Date startDate = sdf.parse(startDateStr);
-            Date endDate = sdf.parse(endDateStr);
-            return endDate.after(startDate);
-        } catch (ParseException e) {
-            return false;
-        }
-    }
-
-    private void clearVacationFields() {
+    private void clearEditTextFields() {
         editTextVacationStartDate.setText("");
         editTextVacationEndDate.setText("");
-    }
-
-    private void clearFormFields() {
-        editTextTravelLocation.setText("");
-        editTextStartDate.setText("");
-        editTextStopDate.setText("");
-    }
-
-    private void hideAllForms() {
-        formLayout.setVisibility(View.GONE);
-        vacationFormLayout.setVisibility(View.GONE);
-        textViewResult.setVisibility(View.GONE); // Hide the result when hiding forms
-    }
-
-    // Dummy method for travel log submission (implement as needed)
-    private void validateAndSubmitTravelLog() {
-        Toast.makeText(getView().getContext(), "Travel log submitted!", Toast.LENGTH_SHORT).show();
-        clearFormFields();
-        hideAllForms();
     }
 }

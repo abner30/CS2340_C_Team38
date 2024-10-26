@@ -132,19 +132,58 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- TextView for displaying the result -->
-    <TextView
-        android:id="@+id/textViewResult"
+    <!-- Card for displaying the result -->
+    <LinearLayout
+        android:id="@+id/resultCard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/vacationFormLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp"
         android:visibility="gone"
-         /> <!-- Initially hidden -->
+        android:layout_marginTop="20dp"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/vacationFormLayout">
+
+        <TextView
+            android:id="@+id/resultHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Result:"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/resultDays"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:text="XX"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/resultLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:text="days"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/buttonReset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="Reset" />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!-- android:visibility="gone" 36, 101, 146-->
+<!-- android:visibility="gone" 141-->
