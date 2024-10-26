@@ -45,7 +45,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     /**
      * The method runs on create. It controls the whole activity.
-     * @param savedInstanceState
+     * @param savedInstanceState the saved instance state
      */
     @SuppressLint("WrongViewCast")
     @Override
