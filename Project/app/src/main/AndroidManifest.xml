@@ -33,25 +33,10 @@
         </activity>
 
         <activity
-            android:name=".view.LogisticsActivity"
-            android:exported="true" />
-        <activity
-            android:name=".view.DestinationActivity"
-            android:exported="true" />
-        <activity
             android:name=".view.RegistrationActivity"
             android:exported="true" />
         <activity
-            android:name=".view.DiningActivity"
-            android:exported="true" />
-        <activity
-            android:name=".view.AccommodationsActivity"
-            android:exported="true" />
-        <activity
             android:name=".view.NavBar"
-            android:exported="true" />
-        <activity
-            android:name=".view.TravelCommunityActivity"
             android:exported="true" />
         <activity
             android:name=".view.LoginActivity"

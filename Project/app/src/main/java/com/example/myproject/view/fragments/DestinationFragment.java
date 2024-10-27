@@ -106,7 +106,10 @@ public class DestinationFragment extends Fragment {
 
             if (startDate != null && endDate != null) {
                 long diffMillis = endDate.getTime() - startDate.getTime();
-                long diffDays = diffMillis / (24 * 60 * 60 * 1000);
+                long diffDays = (diffMillis / (24 * 60 * 60 * 1000)) + 1;
+                if (diffDays < 1) {
+                    Toast.makeText(getContext(), "Invalid date range.", Toast.LENGTH_SHORT).show();
+                }
                 resultDays.setText(String.valueOf(diffDays));
                 resultCard.setVisibility(View.VISIBLE);
             }
