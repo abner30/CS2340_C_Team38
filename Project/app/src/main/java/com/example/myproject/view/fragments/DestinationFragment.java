@@ -74,7 +74,8 @@ public class DestinationFragment extends Fragment {
         editTextDuration = getView().findViewById(R.id.editTextDuration);
         buttonVacationSubmit = getView().findViewById(R.id.buttonVacationSubmit);
         resultDays = getView().findViewById(R.id.resultDays);
-        tableLayout = getView().findViewById(R.id.tableLayout); // New table layout reference
+        tableLayout = getView().findViewById(R.id.tableLayout);
+        // New table layout reference
     }
 
     private void setupClickListeners() {
@@ -172,7 +173,6 @@ public class DestinationFragment extends Fragment {
         Destination destination = new Destination(location, startDate, endDate, 0);
         destinationViewModel.addDestination(destination,
                 DatabaseManager.getInstance().getCurrentUser().getUid());
-        populateTable();
     }
 
     /**

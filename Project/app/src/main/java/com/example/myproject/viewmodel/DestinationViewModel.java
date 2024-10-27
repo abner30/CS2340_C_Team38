@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.myproject.database.DatabaseManager;
 import com.example.myproject.model.Destination;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,6 +41,7 @@ public class DestinationViewModel extends ViewModel{
      * @param uid
      */
     public void addDestination(Destination destination, String uid) {
+
         String[] location = new String[1];
         location[0] = "location";
         database.child("destinations").child("counter")
@@ -50,13 +52,18 @@ public class DestinationViewModel extends ViewModel{
                 if (dataSnapshot.exists()) {
                     Integer firebaseCounter = dataSnapshot.getValue(Integer.class);
                     if (firebaseCounter != null) {
-                        location[0] = location[0] + firebaseCounter;
+                        location[0] = "location" + firebaseCounter;
                         database.child("destinations").child("counter")
                                 .setValue(firebaseCounter + 1);
+                    } else {
+                        database.child("destinations").child("counter")
+                                .setValue(1);
+                        location[0] = "location1";
                     }
                 } else {
                     database.child("destinations").child("counter")
                             .setValue(1);
+                    location[0] = "location1";
                 }
             }
             @Override
@@ -78,7 +85,7 @@ public class DestinationViewModel extends ViewModel{
                             .setValue(counter[0] + 1);
                 } else {
                     database.child("users").child(uid).child("destinationCounter")
-                            .setValue(0);
+                                           .setValue(0);
                 }
             }
             @Override
@@ -112,7 +119,7 @@ public class DestinationViewModel extends ViewModel{
                         String location = userSnapshot.child("location").getValue(String.class);
                         String startDate = userSnapshot.child("start Date").getValue(String.class);
                         String endDate = userSnapshot.child("end Date").getValue(String.class);
-                        Integer counter = userSnapshot.child("counter").getValue(Integer.class);
+                        Integer counter = userSnapshot.child("destinationCounter").getValue(Integer.class);
                         list.add(new Destination(location, startDate, endDate, counter));
                     }
                 }
