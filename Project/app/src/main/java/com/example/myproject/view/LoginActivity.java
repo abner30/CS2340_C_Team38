@@ -8,14 +8,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.myproject.R;
-import com.example.myproject.database.DatabaseManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
     /**
@@ -31,13 +34,32 @@ public class LoginActivity extends AppCompatActivity {
      */
     private Button buttonLogin;
     /**
+     * mAuth is variable for firebase authentication.
+     */
+    private FirebaseAuth mAuth;
+    /**
      * buttonRegister use to move to RegistrationActivity.
      */
     private Button buttonRegister;
 
     /**
+     * If user already exists/logged in, then skip login process.
+     */
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        if (currentUser != null) {
+//            Intent intent = new Intent(getApplicationContext(),
+//                    NavBar.class);
+//            startActivity(intent);
+//            finish();
+//        }
+//    }
+
+    /**
      * The method runs on create. It controls the whole activity.
-     * @param savedInstanceState the saved instance state
+     * @param savedInstanceState
      */
     @SuppressLint("WrongViewCast")
     @Override
@@ -45,6 +67,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
+        mAuth = FirebaseAuth.getInstance();
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         buttonLogin = findViewById(R.id.btn_login);
@@ -81,32 +104,35 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
-                OnCompleteListener<AuthResult> listener = new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(
-                            @NonNull final
-                            Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success
-                            Toast.makeText(LoginActivity.this,
-                                    "Login Successfull.",
-                                    Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(
-                                    getApplicationContext(),
-                                    NavBar.class);
-                            startActivity(intent);
-                            finish();
 
-                        } else {
-                            // If sign in fails
-                            Toast.makeText(LoginActivity.this,
-                                    "Login Failed.",
-                                    Toast.LENGTH_SHORT).show();
+                mAuth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(
+                                new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(
+                                            @NonNull final
+                                            Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
+                                            // Sign in success
+                                            Toast.makeText(LoginActivity.this,
+                                                    "Login Successfull.",
+                                                    Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(
+                                                    getApplicationContext(),
+                                                    NavBar.class);
+                                            startActivity(intent);
+                                            finish();
 
-                        }
-                    }
-                };
-                DatabaseManager.getInstance().loginUser(email, password, listener);
+                                        } else {
+                                            // If sign in fails
+                                            Toast.makeText(LoginActivity.this,
+                                                    "Login Failed.",
+                                                    Toast.LENGTH_SHORT).show();
+
+                                        }
+                                    }
+                                });
+
 
             }
         });
