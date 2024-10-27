@@ -52,7 +52,7 @@ public class UserViewModel {
      * Given two dates, calculate difference.
      * @param first date
      * @param second date
-     * @return duraiton
+     * @return duration
      * @throws ParseException
      */
     public int calculateDuration(String first, String second) throws ParseException {
