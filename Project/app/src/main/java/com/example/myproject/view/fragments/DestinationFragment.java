@@ -172,6 +172,7 @@ public class DestinationFragment extends Fragment {
         Destination destination = new Destination(location, startDate, endDate, 0);
         destinationViewModel.addDestination(destination,
                 DatabaseManager.getInstance().getCurrentUser().getUid());
+        populateTable();
     }
 
     /**
@@ -181,7 +182,6 @@ public class DestinationFragment extends Fragment {
     private void populateTable() {
         ArrayList<Destination> list = destinationViewModel.getRecentDestinations(destinationViewModel.getDestinations(
                 DatabaseManager.getInstance().getCurrentUser().getUid()));
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("destinations");
         tableLayout.removeAllViews();
         for (Destination destination: list) {
             String location = destination.getLocation();

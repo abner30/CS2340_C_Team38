@@ -71,12 +71,13 @@ public class DestinationViewModel extends ViewModel{
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
                 if (dataSnapshot.exists()) {
                     counter[0] = dataSnapshot.getValue(Integer.class);
-                    database.child("users").child("destinationCounter")
+                    database.child("users").child(uid).child("destinationCounter")
                             .setValue(counter[0] + 1);
                 } else {
-                    database.child("users").child("destinationCounter")
+                    database.child("users").child(uid).child("destinationCounter")
                             .setValue(0);
                 }
             }
