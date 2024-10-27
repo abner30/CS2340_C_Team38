@@ -1,4 +1,4 @@
-
+//DO NOT USE THIS FILE
 package com.example.myproject.view;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,6 +8,8 @@ import android.os.Bundle;
 import com.example.myproject.R;
 
 public class AccommodationsActivity extends AppCompatActivity {
+    //DO NOT USE THIS FILE
+
     /**
      * The method runs on create. It controls the whole activity.
      *
@@ -16,6 +18,7 @@ public class AccommodationsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_accommodation);
+//        setContentView(R.layout.activity_accommodation);
     }
 }
+

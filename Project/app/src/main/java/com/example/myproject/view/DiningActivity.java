@@ -1,4 +1,4 @@
-
+//DO NOT USE THIS FILE
 package com.example.myproject.view;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,6 +8,8 @@ import android.os.Bundle;
 import com.example.myproject.R;
 
 public class DiningActivity extends AppCompatActivity {
+    //DO NOT USE THIS FILE
+
     /**
      * The method runs on create. It controls the whole activity.
      *
@@ -16,6 +18,6 @@ public class DiningActivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dining);
+//        setContentView(R.layout.activity_dining);
     }
 }

@@ -106,7 +106,7 @@ public class DestinationFragment extends Fragment {
 
             if (startDate != null && endDate != null) {
                 long diffMillis = endDate.getTime() - startDate.getTime();
-                long diffDays = diffMillis / (24 * 60 * 60 * 1000);
+                long diffDays = (diffMillis / (24 * 60 * 60 * 1000)) + 1;
                 resultDays.setText(String.valueOf(diffDays));
                 resultCard.setVisibility(View.VISIBLE);
             }
