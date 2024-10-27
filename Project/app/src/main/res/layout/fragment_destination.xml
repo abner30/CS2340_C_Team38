@@ -60,6 +60,7 @@
             android:inputType="date"
             android:layout_marginBottom="8dp" />
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -116,6 +117,14 @@
             android:layout_height="wrap_content"
             android:hint="Vacation End Date (YYYY-MM-DD)"
             android:inputType="date"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/editTextDuration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter duration (days)"
+            android:inputType="number"
             android:layout_marginBottom="8dp" />
 
         <LinearLayout
