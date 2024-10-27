@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -20,6 +19,7 @@ import com.example.myproject.model.User;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -29,11 +29,11 @@ public class RegistrationActivity extends AppCompatActivity {
     /**
      * editTextEmail stores value from textbox of email.
      */
-    private EditText editTextEmail;
+    private TextInputEditText editTextEmail;
     /**
      * editTextEmail stores value from textbox of password.
      */
-    private EditText editTextPassword;
+    private TextInputEditText editTextPassword;
     /**
      * buttonReg is a button that registers users when clicked.
      */
