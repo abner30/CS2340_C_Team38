@@ -90,7 +90,7 @@ public class DestinationFragment extends Fragment {
             resultCard.setVisibility(View.GONE);
         });
 
-        buttonSubmit.setOnClickListener(v -> formLayout.setVisibility(View.GONE));
+        buttonSubmit.setOnClickListener(v -> addDestination());
         buttonCancel.setOnClickListener(v -> formLayout.setVisibility(View.GONE));
 
         buttonVacationSubmit.setOnClickListener(v -> calculateDays());
@@ -103,6 +103,9 @@ public class DestinationFragment extends Fragment {
         });
     }
 
+    /**
+     * Stores data into firebase.
+     */
     private void calculateDays() {
         String date1 = editTextVacationStartDate.getText().toString();
         String date2 = editTextVacationEndDate.getText().toString();
@@ -144,8 +147,11 @@ public class DestinationFragment extends Fragment {
                 }
                 userViewModel.addTrip(DatabaseManager.getInstance().getCurrentUser().getUid(),
                         duration, date1, date2);
+                resultDays.setText(String.valueOf(duration));
+                resultCard.setVisibility(View.VISIBLE);
+
             } catch (ParseException e) {
-                Toast.makeText(getContext(), "Invalid date format. Use MM-dd-yyyy.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Invalid date format. Use MM/dd/yyyy.", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -154,6 +160,18 @@ public class DestinationFragment extends Fragment {
         editTextVacationStartDate.setText("");
         editTextVacationEndDate.setText("");
         editTextDuration.setText("");
+    }
+
+    /**
+     * Adds destination to fireBase.
+     */
+    public void addDestination() {
+        String startDate = editTextStartDate.getText().toString();
+        String endDate = editTextStopDate.getText().toString();
+        String location = editTextTravelLocation.getText().toString();
+        Destination destination = new Destination(location, startDate, endDate, 0);
+        destinationViewModel.addDestination(destination,
+                DatabaseManager.getInstance().getCurrentUser().getUid());
     }
 
     /**
