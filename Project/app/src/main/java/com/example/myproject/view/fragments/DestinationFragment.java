@@ -117,7 +117,12 @@ public class DestinationFragment extends Fragment {
         if (durationInput == null || durationInput.trim().equals("")) {
             nullCount++;
         }
-        int duration = Integer.valueOf(durationInput);
+        int duration;
+        if (durationInput != null && !durationInput.trim().equals("")){
+            duration = Integer.valueOf(durationInput);
+        } else {
+            duration = 0;
+        }
         if (nullCount > 1) {
             Toast.makeText(getContext(), "Enter at least two fields.", Toast.LENGTH_SHORT).show();
 
