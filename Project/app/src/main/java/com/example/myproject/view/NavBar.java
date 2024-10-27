@@ -21,7 +21,7 @@ public class NavBar extends AppCompatActivity {
 
     /**
      * This method runs on create.
-     * @param savedInstanceState
+     * @param savedInstanceState the saved instance state
      */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {

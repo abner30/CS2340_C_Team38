@@ -26,13 +26,13 @@ public class Destination {
 
     /**
      * All args constructor.
-     * @param location
-     * @param start
-     * @param end
-     * @param destinationCounter
+     * @param location location of place
+     * @param start start
+     * @param end end time
+     * @param destinationCounter counter
      */
     public Destination(final String location, final String start,
-                        final String end, final int destinationCounter) {
+                       final String end, final int destinationCounter) {
         this.location = location;
         this.startDate = start;
         this.endDate = end;
@@ -64,7 +64,7 @@ public class Destination {
 
     /**
      * Setter for location.
-     * @param location
+     * @param location location of place
      */
     public void setLocation(final String location) {
         this.location = location;
@@ -72,7 +72,7 @@ public class Destination {
 
     /**
      * Setter for startDate.
-     * @param startDate
+     * @param startDate strat date
      */
     public void setStartDate(final String startDate) {
         this.startDate = startDate;
@@ -80,7 +80,7 @@ public class Destination {
 
     /**
      * Setter for endDate.
-     * @param endDate
+     * @param endDate end time
      */
     public void setEndDate(final String endDate) {
         this.endDate = endDate;
@@ -96,7 +96,7 @@ public class Destination {
 
     /**
      * Setter for destinationCounter.
-     * @param destinationCounter
+     * @param destinationCounter counter
      */
     public void setDestinationCounter(final int destinationCounter) {
         this.destinationCounter = destinationCounter;

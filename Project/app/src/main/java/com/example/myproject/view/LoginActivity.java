@@ -8,11 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.myproject.R;
 import com.example.myproject.database.DatabaseManager;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * The method runs on create. It controls the whole activity.
-     * @param savedInstanceState
+     * @param savedInstanceState the saved instance state
      */
     @SuppressLint("WrongViewCast")
     @Override
