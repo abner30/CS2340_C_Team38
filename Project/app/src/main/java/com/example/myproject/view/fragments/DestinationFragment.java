@@ -32,6 +32,7 @@ public class DestinationFragment extends Fragment {
     private EditText editTextTravelLocation, editTextStartDate, editTextStopDate;
     private Button buttonCancel, buttonSubmit;
     private EditText editTextVacationStartDate, editTextVacationEndDate;
+    private EditText editTextDuration; // New EditText for duration input
     private Button buttonVacationSubmit;
     private TextView resultDays;
     private TableLayout tableLayout;
@@ -66,9 +67,10 @@ public class DestinationFragment extends Fragment {
         buttonSubmit = getView().findViewById(R.id.buttonSubmit);
         editTextVacationStartDate = getView().findViewById(R.id.editTextVacationStartDate);
         editTextVacationEndDate = getView().findViewById(R.id.editTextVacationEndDate);
+        editTextDuration = getView().findViewById(R.id.editTextDuration); // initialize duration EditText
         buttonVacationSubmit = getView().findViewById(R.id.buttonVacationSubmit);
         resultDays = getView().findViewById(R.id.resultDays);
-        tableLayout = getView().findViewById(R.id.tableLayout); // New table layout reference
+        tableLayout = getView().findViewById(R.id.tableLayout); // new table layout reference
     }
 
     private void setupClickListeners() {
@@ -100,24 +102,46 @@ public class DestinationFragment extends Fragment {
     private void calculateDays() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
-        try {
-            Date startDate = dateFormat.parse(editTextVacationStartDate.getText().toString());
-            Date endDate = dateFormat.parse(editTextVacationEndDate.getText().toString());
+        // retrieve input from the duration EditText
+        String durationText = editTextDuration.getText().toString();
 
-            if (startDate != null && endDate != null) {
-                long diffMillis = endDate.getTime() - startDate.getTime();
-                long diffDays = diffMillis / (24 * 60 * 60 * 1000);
-                resultDays.setText(String.valueOf(diffDays));
+        try {
+            if (!durationText.isEmpty()) {
+                // use the entered duration directly
+                long enteredDuration = Long.parseLong(durationText);
+                resultDays.setText(String.valueOf(enteredDuration));
                 resultCard.setVisibility(View.VISIBLE);
+
+            } else {
+                // if no duration was entered, calculate based on start and end dates
+                Date startDate = dateFormat.parse(editTextVacationStartDate.getText().toString());
+                Date endDate = dateFormat.parse(editTextVacationEndDate.getText().toString());
+
+                if (startDate != null && endDate != null) {
+                    // check if the start date is before the end date
+                    if (startDate.after(endDate)) {
+                        Toast.makeText(getContext(), "Start date must be before the end date.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // calculate the difference in days
+                    long diffMillis = endDate.getTime() - startDate.getTime();
+                    long diffDays = diffMillis / (24 * 60 * 60 * 1000);
+                    resultDays.setText(String.valueOf(diffDays));
+                    resultCard.setVisibility(View.VISIBLE);
+                }
             }
         } catch (ParseException e) {
             Toast.makeText(getContext(), "Invalid date format. Use YYYY-MM-DD.", Toast.LENGTH_SHORT).show();
+        } catch (NumberFormatException e) {
+            Toast.makeText(getContext(), "Please enter a valid number for duration.", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void clearEditTextFields() {
         editTextVacationStartDate.setText("");
         editTextVacationEndDate.setText("");
+        editTextDuration.setText(""); // clear the new duration field
     }
 
     /**
