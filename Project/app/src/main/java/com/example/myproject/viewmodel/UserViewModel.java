@@ -66,7 +66,7 @@ public class UserViewModel {
      * @throws ParseException
      */
     public int calculateDuration(String first, String second) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/DD/YYYY", Locale.ENGLISH);
         Date firstDate = sdf.parse(first);
         Date secondDate = sdf.parse(second);
         long diffInMillies = Math.abs(firstDate.getTime() - secondDate.getTime());
@@ -82,7 +82,7 @@ public class UserViewModel {
      * @throws ParseException
      */
     public String calculateEnd(String startDate, int duration) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/DD/YYYY");
         Date date = sdf.parse(startDate);
         Calendar c = Calendar.getInstance();
         c.setTime(date);
@@ -99,7 +99,7 @@ public class UserViewModel {
      * @throws ParseException
      */
     public String calculateStart(String endDate, int duration) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/DD/YYYY");
         Date date = sdf.parse(endDate);
         Calendar c = Calendar.getInstance();
         c.setTime(date);
