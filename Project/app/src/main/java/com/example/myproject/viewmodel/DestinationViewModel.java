@@ -1,5 +1,9 @@
 package com.example.myproject.viewmodel;
 
+import static android.content.ContentValues.TAG;
+
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 
@@ -93,12 +97,18 @@ public class DestinationViewModel extends ViewModel{
         });
     }
 
+    // Define a callback interface for asynchronous data retrieval
+    public interface DestinationsCallback {
+        void onCallback(ArrayList<Destination> destinations);
+    }
+
+// Modify getDestinations to use a callback
     /**
-     * Returns an ArrayList of all destinations associate with a given user.
-     * @param uid
-     * @return list of destinations
+     * Asynchronously fetches all destinations associated with a given user and passes them to a callback.
+     * @param uid User ID
+     * @param callback Callback to handle the list of destinations after retrieval
      */
-    public ArrayList<Destination> getDestinations(String uid) {
+    public void getDestinations(String uid, DestinationsCallback callback) {
         ArrayList<Destination> list = new ArrayList<>();
         database.child("destinations").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -107,19 +117,21 @@ public class DestinationViewModel extends ViewModel{
                     String user = userSnapshot.child("user").getValue(String.class);
                     if (user != null && user.equals(uid)) {
                         String location = userSnapshot.child("location").getValue(String.class);
-                        String startDate = userSnapshot.child("start Date").getValue(String.class);
-                        String endDate = userSnapshot.child("end Date").getValue(String.class);
+                        String startDate = userSnapshot.child("start date").getValue(String.class); // Ensure field names match
+                        String endDate = userSnapshot.child("end date").getValue(String.class);    // Ensure field names match
                         Integer counter = userSnapshot.child("destinationCounter").getValue(Integer.class);
                         list.add(new Destination(location, startDate, endDate, counter));
                     }
                 }
+                // Pass the filled list to the callback once data retrieval is complete
+                callback.onCallback(list);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // Handle error if necessary
             }
         });
-        return list;
     }
 
     /**
@@ -150,12 +162,11 @@ public class DestinationViewModel extends ViewModel{
 
     /**
      * Calculate total days of five recent destinations.
-     * @param uid
+     * @param destinationArrayList
      * @return total days of five recent destinations.
      * @throws ParseException
      */
-    public int calculateTotalDays(String uid) throws ParseException {
-        ArrayList<Destination> destinationArrayList = getRecentDestinations(getDestinations(uid));
+    public int calculateTotalDays(ArrayList<Destination> destinationArrayList) throws ParseException {;
         int sum = 0;
         UserViewModel userViewModel = new UserViewModel();
         for (Destination destination: destinationArrayList) {
