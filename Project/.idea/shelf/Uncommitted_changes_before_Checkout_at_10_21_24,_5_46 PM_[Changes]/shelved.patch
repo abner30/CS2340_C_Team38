@@ -1,0 +1,27 @@
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\n    id 'com.android.application'\n    id 'com.google.gms.google-services'\n}\n\nandroid {\n    namespace 'com.example.myproject'\n    compileSdk 34\n\n    defaultConfig {\n        applicationId \"com.example.myproject\"\n        minSdk 24\n        targetSdk 34\n        versionCode 1\n        versionName \"1.0\"\n\n        testInstrumentationRunner \"androidx.test.runner.AndroidJUnitRunner\"\n    }\n\n    buildTypes {\n        release {\n            minifyEnabled false\n            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'\n        }\n    }\n    compileOptions {\n        sourceCompatibility JavaVersion.VERSION_1_8\n        targetCompatibility JavaVersion.VERSION_1_8\n    }\n    buildFeatures {\n        viewBinding true\n    }\n}\n\ndependencies {\n\n    implementation 'androidx.appcompat:appcompat:1.7.0'\n    implementation 'com.google.android.material:material:1.12.0'\n    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'\n    implementation 'com.google.firebase:firebase-auth:23.0.0'\n    implementation 'androidx.activity:activity:1.9.2'\n    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.8.6'\n    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6'\n    implementation 'androidx.navigation:navigation-fragment:2.6.0'\n    implementation 'androidx.navigation:navigation-ui:2.6.0'\n    testImplementation 'junit:junit:4.13.2'\n    androidTestImplementation 'androidx.test.ext:junit:1.2.1'\n    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'\n    implementation platform('com.google.firebase:firebase-bom:33.4.0')\n    implementation 'com.google.firebase:firebase-analytics'\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle b/app/build.gradle
+--- a/app/build.gradle	
++++ b/app/build.gradle	
+@@ -37,12 +37,12 @@
+     implementation 'androidx.appcompat:appcompat:1.7.0'
+     implementation 'com.google.android.material:material:1.12.0'
+     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+-    implementation 'com.google.firebase:firebase-auth:23.0.0'
+-    implementation 'androidx.activity:activity:1.9.2'
++    implementation 'com.google.firebase:firebase-auth:23.1.0'
++    implementation 'androidx.activity:activity:1.9.3'
+     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.8.6'
+     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6'
+-    implementation 'androidx.navigation:navigation-fragment:2.6.0'
+-    implementation 'androidx.navigation:navigation-ui:2.6.0'
++    implementation 'androidx.navigation:navigation-fragment:2.8.3'
++    implementation 'androidx.navigation:navigation-ui:2.8.3'
+     testImplementation 'junit:junit:4.13.2'
+     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'

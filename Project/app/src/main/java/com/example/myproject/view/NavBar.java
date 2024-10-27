@@ -21,7 +21,7 @@ public class NavBar extends AppCompatActivity {
 
     /**
      * This method runs on create.
-     * @param savedInstanceState
+     * @param savedInstanceState the saved instance state
      */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -72,50 +72,3 @@ public class NavBar extends AppCompatActivity {
         return false;
     }
 }
-
-
-
-/*
- public class NavBar extends AppCompatActivity {
-@Override
-public boolean onCreateOptionsMenu(Menu menu) {
-getMenuInflater().inflate(R.menu.bottom_nav_menu, menu);
-return true;
-}
-
-@Override
-protected void onCreate(Bundle savedInstanceState) {
-super.onCreate(savedInstanceState);
-setContentView(R.layout.nav_bar);  // Make sure this layout file exists
-
-final BottomNavigationView bottomNavigationView = findViewById(
-R.id.bottom_navigation_view);
-
-bottomNavigationView.setOnItemSelectedListener(item -> {
-Log.d("itemId", String.format("%d", item.getItemId()));
-switch (item.getItemId()) {
-case R.id.logistics:
-startActivity(new Intent(getApplicationContext(),
- LogisticsActivity.class));
-return true;
-case R.id.destination:
-startActivity(new Intent(getApplicationContext(),
- DestinationActivity.class));
-return true;
-case R.id.dining:
-startActivity(new Intent(getApplicationContext(),
- DiningActivity.class));
-return true;
-case R.id.accommodations:
-startActivity(new Intent(getApplicationContext()
-, AccommodationsActivity.class));
-return true;
-case R.id.travelCommunity:
-startActivity(new Intent(getApplicationContext(),
- TravelCommunityActivity.class));
-return true;
-}
-return false;
-});
-}
-} */

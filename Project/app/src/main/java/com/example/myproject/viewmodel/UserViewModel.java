@@ -1,7 +1,10 @@
 package com.example.myproject.viewmodel;
 
+import android.view.View;
+
 import androidx.annotation.NonNull;
 
+import com.example.myproject.database.DatabaseManager;
 import com.example.myproject.model.Destination;
 import com.example.myproject.model.User;
 import com.google.firebase.database.DataSnapshot;
@@ -21,7 +24,7 @@ public class UserViewModel {
     /**
      * reference to database. Initiates once.
      */
-    private DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference database = DatabaseManager.getInstance().getReference();
 
     /**
      * No args constructor.
@@ -37,12 +40,20 @@ public class UserViewModel {
         database.child("users").child(user.getUid()).setValue(user);
     }
 
-    public void addTrip(User user, int duration, String startDate, String endDate ) {
-        database.child("users").child(user.getUid()).child("duration")
+
+    /**
+     * Adds trip to user.
+     * @param uid
+     * @param duration
+     * @param startDate
+     * @param endDate
+     */
+    public void addTrip(String uid, int duration, String startDate, String endDate ) {
+        database.child("users").child(uid).child("duration")
                 .setValue(duration);
-        database.child("users").child(user.getUid()).child("start date")
+        database.child("users").child(uid).child("start date")
                 .setValue(startDate);
-        database.child("users").child(user.getUid()).child("end date")
+        database.child("users").child(uid).child("end date")
                 .setValue(endDate);
     }
 
@@ -51,7 +62,7 @@ public class UserViewModel {
      * Given two dates, calculate difference.
      * @param first date
      * @param second date
-     * @return duraiton
+     * @return duration
      * @throws ParseException
      */
     public int calculateDuration(String first, String second) throws ParseException {

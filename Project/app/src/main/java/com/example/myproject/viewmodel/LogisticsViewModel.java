@@ -1,4 +1,4 @@
 package com.example.myproject.viewmodel;
 
-public class File {
+public class LogisticsViewModel {
 }

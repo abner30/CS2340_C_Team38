@@ -18,7 +18,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-//import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
     /**
@@ -42,22 +42,20 @@ public class LoginActivity extends AppCompatActivity {
      */
     private Button buttonRegister;
 
-    /*
+    /**
      * If user already exists/logged in, then skip login process.
      */
-    /*
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            Intent intent = new Intent(getApplicationContext(),
-                    NavBar.class);
-            startActivity(intent);
-            finish();
-        }
-    }
-    */
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        if (currentUser != null) {
+//            Intent intent = new Intent(getApplicationContext(),
+//                    NavBar.class);
+//            startActivity(intent);
+//            finish();
+//        }
+//    }
 
     /**
      * The method runs on create. It controls the whole activity.

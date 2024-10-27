@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="ANALYZE_INJECTED_CODE" value="false" />
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="89874580-195c-437f-beab-0c4fa3cbb56f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/.gradle/8.2/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Project/.gradle/8.2/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/myproject/view/RegistrationActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/myproject/view/RegistrationActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_main.xml" afterDir="false" />
+    <list default="true" id="e4c08d58-d6e7-44be-95d7-774115619b08" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../.gradle/8.2/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../../.gradle/8.2/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/java/com/example/myproject/view/LoginActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/java/com/example/myproject/view/LoginActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/java/com/example/myproject/view/RegistrationActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/main/java/com/example/myproject/view/RegistrationActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/java/com/example/myproject/viewmodel/File.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,35 +22,32 @@
     <option name="formatViaClangd" value="false" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
   </component>
-  <component name="MarkdownSettingsMigration">
-    <option name="stateVersion" value="1" />
-  </component>
-  <component name="ProjectId" id="2mLdEoqTTPm3Fza3oltD0oB6kLP" />
+  <component name="ProjectId" id="2n52r3sUhsZAJ5rlo72sioig0YR" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "Krishna"
+    "git-widget-placeholder": "Krishna",
+    "last_opened_file_path": "/Users/test/Desktop/CS/2340/GitHub/CS2340_C_Team38/Project/app/src",
+    "run.code.analysis.last.selected.profile": "pProject Default"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="89874580-195c-437f-beab-0c4fa3cbb56f" name="Changes" comment="" />
-      <created>1726859683471</created>
+      <changelist id="e4c08d58-d6e7-44be-95d7-774115619b08" name="Changes" comment="" />
+      <created>1728248811820</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1726859683471</updated>
+      <updated>1728248811820</updated>
     </task>
     <servers />
   </component>
