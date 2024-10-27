@@ -41,66 +41,56 @@ public class DestinationViewModel extends ViewModel{
      * @param uid
      */
     public void addDestination(Destination destination, String uid) {
-
-        String[] location = new String[1];
-        location[0] = "location";
         database.child("destinations").child("counter")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
-
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String location = "location";
                 if (dataSnapshot.exists()) {
                     Integer firebaseCounter = dataSnapshot.getValue(Integer.class);
                     if (firebaseCounter != null) {
-                        location[0] = "location" + firebaseCounter;
+                        location += firebaseCounter;
                         database.child("destinations").child("counter")
                                 .setValue(firebaseCounter + 1);
-                    } else {
-                        database.child("destinations").child("counter")
-                                .setValue(1);
-                        location[0] = "location1";
                     }
                 } else {
                     database.child("destinations").child("counter")
                             .setValue(1);
-                    location[0] = "location1";
+                    location = "location1";
                 }
+                String finalLocation = location;
+                database.child("users").child(uid).child("destinationCounter")
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                int counter = 0;
+                                if (dataSnapshot.exists()) {
+                                    counter = dataSnapshot.getValue(Integer.class);
+                                    database.child("users").child(uid).child("destinationCounter")
+                                            .setValue(counter + 1);
+                                } else {
+                                    database.child("users").child(uid).child("destinationCounter")
+                                            .setValue(0);
+                                }
+                                HashMap<String, Object> map = new HashMap<>();
+                                map.put("location", destination.getLocation());
+                                map.put("start date", destination.getStartDate());
+                                map.put("end date", destination.getEndDate());
+                                map.put("user", uid);
+                                map.put("destinationCounter", counter);
+                                database.child("destinations").child(finalLocation).setValue(map);
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
-
-        int[] counter = new int[1];
-        counter[0] = 0;
-        database.child("users").child(uid).child("destinationCounter")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
-                if (dataSnapshot.exists()) {
-                    counter[0] = dataSnapshot.getValue(Integer.class);
-                    database.child("users").child(uid).child("destinationCounter")
-                            .setValue(counter[0] + 1);
-                } else {
-                    database.child("users").child(uid).child("destinationCounter")
-                                           .setValue(0);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        database.child("destinations").setValue(location[0]);
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("location", destination.getLocation());
-        map.put("start date", destination.getStartDate());
-        map.put("end date", destination.getEndDate());
-        map.put("user", uid);
-        map.put("destinationCounter", counter[0]);
-        database.child("destinations").child(location[0]).setValue(map);
     }
 
     /**

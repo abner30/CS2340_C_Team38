@@ -173,6 +173,7 @@ public class DestinationFragment extends Fragment {
         Destination destination = new Destination(location, startDate, endDate, 0);
         destinationViewModel.addDestination(destination,
                 DatabaseManager.getInstance().getCurrentUser().getUid());
+
     }
 
     /**
