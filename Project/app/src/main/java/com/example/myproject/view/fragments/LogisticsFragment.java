@@ -11,9 +11,13 @@ import androidx.fragment.app.Fragment;
 
 import com.example.myproject.R;
 import com.example.myproject.database.DatabaseManager;
+import com.example.myproject.model.Destination;
+import com.example.myproject.viewmodel.DestinationViewModel;
+import com.example.myproject.viewmodel.UserViewModel;
 import com.github.mikephil.charting.charts.PieChart;
 
 import android.widget.Button;
+
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -24,6 +28,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,51 +66,62 @@ public class LogisticsFragment extends Fragment {
     }
 
     private void generatePieChart(PieChart pieChart) {
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users")
-                .child(DatabaseManager.getInstance().getCurrentUser().getUid());
-
-        userRef.child("duration").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                DatabaseReference tripDaysRef = FirebaseDatabase.getInstance().getReference("tripData").child("days");
-                tripDaysRef.child("plannedDays").addListenerForSingleValueEvent(new ValueEventListener() {
+        DestinationViewModel destinationViewModel = new DestinationViewModel();
+        UserViewModel userViewModel = new UserViewModel();
+        String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
+        DatabaseManager.getInstance().getReference().child("users").
+                child(uid).child("duration").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        // Initialize allottedDays and plannedDays
-                        Integer allottedDays = snapshot.getValue(Integer.class);
-                        if (allottedDays == null) allottedDays = 0;
-                        Integer plannedDays = snapshot.getValue(Integer.class);
-                        if (plannedDays == null) plannedDays = 0;
+                        final int[] allocatedDays = {1};
+                        if (snapshot.exists()){
+                            allocatedDays[0] = snapshot.getValue(Integer.class);
+                        }
+                        destinationViewModel.getDestinations(uid, new DestinationViewModel.DestinationsCallback() {
+                            @Override
+                            public void onCallback(ArrayList<Destination> destinations) {
+                                ArrayList<Destination> list = destinationViewModel.getRecentDestinations(destinations);
+                                ArrayList<PieEntry> entries = new ArrayList<>();
+                                for (Destination destination: list) {
+                                    String location = destination.getLocation();
+                                    Integer daysPlanned;
+                                    try {
+                                        daysPlanned= userViewModel.calculateDuration(destination.getStartDate(), destination.getEndDate());
+                                    } catch (ParseException e){
+                                        daysPlanned = 0;
+                                    }
+                                    if (allocatedDays[0] - daysPlanned >= 0 && daysPlanned > 0){
+                                        allocatedDays[0] -= daysPlanned;
+                                        entries.add(new PieEntry(daysPlanned, location));
+                                    }
+                                    else {
+                                        break;
+                                    }
+                                }
+                                entries.add(new PieEntry(allocatedDays[0], "Alloted days"));
+                                // Initialize dataSet and data for pieChart
+                                PieDataSet dataSet = new PieDataSet(entries, " ");
+                                PieData data = new PieData(dataSet);
 
-                        // Initialize entries used for pieChart
-                        ArrayList<PieEntry> entries = new ArrayList<>();
-                        entries.add(new PieEntry(allottedDays, "Allotted"));
-                        entries.add(new PieEntry(plannedDays, "Planned"));
+                                // Set design of text and chart
+                                dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+                                data.setValueTextSize(14f);
+                                dataSet.setValueTextColor(Color.BLACK);
+                                dataSet.setValueTextSize(16f);
+                                dataSet.setValueLinePart1OffsetPercentage(80f);
+                                pieChart.setEntryLabelColor(Color.BLACK);
+                                pieChart.getDescription().setEnabled(false); // Hide the description label
 
-                        // Initialize dataSet and data for pieChart
-                        PieDataSet dataSet = new PieDataSet(entries, " ");
-                        PieData data = new PieData(dataSet);
-
-                        // Set design of text and chart
-                        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-                        data.setValueTextSize(14f);
-                        dataSet.setValueTextColor(Color.BLACK);
-                        dataSet.setValueTextSize(16f);
-                        dataSet.setValueLinePart1OffsetPercentage(80f);
-                        pieChart.setEntryLabelColor(Color.BLACK);
-                        pieChart.getDescription().setEnabled(false); // Hide the description label
-
-                        // Outline the entire pie chart
-                        dataSet.setSliceSpace(2f); // Adds spacing between slices (for outline effect)
-                        pieChart.setHoleColor(Color.WHITE); // Set hole color (background color)
-                        pieChart.setTransparentCircleColor(Color.BLACK); // Set color of the transparent outline
-                        pieChart.setTransparentCircleAlpha(110); // Set transparency for the outline
-                        pieChart.setTransparentCircleRadius(55f); // Set radius of the outline
-
-
-                        pieChart.setData(data);
-                        pieChart.invalidate();
+                                // Outline the entire pie chart
+                                dataSet.setSliceSpace(2f); // Adds spacing between slices (for outline effect)
+                                pieChart.setHoleColor(Color.WHITE); // Set hole color (background color)
+                                pieChart.setTransparentCircleColor(Color.BLACK); // Set color of the transparent outline
+                                pieChart.setTransparentCircleAlpha(110); // Set transparency for the outline
+                                pieChart.setTransparentCircleRadius(55f); // Set radius of the outline
+                                pieChart.setData(data);
+                                pieChart.invalidate();
+                            }
+                        });
                     }
 
                     @Override
@@ -113,13 +129,6 @@ public class LogisticsFragment extends Fragment {
                         Toast.makeText(getActivity(), "Error loading planned days", Toast.LENGTH_SHORT).show();
                     }
                 });
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(), "Error loading allotted days", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void showInviteDialog() {

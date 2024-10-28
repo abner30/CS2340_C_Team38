@@ -174,13 +174,16 @@ public class DestinationFragment extends Fragment {
         destinationViewModel.addDestination(destination,
                 DatabaseManager.getInstance().getCurrentUser().getUid());
         populateTable();
+        editTextStartDate.setText("");
+        editTextStopDate.setText("");
+        editTextTravelLocation.setText("");
     }
 
     /**
      * Populates the table with destinations from the database.
      * If data is unavailable, displays a default entry in the table.
      */
-    private void populateTable() {
+    public void populateTable() {
         String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
         destinationViewModel.getDestinations(uid, new DestinationViewModel.DestinationsCallback() {
             @Override
