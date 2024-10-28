@@ -32,6 +32,9 @@ public class DestinationViewModel extends ViewModel{
     public DestinationViewModel() {
     }
 
+    public interface CompletionCallback {
+        void onComplete();
+    }
 
     /**
      * Adds a destination to database in following format:
@@ -44,60 +47,69 @@ public class DestinationViewModel extends ViewModel{
      * @param destination
      * @param uid
      */
-    public void addDestination(Destination destination, String uid) {
+    public void addDestination(Destination destination, String uid, CompletionCallback callback) {
         database.child("destinations").child("counter")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String location = "location";
-                if (dataSnapshot.exists()) {
-                    Integer firebaseCounter = dataSnapshot.getValue(Integer.class);
-                    if (firebaseCounter != null) {
-                        location += firebaseCounter;
-                        database.child("destinations").child("counter")
-                                .setValue(firebaseCounter + 1);
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String location = "location";
+                        if (dataSnapshot.exists()) {
+                            Integer firebaseCounter = dataSnapshot.getValue(Integer.class);
+                            if (firebaseCounter != null) {
+                                location += firebaseCounter;
+                                database.child("destinations").child("counter")
+                                        .setValue(firebaseCounter + 1);
+                            }
+                        } else {
+                            database.child("destinations").child("counter")
+                                    .setValue(1);
+                            location = "location1";
+                        }
+                        String finalLocation = location;
+                        database.child("users").child(uid).child("destinationCounter")
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        int counter = 0;
+                                        if (dataSnapshot.exists()) {
+                                            counter = dataSnapshot.getValue(Integer.class);
+                                            database.child("users").child(uid).child("destinationCounter")
+                                                    .setValue(counter + 1);
+                                        } else {
+                                            database.child("users").child(uid).child("destinationCounter")
+                                                    .setValue(0);
+                                        }
+                                        HashMap<String, Object> map = new HashMap<>();
+                                        map.put("location", destination.getLocation());
+                                        map.put("start date", destination.getStartDate());
+                                        map.put("end date", destination.getEndDate());
+                                        map.put("user", uid);
+                                        map.put("destinationCounter", counter);
+                                        database.child("destinations").child(finalLocation).setValue(map)
+                                                .addOnCompleteListener(task -> {
+                                                    if (task.isSuccessful()) {
+                                                        callback.onComplete(); // Call onComplete when the data is saved
+                                                    } else {
+                                                        // Handle failure, e.g., log error or show a message to the user
+                                                    }
+                                                });
+                                    }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
                     }
-                } else {
-                    database.child("destinations").child("counter")
-                            .setValue(1);
-                    location = "location1";
-                }
-                String finalLocation = location;
-                database.child("users").child(uid).child("destinationCounter")
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                int counter = 0;
-                                if (dataSnapshot.exists()) {
-                                    counter = dataSnapshot.getValue(Integer.class);
-                                    database.child("users").child(uid).child("destinationCounter")
-                                            .setValue(counter + 1);
-                                } else {
-                                    database.child("users").child(uid).child("destinationCounter")
-                                            .setValue(0);
-                                }
-                                HashMap<String, Object> map = new HashMap<>();
-                                map.put("location", destination.getLocation());
-                                map.put("start date", destination.getStartDate());
-                                map.put("end date", destination.getEndDate());
-                                map.put("user", uid);
-                                map.put("destinationCounter", counter);
-                                database.child("destinations").child(finalLocation).setValue(map);
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-                            }
-                        });
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+                    }
+                });
     }
 
-    // Define a callback interface for asynchronous data retrieval
+    /**
+     * Define a callback interface for asynchronous data retrieval
+     */
     public interface DestinationsCallback {
         void onCallback(ArrayList<Destination> destinations);
     }

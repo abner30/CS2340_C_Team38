@@ -61,7 +61,11 @@ public class NavBar extends AppCompatActivity {
         });
     }
 
-    // Helper method to load the selected fragment
+    /**
+     * Helper method to load the selected fragment into the container.
+     * @param fragment the fragment to be loaded
+     * @return true if fragment was loaded successfully, false otherwise
+     */
     private boolean loadFragment(final Fragment fragment) {
         if (fragment != null) {
             getSupportFragmentManager().beginTransaction()
