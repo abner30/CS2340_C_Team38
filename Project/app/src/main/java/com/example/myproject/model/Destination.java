@@ -101,4 +101,12 @@ public class Destination {
     public void setDestinationCounter(final int destinationCounter) {
         this.destinationCounter = destinationCounter;
     }
+
+    /**
+     * Returns a string representation of the destination.
+     * @return the location of the destination
+     */
+    public String toString() {
+        return getLocation();
+    }
 }
