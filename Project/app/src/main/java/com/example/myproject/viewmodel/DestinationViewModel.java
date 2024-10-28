@@ -97,7 +97,9 @@ public class DestinationViewModel extends ViewModel{
         });
     }
 
-    // Define a callback interface for asynchronous data retrieval
+    /**
+     * Define a callback interface for asynchronous data retrieval
+     */
     public interface DestinationsCallback {
         void onCallback(ArrayList<Destination> destinations);
     }
