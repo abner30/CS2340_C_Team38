@@ -83,12 +83,18 @@ public class DestinationFragment extends Fragment {
             formLayout.setVisibility(View.VISIBLE);
             vacationFormLayout.setVisibility(View.GONE);
             resultCard.setVisibility(View.GONE);
+            editTextStartDate.setText("01/01/2001");
+            editTextStopDate.setText("01/01/2001");
+            editTextTravelLocation.setText("Berlin");
         });
 
         buttonCalculateVacationTime.setOnClickListener(v -> {
             formLayout.setVisibility(View.GONE);
             vacationFormLayout.setVisibility(View.VISIBLE);
             resultCard.setVisibility(View.GONE);
+            editTextVacationStartDate.setText("01/01/2001");
+            editTextVacationEndDate.setText("01/01/2001");
+            editTextDuration.setText("0");
         });
 
         buttonSubmit.setOnClickListener(v -> addDestination());
