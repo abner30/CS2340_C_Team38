@@ -74,7 +74,8 @@ public class DestinationFragment extends Fragment {
         editTextDuration = getView().findViewById(R.id.editTextDuration);
         buttonVacationSubmit = getView().findViewById(R.id.buttonVacationSubmit);
         resultDays = getView().findViewById(R.id.resultDays);
-        tableLayout = getView().findViewById(R.id.tableLayout); // New table layout reference
+        tableLayout = getView().findViewById(R.id.tableLayout);
+        // New table layout reference
     }
 
     private void setupClickListeners() {
@@ -180,20 +181,25 @@ public class DestinationFragment extends Fragment {
      * If data is unavailable, displays a default entry in the table.
      */
     private void populateTable() {
-        ArrayList<Destination> list = destinationViewModel.getRecentDestinations(destinationViewModel.getDestinations(
-                DatabaseManager.getInstance().getCurrentUser().getUid()));
-        tableLayout.removeAllViews();
-        for (Destination destination: list) {
-            String location = destination.getLocation();
-            String daysPlanned;
-            try {
-                daysPlanned= String.valueOf(userViewModel.calculateDuration(destination.getStartDate(), destination.getEndDate()));
-            } catch (ParseException e){
-                daysPlanned = "0";
+        String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
+        destinationViewModel.getDestinations(uid, new DestinationViewModel.DestinationsCallback() {
+            @Override
+            public void onCallback(ArrayList<Destination> destinations) {
+                ArrayList<Destination> list = destinationViewModel.getRecentDestinations(destinations);
+                tableLayout.removeAllViews();
+                for (Destination destination: list) {
+                    String location = destination.getLocation();
+                    String daysPlanned;
+                    try {
+                        daysPlanned= String.valueOf(userViewModel.calculateDuration(destination.getStartDate(), destination.getEndDate()));
+                    } catch (ParseException e){
+                        daysPlanned = "0";
+                    }
+                    daysPlanned += " days planned";
+                    addRowToTable(location, daysPlanned);
+                }
             }
-            daysPlanned += " days planned";
-            addRowToTable(location, daysPlanned);
-        }
+        });
     }
 
     /**
