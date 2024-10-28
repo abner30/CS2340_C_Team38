@@ -29,6 +29,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+/**
+ * A Fragment that manages user travel destinations, vacation time calculation,
+ * and displays travel data in a table. It allows users to log travel destinations,
+ * calculate the duration of vacations, and interact with a database to store and
+ * retrieve travel data.
+ */
 public class DestinationFragment extends Fragment {
     UserViewModel userViewModel = new UserViewModel();
     DestinationViewModel destinationViewModel = new DestinationViewModel();
@@ -41,6 +47,17 @@ public class DestinationFragment extends Fragment {
     private TextView resultDays;
     private TableLayout tableLayout;
 
+    /**
+     * Inflates the layout for this fragment.
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     *                 any views in the fragment.
+     * @param container If non-null, this is the parent view that the fragment's
+     *                  UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state.
+     * @return The View for the fragment's UI.
+     */
     @Override
     public View onCreateView(final LayoutInflater inflater,
                              final ViewGroup container,
@@ -49,6 +66,13 @@ public class DestinationFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Called when the Fragment is visible to the user and actively running.
+     * Initializes the views, sets up click listeners, and populates the
+     * table with destinations.
+     * This is needed because launching directly as you do with a view will break
+     * the fragment binding
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -57,6 +81,9 @@ public class DestinationFragment extends Fragment {
         populateTable();
     }
 
+    /**
+     * Initializes the UI components by finding views by their IDs.
+     */
     private void initializeViews() {
         formLayout = getView().findViewById(R.id.formLayout);
         vacationFormLayout = getView().findViewById(R.id.vacationFormLayout);
@@ -78,6 +105,11 @@ public class DestinationFragment extends Fragment {
         // New table layout reference
     }
 
+    /**
+     * Sets up click listeners for various buttons to perform actions
+     * like logging travel, calculating vacation time, submitting and
+     * resetting forms.
+     */
     private void setupClickListeners() {
         buttonLogTravel.setOnClickListener(v -> {
             formLayout.setVisibility(View.VISIBLE);
@@ -111,7 +143,10 @@ public class DestinationFragment extends Fragment {
     }
 
     /**
-     * Stores data into firebase.
+     * Calculates the number of vacation days based on user input.
+     * Validates input fields and adds a new trip if the required
+     * fields are filled.
+     * Stores data into firebase
      */
     private void calculateDays() {
         String date1 = editTextVacationStartDate.getText().toString();
@@ -163,6 +198,9 @@ public class DestinationFragment extends Fragment {
         }
     }
 
+    /**
+     * Clears all EditText fields in the form.
+     */
     private void clearEditTextFields() {
         editTextVacationStartDate.setText("");
         editTextVacationEndDate.setText("");
