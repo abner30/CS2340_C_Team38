@@ -172,11 +172,15 @@ public class DestinationFragment extends Fragment {
         String location = editTextTravelLocation.getText().toString();
         Destination destination = new Destination(location, startDate, endDate, 0);
         destinationViewModel.addDestination(destination,
-                DatabaseManager.getInstance().getCurrentUser().getUid());
-        populateTable();
-        editTextStartDate.setText("");
-        editTextStopDate.setText("");
-        editTextTravelLocation.setText("");
+                DatabaseManager.getInstance().getCurrentUser().getUid(), new DestinationViewModel.CompletionCallback() {
+                    @Override
+                    public void onComplete() {
+                        populateTable(); // Populate the table only after data is written
+                        editTextStartDate.setText("");
+                        editTextStopDate.setText("");
+                        editTextTravelLocation.setText("");
+                    }
+                });
     }
 
     /**

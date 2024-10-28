@@ -32,6 +32,9 @@ public class DestinationViewModel extends ViewModel{
     public DestinationViewModel() {
     }
 
+    public interface CompletionCallback {
+        void onComplete();
+    }
 
     /**
      * Adds a destination to database in following format:
@@ -44,7 +47,7 @@ public class DestinationViewModel extends ViewModel{
      * @param destination
      * @param uid
      */
-    public void addDestination(Destination destination, String uid) {
+    public void addDestination(Destination destination, String uid, CompletionCallback callback) {
         database.child("destinations").child("counter")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -82,7 +85,14 @@ public class DestinationViewModel extends ViewModel{
                                         map.put("end date", destination.getEndDate());
                                         map.put("user", uid);
                                         map.put("destinationCounter", counter);
-                                        database.child("destinations").child(finalLocation).setValue(map);
+                                        database.child("destinations").child(finalLocation).setValue(map)
+                                                .addOnCompleteListener(task -> {
+                                                    if (task.isSuccessful()) {
+                                                        callback.onComplete(); // Call onComplete when the data is saved
+                                                    } else {
+                                                        // Handle failure, e.g., log error or show a message to the user
+                                                    }
+                                                });
                                     }
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) {
