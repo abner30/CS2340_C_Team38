@@ -1,26 +1,21 @@
 package com.example.myproject.viewmodel;
 
-import static android.content.ContentValues.TAG;
-
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 
 import com.example.myproject.database.DatabaseManager;
 import com.example.myproject.model.Destination;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class DestinationViewModel extends ViewModel{
+public class DestinationViewModel extends ViewModel {
     /**
      * reference to database. Initiates once.
      */
@@ -33,6 +28,9 @@ public class DestinationViewModel extends ViewModel{
     }
 
     public interface CompletionCallback {
+        /**
+         * Called when the operation is complete.
+         */
         void onComplete();
     }
 
@@ -44,8 +42,9 @@ public class DestinationViewModel extends ViewModel{
      *      "end date" = String
      *      "uid" = String
      *
-     * @param destination
-     * @param uid
+     * @param destination Destination
+     * @param uid Uic
+     * @param callback call back
      */
     public void addDestination(Destination destination, String uid, CompletionCallback callback) {
         database.child("destinations").child("counter")
@@ -111,10 +110,15 @@ public class DestinationViewModel extends ViewModel{
      * Define a callback interface for asynchronous data retrieval
      */
     public interface DestinationsCallback {
+        /**
+         * Callback method to handle retrieved destinations.
+         *
+         * @param destinations the list of retrieved Destination objects
+         */
         void onCallback(ArrayList<Destination> destinations);
     }
 
-// Modify getDestinations to use a callback
+    // Modify getDestinations to use a callback
     /**
      * Asynchronously fetches all destinations associated with a given user and passes them to a callback.
      * @param uid User ID
@@ -129,8 +133,8 @@ public class DestinationViewModel extends ViewModel{
                     String user = userSnapshot.child("user").getValue(String.class);
                     if (user != null && user.equals(uid)) {
                         String location = userSnapshot.child("location").getValue(String.class);
-                        String startDate = userSnapshot.child("start date").getValue(String.class); // Ensure field names match
-                        String endDate = userSnapshot.child("end date").getValue(String.class);    // Ensure field names match
+                        String startDate = userSnapshot.child("start date").getValue(String.class);
+                        String endDate = userSnapshot.child("end date").getValue(String.class);
                         Integer counter = userSnapshot.child("destinationCounter").getValue(Integer.class);
                         list.add(new Destination(location, startDate, endDate, counter));
                     }
@@ -148,13 +152,13 @@ public class DestinationViewModel extends ViewModel{
 
     /**
      * Find the five most recent destinations out of all destinations.
-     * @param destinations
+     * @param destinations destinations
      * @return arraylist of five destinations.
      */
     public ArrayList<Destination> getRecentDestinations(ArrayList<Destination> destinations) {
 
         if (destinations.size() < 5) {
-            while(destinations.size() < 5) {
+            while (destinations.size() < 5) {
                 destinations.add(new Destination("Default",
                         "01/01/2024", "01/01/2024", 1));
             }
@@ -174,11 +178,11 @@ public class DestinationViewModel extends ViewModel{
 
     /**
      * Calculate total days of five recent destinations.
-     * @param destinationArrayList
+     * @param destinationArrayList the destination array list
      * @return total days of five recent destinations.
-     * @throws ParseException
+     * @throws ParseException parse exception
      */
-    public int calculateTotalDays(ArrayList<Destination> destinationArrayList) throws ParseException {;
+    public int calculateTotalDays(ArrayList<Destination> destinationArrayList) throws ParseException {
         int sum = 0;
         UserViewModel userViewModel = new UserViewModel();
         for (Destination destination: destinationArrayList) {
