@@ -21,7 +21,9 @@ public class Order {
         if (item == null) {
             throw new IllegalArgumentException("Item cannot be null");
         }
-        return String.format("%s - %.2f%n", item.getName(), item.getPrice());
+        String toreturn = String.format("%s - %.2f%n", item.getName(), item.getPrice());
+        toreturn = toreturn.strip();
+        return toreturn;
     }
 
     public void addItem(Item item) {
