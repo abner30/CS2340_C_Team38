@@ -167,6 +167,7 @@ public class LogisticsFragment extends Fragment {
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("name", username);
         userMap.put("notes", note);
+        userMap.put("uid", DatabaseManager.getInstance().getCurrentUser().getUid());
 
         database.child(username).setValue(userMap)
                 .addOnSuccessListener(aVoid ->
