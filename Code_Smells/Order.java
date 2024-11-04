@@ -2,35 +2,19 @@ import java.util.List;
 
 public class Order {
     private List<Item> items;
-    private String customerName;
-    private String customerEmail;
+    private Customer customer;
 
     public Order(List<Item> items, String customerName, String customerEmail) {
+        if (customerName == null || customerEmail == null) {
+            throw new IllegalArgumentException("Parameters cannot be null");
+        }
         this.items = items;
-        this.customerName = customerName;
-        this.customerEmail = customerEmail;
+        this.customer = new Customer(customerName, customerEmail);
+
     }
 
     public double calculateTotalPrice() {
         return new OrderPriceCalculator(this).calculateTotal();
-    }
-
-    public void sendConfirmationEmail() {
-        String message = createConfirmationMessage();
-        EmailSender.sendEmail(customerEmail, "Order Confirmation", message);
-    }
-
-    private String createConfirmationMessage() {
-        StringBuilder message = new StringBuilder();
-        message.append("Thank you for your order, ").append(customerName).append("!\n\n");
-        message.append("Your order details:\n");
-
-        for (Item item : items) {
-            message.append(formatItemDetail(item));
-        }
-        message.append("Total: ").append(calculateTotalPrice());
-
-        return message.toString();
     }
 
     private String formatItemDetail(Item item) {
@@ -59,11 +43,11 @@ public class Order {
     }
 
     public String getCustomerName() {
-        return customerName;
+        return customer.getCustomerName();
     }
 
     public String getCustomerEmail() {
-        return customerEmail;
+        return customer.getCustomerEmail();
     }
 
     public void printOrder() {
