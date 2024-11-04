@@ -1,27 +1,32 @@
-import java.util.List;
+public class OrderConfirmationService {
+    private final EmailSender emailSender;
 
-public class Customer {
-    private String customerName;
-    private String customerEmail;
-
-    public Customer(String customerName, String customerEmail) {
-        this.customerName = customerName;
-        this.customerEmail = customerEmail;
+    public OrderConfirmationService(EmailSender emailSender) {
+        this.emailSender = emailSender;
     }
 
-    public String getCustomerEmail() {
-        return customerEmail;
+    public void sendOrderConfirmation(Order order) {
+        String message = createConfirmationMessage(order);
+        emailSender.sendEmail(order.getCustomerEmail(), "Order Confirmation", message);
     }
 
-    public String getCustomerName() {
-        return customerName;
+    private String createConfirmationMessage(Order order) {
+        StringBuilder message = new StringBuilder();
+        message.append("Thank you for your order, ").append(order.getCustomerName()).append("!\n\n");
+        message.append("Your order details:\n");
+
+        for (Item item : order.getItems()) {
+            message.append(formatItemDetail(item));
+        }
+        message.append("Total: ").append(order.calculateTotalPrice());
+
+        return message.toString();
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
-    public void setCustomerEmail(String customerEmail) {
-        this.customerEmail = customerEmail;
+    private String formatItemDetail(Item item) {
+        if (item == null) {
+            throw new IllegalArgumentException("Item cannot be null");
+        }
+        return String.format("%s - %.2f%n", item.getName(), item.getPrice());
     }
 }
