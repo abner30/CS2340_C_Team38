@@ -1,0 +1,68 @@
+Code Smells Analysis and Solutions Write-up
+Team Members: Li-Chen, Tygr, Ayaan, Ria, Krishna, Abner
+1. Poor Naming Conventions
+Problem Description: The codebase violates Java naming conventions, particularly with main.java instead of Main.java. This breaks standard Java practices where:
+Class names should use PascalCase
+File names must match their class names
+These violations reduce code readability and maintainability
+Makes code integration and development more difficult
+Solution Approach:
+Rename files to match Java conventions
+Implement consistent naming standards across the project
+Ensure all class names follow PascalCase
+Match file names with their corresponding class names
+2. Inadequate Error and Exception Handling
+Problem Description: The code lacks proper error handling and validation mechanisms to check for and handle null pointer exceptions:
+Missing input validation in constructors and methods
+No error handling for price calculations
+Absent email format validation
+Potential calculation errors in discounts and taxes
+No protection against invalid data states
+Solution Approach:
+Implement comprehensive input validation
+Add proper exception handling mechanisms
+Create validation for all critical operations
+Establish clear error recovery procedures
+Add data consistency checks
+3. Long Method and Gift Card Handling
+Problem Description: The calculateTotalPrice() method has several issues:
+Method is too long and handles multiple responsibilities
+Gift card processing is inflexible with fixed values
+Price calculations are mixed with discount logic
+Hard to maintain and test
+Poor separation of concerns
+Solution Approach:
+Split calculations into smaller, focused methods
+Create separate handling for gift cards
+Implement clear calculation sequence
+Separate discount and price calculations
+Improve modularity and testability
+
+4. Multiple concerns in Order.java file
+Problem Description: The customerName and customerEmail fields violate the principle of separation of concerns:
+By holding customer data, these fields open up our code to modifications of more than one concern
+Poor separation of concerns
+Solution Approach:
+Split fields into a separate Customer.java class and use it as a surrogate to read data from
+Maintain code functionality by using getters and setters
+5. Order.java file violates Single Responsibility Principle
+Problem Description: The Order class in our current codebase has multiple responsibilities, particularly related to both order management and email sending. The sendConfirmationEmail method and createConfirmationMessage logic in Order violate the Single Responsibility Principle by including both order-related logic and email-related concerns. This mixing of concerns makes Order harder to maintain and test, as changes to email formatting or sending could inadvertently affect core order functionality.
+Solution Approach:
+Add an emailSender.java class to send emails.
+Split fields into a separate OrderConfirmationService.java class and use it to manage confirmation messages.
+Remove methods sendConfirmationEmail method and createConfirmationMessage from Order.java
+
+6.  Order.java calculateTotalPrice() and hasDiscount() methods reuse code logic
+Problem Description: The code contains duplicated logic in price calculation methods:
+Repeated price calculation logic between calculateTotalPrice() and hasDiscount() methods
+Multiple methods implementing the same business rules
+Code duplication increases maintenance burden
+Changes must be made in multiple places
+Increases risk of inconsistencies in calculations
+Solution Approach:
+Extract duplicated logic into shared utility methods
+Create a dedicated OrderPriceCalculator class for price operations
+Centralize business rules in a single location
+Implement proper method reusability
+Ensure consistent calculation logic across the application
+
