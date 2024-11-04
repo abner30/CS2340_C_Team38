@@ -16,7 +16,9 @@ public class Main {
 
         System.out.println("Total Price: " + order.calculateTotalPrice());
 
-        order.sendConfirmationEmail();
+        EmailSender emailSender = new EmailSender();
+        OrderConfirmationService confirmationService = new OrderConfirmationService(emailSender);
+        confirmationService.sendOrderConfirmation(order);
 
         order.printOrder();
     }

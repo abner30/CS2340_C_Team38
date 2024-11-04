@@ -17,24 +17,6 @@ public class Order {
         return new OrderPriceCalculator(this).calculateTotal();
     }
 
-    public void sendConfirmationEmail() {
-        String message = createConfirmationMessage();
-        EmailSender.sendEmail(customer.getCustomerEmail(), "Order Confirmation", message);
-    }
-
-    private String createConfirmationMessage() {
-        StringBuilder message = new StringBuilder();
-        message.append("Thank you for your order, ").append(customer.getCustomerName()).append("!\n\n");
-        message.append("Your order details:\n");
-
-        for (Item item : items) {
-            message.append(formatItemDetail(item));
-        }
-        message.append("Total: ").append(calculateTotalPrice());
-
-        return message.toString();
-    }
-
     private String formatItemDetail(Item item) {
         if (item == null) {
             throw new IllegalArgumentException("Item cannot be null");
