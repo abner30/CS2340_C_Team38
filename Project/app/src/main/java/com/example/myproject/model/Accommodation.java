@@ -1,5 +1,11 @@
 package com.example.myproject.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
 public class Accommodation {
     private String checkIn;
     private String checkOut;
@@ -12,15 +18,6 @@ public class Accommodation {
         this.checkOut = checkOut;
         this.location = location;
         this.rooms = rooms;
-        this.type = type;
-    }
-
-    public Accommodation(String checkIn, String checkOut, String location, int rooms, boolean expired, String type) {
-        this.checkIn = checkIn;
-        this.checkOut = checkOut;
-        this.location = location;
-        this.rooms = rooms;
-        this.expired = expired;
         this.type = type;
     }
 
@@ -70,5 +67,22 @@ public class Accommodation {
 
     public void setExpired(boolean expired) {
         this.expired = expired;
+    }
+    public boolean isGreater(Accommodation a) {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+        Date firstDate;
+        Date secondDate;
+        try {
+            firstDate = sdf.parse(this.getCheckOut());
+            secondDate = sdf.parse(a.getCheckOut());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        long diffInMillies = firstDate.getTime() - secondDate.getTime();
+        long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        if (diff > 0) {
+            return true;
+        }
+        return false;
     }
 }
