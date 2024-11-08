@@ -61,46 +61,24 @@ public class AccommodationViewModel {
                                     .setValue(1);
                             lodging = "lodging1";
                         }
-                        String finalLodging = lodging;
-                        database.child("users").child(uid).child("accommodationCounter")
-                                .addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        int counter = 0;
-                                        if (dataSnapshot.exists()) {
-                                            counter = dataSnapshot.getValue(Integer.class);
-                                            database.child("users").child(uid).child("accommodationCounter")
-                                                    .setValue(counter + 1);
-                                        } else {
-                                            database.child("users").child(uid).child("accommodationCounter")
-                                                    .setValue(0);
-                                        }
-                                        HashMap<String, Object> map = new HashMap<>();
-                                        map.put("location", accommodation.getLocation());
-                                        map.put("check-in",accommodation.getCheckIn());
-                                        map.put("check-out", accommodation.getCheckOut());
-                                        map.put("type", accommodation.getType());
-                                        map.put("rooms", accommodation.getRooms());
-                                        map.put("user", uid);
-                                        map.put("accommodationCounter", counter);
-                                        database.child("accommodations").child(finalLodging).setValue(map)
-                                                .addOnCompleteListener(task -> {
-                                                    if (task.isSuccessful()) {
-                                                        callback.onComplete(); // Call onComplete when the data is saved
-                                                    } else {
-                                                        // Handle failure, e.g., log error or show a message to the user
-                                                    }
-                                                });
-                                    }
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put("location", accommodation.getLocation());
+                        map.put("check-in",accommodation.getCheckIn());
+                        map.put("check-out", accommodation.getCheckOut());
+                        map.put("type", accommodation.getType());
+                        map.put("rooms", accommodation.getRooms());
+                        map.put("user", uid);
+                        database.child("accommodations").child(lodging).setValue(map)
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        callback.onComplete(); // Call onComplete when the data is saved
+                                    } else {
+                                        // Handle failure, e.g., log error or show a message to the user
                                     }
                                 });
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
                     }
                 });
     }
@@ -139,28 +117,7 @@ public class AccommodationViewModel {
 
                     //Check if each accommodation is expired.
                     for (Accommodation a : list) {
-                        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
-                        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-
-                        Date firstDate = null;
-                        try {
-                            firstDate = sdf.parse(a.getCheckOut());
-                        } catch (ParseException e) {
-                            throw new RuntimeException(e);
-                        }
-                        ZoneId zonedId = ZoneId.of( "America/Georgia" );
-                        LocalDate today = LocalDate.now( zonedId );
-                        Date secondDate = null;
-                        try {
-                            secondDate = sdf2.parse(today.toString());
-                        } catch (ParseException e) {
-                            throw new RuntimeException(e);
-                        }
-                        long diffInMillies = firstDate.getTime() - secondDate.getTime();
-                        long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-                        if (diff < 0) {
-                            a.setExpired(true);
-                        }
+                        a.setExpired();
                     }
                 }
                 // Pass the filled list to the callback once data retrieval is complete
