@@ -94,6 +94,8 @@ public class Accommodation {
         long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
         if (diff < 0) {
             this.expired = true;
+        } else {
+            this.expired = false;
         }
     }
     public boolean isGreater(Accommodation a) {
