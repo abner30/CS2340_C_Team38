@@ -20,13 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.myproject.R;
 import com.example.myproject.database.DatabaseManager;
 import com.example.myproject.model.Accommodation;
-import com.example.myproject.viewmodel.DestinationViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class AccommodationsFragment extends Fragment {
 
@@ -51,8 +45,8 @@ public class AccommodationsFragment extends Fragment {
                 container, false);
 
         // Set up invite
-        FloatingActionButton inviteButton = view.findViewById(R.id.btn_add_reservation);
-        inviteButton.setOnClickListener(v -> showAccommodationDialog());
+        FloatingActionButton accommodationButton = view.findViewById(R.id.btn_add_accommodation);
+        accommodationButton.setOnClickListener(v -> showAccommodationDialog());
 
         return view;
     }
@@ -120,14 +114,14 @@ public class AccommodationsFragment extends Fragment {
 
             AccommodationViewModel accommodationViewModel = new ViewModelProvider(this).get(AccommodationViewModel.class);
 
-            accommodationViewModel.addAccommodation(accommodation, uid, new AccommodationViewModel.CompletionCallback() {
-                @Override
-                public void onComplete() {
-                    // This will ensure the callback is executed
-                    Log.d("AccommodationFragment", "Accommodation added successfully");
-                    Toast.makeText(getActivity(), "Accommodation added successfully!", Toast.LENGTH_SHORT).show();
-                }
-            });
+//            accommodationViewModel.addAccommodation(accommodation, uid, new AccommodationViewModel.CompletionCallback() {
+//                @Override
+//                public void onComplete() {
+//                    // This will ensure the callback is executed
+//                    Log.d("AccommodationFragment", "Accommodation added successfully");
+//                    Toast.makeText(getActivity(), "Accommodation added successfully!", Toast.LENGTH_SHORT).show();
+//                }
+//            });
         });
         builder.show();
     }
