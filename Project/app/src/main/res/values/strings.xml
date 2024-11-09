@@ -7,4 +7,19 @@
     <string name="createAccount">Create an Account</string>
     <string name="enter_your_password">Enter your password</string>
     <string name="enter_email">Enter email</string>
+    <string-array name="room_types">
+        <item>Single</item>
+        <item>Double</item>
+        <item>Suite</item>
+        <item>Penthouse</item>
+        <item>Studio</item>
+    </string-array>
+    <string-array name="num_of_rooms">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
 </resources>
