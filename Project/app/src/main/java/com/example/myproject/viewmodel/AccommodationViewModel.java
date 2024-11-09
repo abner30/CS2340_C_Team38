@@ -4,6 +4,7 @@ import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.lifecycle.ViewModel;
 
 import com.example.myproject.database.DatabaseManager;
 import com.example.myproject.model.Accommodation;
@@ -24,7 +25,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-public class AccommodationViewModel {
+public class AccommodationViewModel extends ViewModel {
     /**
      * reference to database. Initiates once.
      */
