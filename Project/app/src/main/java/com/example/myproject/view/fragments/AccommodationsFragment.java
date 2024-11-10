@@ -16,17 +16,28 @@ import com.example.myproject.model.Accommodation;
 import com.example.myproject.viewmodel.AccommodationViewModel;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.myproject.R;
 import com.example.myproject.database.DatabaseManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
 public class AccommodationsFragment extends Fragment {
 
-    AccommodationViewModel accommodationViewModel = new AccommodationViewModel();
-
+    private AccommodationViewModel accommodationViewModel = new AccommodationViewModel();
+    private DatabaseReference database;
+    private DatabaseReference tripDatabase;
+    private String currentUserUid;
+    private String effectiveUserUid; // This will store either the current user's UID or the trip owner's UID
+    private boolean isContributor = false;
+    private String tripOwnerId;
     /**
      * This method runs on create.
      *
@@ -45,10 +56,14 @@ public class AccommodationsFragment extends Fragment {
                              final ViewGroup container,
                              final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_accommodations, container, false);
+        currentUserUid = DatabaseManager.getInstance().getCurrentUser().getUid();
 
         // Set up invite
         FloatingActionButton accommodationButton = view.findViewById(R.id.btn_add_accommodation);
-        accommodationButton.setOnClickListener(v -> showAccommodationDialog());
+
+        determineUserRole(() -> {
+            accommodationButton.setOnClickListener(v -> showAccommodationDialog());
+        });
 
         return view;
     }
@@ -57,8 +72,63 @@ public class AccommodationsFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        determineUserRole(() -> {
         // Now call populateTable after view has been created
-        populateTable();
+            populateTable();
+        });
+    }
+
+    private interface UserRoleCallback {
+        void onComplete();
+    }
+    private void determineUserRole(AccommodationsFragment.UserRoleCallback callback) {
+        // First check if the user is a contributor to any trip
+        DatabaseManager.getInstance().getReference().child("users")
+                .child(currentUserUid)
+                .child("sharedTrips")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            // User is a contributor to someone's trip
+                            for (DataSnapshot tripOwner : snapshot.getChildren()) {
+                                tripOwnerId = tripOwner.getKey();
+                                effectiveUserUid = tripOwnerId; // Use trip owner's UID for database operations
+                                isContributor = true;
+                                break;
+                            }
+                        } else {
+                            // User is not a contributor, check if they're an owner
+                            tripDatabase.child("owner").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot ownerSnapshot) {
+                                    if (ownerSnapshot.exists()) {
+                                        tripOwnerId = ownerSnapshot.getValue(String.class);
+                                    } else {
+                                        // If no owner is set, set current user as owner
+                                        tripOwnerId = currentUserUid;
+                                        tripDatabase.child("owner").setValue(currentUserUid);
+                                    }
+                                    effectiveUserUid = tripOwnerId;
+                                    callback.onComplete();
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Toast.makeText(getActivity(), "Error checking owner status: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                    callback.onComplete();
+                                }
+                            });
+                        }
+                        callback.onComplete();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(getActivity(), "Error checking contributor status: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        callback.onComplete();
+                    }
+                });
     }
 
 
@@ -131,9 +201,9 @@ public class AccommodationsFragment extends Fragment {
             return;
         }
 
-        String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
+        //String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
         Accommodation accommodation = new Accommodation(checkIn, checkOut, location, numRooms, roomType);
-        accommodationViewModel.addAccommodation(accommodation, uid, new AccommodationViewModel.CompletionCallback() {
+        accommodationViewModel.addAccommodation(accommodation, effectiveUserUid, new AccommodationViewModel.CompletionCallback() {
             @Override
             public void onComplete() {
                 Toast.makeText(getContext(), "Accommodation added successfully", Toast.LENGTH_SHORT).show();
@@ -146,11 +216,11 @@ public class AccommodationsFragment extends Fragment {
 
 
     public void populateTable() {
-        String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
+        //String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
         LinearLayout accommodationsList = getView().findViewById(R.id.accommodations_list);
         //accommodationsList.removeAllViews();
 
-        accommodationViewModel.getAccommodations(uid, new AccommodationViewModel.AccommodationsCallback() {
+        accommodationViewModel.getAccommodations(effectiveUserUid, new AccommodationViewModel.AccommodationsCallback() {
             @Override
             public void onCallback(ArrayList<Accommodation> accommodations) {
                 if (accommodationsList == null) {
