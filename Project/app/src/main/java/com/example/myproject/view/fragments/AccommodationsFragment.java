@@ -153,7 +153,9 @@ public class AccommodationsFragment extends Fragment {
         accommodationViewModel.getAccommodations(uid, new AccommodationViewModel.AccommodationsCallback() {
             @Override
             public void onCallback(ArrayList<Accommodation> accommodations) {
-
+                if (accommodationsList == null) {
+                    return;
+                }
                 for (Accommodation accommodation : accommodations) {
                     addRowToTable(accommodation);
                 }

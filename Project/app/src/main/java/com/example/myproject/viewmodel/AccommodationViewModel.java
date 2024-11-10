@@ -112,15 +112,18 @@ public class AccommodationViewModel{
                         Integer rooms = userSnapshot.child("rooms").getValue(Integer.class);
                         list.add(new Accommodation(checkIn, checkOut, location, rooms, type));
                     }
-
-                    //sort using helper merge sort
-                    sortAccommodation(list, 0, list.size() - 1);
-
-                    //Check if each accommodation is expired.
-                    for (Accommodation a : list) {
-                        a.setExpired();
-                    }
                 }
+
+                // Only sort if the list is not empty
+                if (!list.isEmpty()) {
+                    sortAccommodation(list, 0, list.size() - 1);
+                }
+
+                // Check if each accommodation is expired
+                for (Accommodation a : list) {
+                    a.setExpired();
+                }
+
                 // Pass the filled list to the callback once data retrieval is complete
                 callback.onCallback(list);
             }
@@ -132,48 +135,48 @@ public class AccommodationViewModel{
         });
     }
 
-    private void mergeAccommodation(ArrayList<Accommodation> a, int l, int m , int r) {
+    private void mergeAccommodation(ArrayList<Accommodation> a, int l, int m, int r) {
         // Find sizes of two subarrays to be merged
         int n1 = m - l + 1;
         int n2 = r - m;
 
-        // Create temp arrays
-        ArrayList<Accommodation> a1 = new ArrayList<Accommodation>();
-        ArrayList<Accommodation> a2 = new ArrayList<Accommodation>();
+        // Create temp arrays with initial capacity
+        ArrayList<Accommodation> a1 = new ArrayList<>(n1);
+        ArrayList<Accommodation> a2 = new ArrayList<>(n2);
 
-        // Copy data to temp arrays
-        for (int i = 0; i < n1; ++i)
-            a1.set(i, a.get(l+i));
-        for (int j = 0; j < n2; ++j)
-            a2.set(j, a.get(m + 1 + j));
+        // Copy data to temp arrays using add() instead of set()
+        for (int i = 0; i < n1; i++) {
+            a1.add(a.get(l + i));
+        }
+        for (int j = 0; j < n2; j++) {
+            a2.add(a.get(m + 1 + j));
+        }
 
         // Merge the temp arrays
+        int i = 0; // Initial index of first subarray
+        int j = 0; // Initial index of second subarray
+        int k = l; // Initial index of merged subarray
 
-        // Initial indices of first and second subarrays
-        int i = 0, j = 0;
-
-        // Initial index of merged subarray array
-        int k = l;
+        // Compare and merge
         while (i < n1 && j < n2) {
             if (a1.get(i).isGreater(a2.get(j))) {
                 a.set(k, a1.get(i));
                 i++;
-            }
-            else {
+            } else {
                 a.set(k, a2.get(j));
                 j++;
             }
             k++;
         }
 
-        // Copy remaining elements of L[] if any
+        // Copy remaining elements of a1[] if any
         while (i < n1) {
             a.set(k, a1.get(i));
             i++;
             k++;
         }
 
-        // Copy remaining elements of R[] if any
+        // Copy remaining elements of a2[] if any
         while (j < n2) {
             a.set(k, a2.get(j));
             j++;
@@ -181,10 +184,13 @@ public class AccommodationViewModel{
         }
     }
 
-    private void sortAccommodation(ArrayList<Accommodation> a, int l, int r)
-    {
-        if (l < r) {
+    private void sortAccommodation(ArrayList<Accommodation> a, int l, int r) {
+        // Add check for empty or null list
+        if (a == null || a.isEmpty()) {
+            return;
+        }
 
+        if (l < r) {
             // Find the middle point
             int m = l + (r - l) / 2;
 
@@ -196,5 +202,4 @@ public class AccommodationViewModel{
             mergeAccommodation(a, l, m, r);
         }
     }
-
 }
