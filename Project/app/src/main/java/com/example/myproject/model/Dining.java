@@ -1,5 +1,18 @@
 package com.example.myproject.model;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
 public class Dining {
     private String location;
     private String website;
@@ -51,12 +64,66 @@ public class Dining {
         return expired;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void setExpired() {
-        //implementation
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+
+        Date firstDate = null;
+        try {
+            firstDate = sdf.parse(getDate());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        ZoneId zonedId = ZoneId.of( "America/Georgia" );
+        LocalDate today = LocalDate.now(zonedId);
+        Date secondDate = null;
+        try {
+            secondDate = sdf2.parse(today.toString());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        long diffInMillies = firstDate.getTime() - secondDate.getTime();
+        long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        if (diff < 0) {
+            this.expired = true;
+        } else if (diff == 0) {
+            LocalTime time1 = LocalTime.now(zonedId);
+            LocalTime time2 = LocalTime.parse(getTime());
+            if (time1.compareTo(time2) < 0) {
+                this.expired = false;
+            } else {
+                this.expired = true;
+            }
+        } else {
+            this.expired = false;
+        }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public boolean isGreater(Dining a) {
-        //implementation
-        return true;
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+        Date firstDate;
+        Date secondDate;
+        try {
+            firstDate = sdf.parse(this.getDate());
+            secondDate = sdf.parse(a.getDate());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        long diffInMillies = firstDate.getTime() - secondDate.getTime();
+        long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        if (diff > 0) {
+            return true;
+        } else if (diff == 0) {
+            LocalTime time1 = LocalTime.parse(getTime());
+            LocalTime time2 = LocalTime.parse(a.getTime());
+            if (time1.compareTo(time2) < 0) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 }
