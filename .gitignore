@@ -1,4 +1,7 @@
 .DS_Store
 .DS_Store
 *.lock
-*.lock
+.idea/caches/deviceStreaming.xml
+.idea/misc.xml
+.idea/workspace.xml
+Project/.idea/
