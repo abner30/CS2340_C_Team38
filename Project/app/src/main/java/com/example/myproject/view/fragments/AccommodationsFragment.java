@@ -52,17 +52,23 @@ public class AccommodationsFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater,
                              final ViewGroup container,
                              final Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_accommodations,
-                container, false);
+        View view = inflater.inflate(R.layout.fragment_accommodations, container, false);
 
         // Set up invite
         FloatingActionButton accommodationButton = view.findViewById(R.id.btn_add_accommodation);
         accommodationButton.setOnClickListener(v -> showAccommodationDialog());
 
-        populateTable();
-
         return view;
     }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Now call populateTable after view has been created
+        populateTable();
+    }
+
 
     private void showAccommodationDialog() {
 
