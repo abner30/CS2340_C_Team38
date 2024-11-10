@@ -4,11 +4,9 @@ import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.lifecycle.ViewModel;
 
 import com.example.myproject.database.DatabaseManager;
-import com.example.myproject.model.Accommodation;
-import com.example.myproject.model.Destination;
+import com.example.myproject.model.Dining;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -17,7 +15,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class AccommodationViewModel{
+public class DiningViewModel {
     /**
      * reference to database. Initiates once.
      */
@@ -26,7 +24,7 @@ public class AccommodationViewModel{
     /**
      * No args constructor.
      */
-    public AccommodationViewModel() {
+    public DiningViewModel() {
     }
 
     public interface CompletionCallback {
@@ -36,32 +34,31 @@ public class AccommodationViewModel{
         void onComplete();
     }
 
-    public void addAccommodation(Accommodation accommodation, String uid, AccommodationViewModel.CompletionCallback callback) {
-        database.child("accommodations").child("counter")
+    public void addDining(Dining dining, String uid, DiningViewModel.CompletionCallback callback) {
+        database.child("dinings").child("counter")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        String lodging = "lodging";
+                        String restaurant = "restaurant";
                         if (dataSnapshot.exists()) {
                             Integer firebaseCounter = dataSnapshot.getValue(Integer.class);
                             if (firebaseCounter != null) {
-                                lodging += firebaseCounter;
-                                database.child("accommodations").child("counter")
+                                restaurant += firebaseCounter;
+                                database.child("dinings").child("counter")
                                         .setValue(firebaseCounter + 1);
                             }
                         } else {
-                            database.child("accommodations").child("counter")
+                            database.child("dinings").child("counter")
                                     .setValue(1);
-                            lodging = "lodging1";
+                            restaurant = "dining1";
                         }
                         HashMap<String, Object> map = new HashMap<>();
-                        map.put("location", accommodation.getLocation());
-                        map.put("check-in",accommodation.getCheckIn());
-                        map.put("check-out", accommodation.getCheckOut());
-                        map.put("type", accommodation.getType());
-                        map.put("rooms", accommodation.getRooms());
+                        map.put("location", dining.getLocation());
+                        map.put("website", dining.getWebsite());
+                        map.put("time", dining.getTime());
+                        map.put("date", dining.getDate());
                         map.put("user", uid);
-                        database.child("accommodations").child(lodging).setValue(map)
+                        database.child("accommodations").child(restaurant).setValue(map)
                                 .addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
                                         callback.onComplete(); // Call onComplete when the data is saved
@@ -79,18 +76,18 @@ public class AccommodationViewModel{
     /**
      * Define a callback interface for asynchronous data retrieval
      */
-    public interface AccommodationsCallback {
+    public interface DiningCallback {
         /**
          * Callback method to handle retrieved destinations.
          *
-         * @param accommodations the list of retrieved Destination objects
+         * @param dinings the list of retrieved Destination objects
          */
-        void onCallback(ArrayList<Accommodation> accommodations);
+        void onCallback(ArrayList<Dining> dinings);
     }
 
-    public void getAccommodations(String uid, AccommodationViewModel.AccommodationsCallback callback) {
-        ArrayList<Accommodation> list = new ArrayList<>();
-        database.child("accommodations").addListenerForSingleValueEvent(new ValueEventListener() {
+    public void getDining(String uid, DiningViewModel.DiningCallback callback) {
+        ArrayList<Dining> list = new ArrayList<>();
+        database.child("dinings").addListenerForSingleValueEvent(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -98,23 +95,21 @@ public class AccommodationViewModel{
                     String user = userSnapshot.child("user").getValue(String.class);
                     if (user != null && user.equals(uid)) {
                         String location = userSnapshot.child("location").getValue(String.class);
-                        String checkIn = userSnapshot.child("check-in").getValue(String.class);
-                        String checkOut = userSnapshot.child("check-out").getValue(String.class);
-                        String type = userSnapshot.child("type").getValue(String.class);
-                        Integer rooms = userSnapshot.child("rooms").getValue(Integer.class);
-                        list.add(new Accommodation(checkIn, checkOut, location, rooms, type));
+                        String website = userSnapshot.child("website").getValue(String.class);
+                        String date = userSnapshot.child("date").getValue(String.class);
+                        String time = userSnapshot.child("time").getValue(String.class);
+                        list.add(new Dining(location, website, date, time));
                     }
 
 
                 }
                 //sort using helper merge sort
-                sortAccommodation(list, 0, list.size() - 1);
+                sortDining(list, 0, list.size() - 1);
 
                 //Check if each accommodation is expired.
-                for (Accommodation a : list) {
+                for (Dining a : list) {
                     a.setExpired();
                 }
-
                 // Pass the filled list to the callback once data retrieval is complete
                 callback.onCallback(list);
             }
@@ -126,14 +121,14 @@ public class AccommodationViewModel{
         });
     }
 
-    private void mergeAccommodation(ArrayList<Accommodation> a, int l, int m , int r) {
+    private void mergeDining(ArrayList<Dining> a, int l, int m , int r) {
         // Find sizes of two subarrays to be merged
         int n1 = m - l + 1;
         int n2 = r - m;
 
         // Create temp arrays
-        ArrayList<Accommodation> a1 = new ArrayList<Accommodation>();
-        ArrayList<Accommodation> a2 = new ArrayList<Accommodation>();
+        ArrayList<Dining> a1 = new ArrayList<Dining>();
+        ArrayList<Dining> a2 = new ArrayList<Dining>();
 
         // Copy data to temp arrays
         for (int i = 0; i < n1; ++i)
@@ -175,7 +170,7 @@ public class AccommodationViewModel{
         }
     }
 
-    private void sortAccommodation(ArrayList<Accommodation> a, int l, int r)
+    private void sortDining(ArrayList<Dining> a, int l, int r)
     {
         if (l < r) {
 
@@ -183,12 +178,11 @@ public class AccommodationViewModel{
             int m = l + (r - l) / 2;
 
             // Sort first and second halves
-            sortAccommodation(a, l, m);
-            sortAccommodation(a, m + 1, r);
+            sortDining(a, l, m);
+            sortDining(a, m + 1, r);
 
             // Merge the sorted halves
-            mergeAccommodation(a, l, m, r);
+            mergeDining(a, l, m, r);
         }
     }
-
 }
