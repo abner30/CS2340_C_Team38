@@ -1,6 +1,5 @@
 package com.example.myproject.view.fragments;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -47,34 +46,61 @@ import android.widget.Toast;
 
 public class LogisticsFragment extends Fragment {
 
+    /**
+     * database reference to the full database
+     */
     private DatabaseReference database;
+
+    /**
+     * reference calls reference to instance of database
+     */
+    private DatabaseReference reference;
+
+    /**
+     * tripDatabase reference to the tripData from firebase for ownerID
+     */
     private DatabaseReference tripDatabase;
+    /**
+     * currentUserUid id of current user
+     */
     private String currentUserUid;
-    private String effectiveUserUid; // This will store either the current user's UID or the trip owner's UID
+    /**
+     * effectiveUserUid stores the current user ID of the trip owner
+     */
+    private String effectiveUserUid;
+    /**
+     * isContributor boolean for whether user is a contributor or not
+     */
     private boolean isContributor = false;
+    /**
+     * tripOwnerId stores the owner user ID
+     */
     private String tripOwnerId;
 
     /**
      * This method runs on create.
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null,
-     *                          this fragment is being re-constructed
-     * from a previous saved state as given here.
      *
-     * @return
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's UI
+     *                           should be attached to. The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null,
+     *                           this fragment is being re-constructed
+     *                           from a previous saved state as given here.
+     * @return view
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_logistics, container, false);
 
         // Initialize Firebase references
         currentUserUid = DatabaseManager.getInstance().getCurrentUser().getUid();
-        database = FirebaseDatabase.getInstance().getReference("tripData").child("contributors");
+        database = FirebaseDatabase.getInstance().getReference("tripData")
+                .child("contributors");
         tripDatabase = FirebaseDatabase.getInstance().getReference("tripData");
+        reference = FirebaseDatabase.getInstance().getReference();
 
         // First, determine if user is a contributor and get the trip owner's ID
         determineUserRole(() -> {
@@ -102,15 +128,9 @@ public class LogisticsFragment extends Fragment {
         return view;
     }
 
-    private interface UserRoleCallback {
-        void onComplete();
-    }
-
     private void determineUserRole(UserRoleCallback callback) {
         // First check if the user is a contributor to any trip
-        DatabaseManager.getInstance().getReference().child("users")
-                .child(currentUserUid)
-                .child("sharedTrips")
+        reference.child("users").child(currentUserUid) .child("sharedTrips")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -118,39 +138,45 @@ public class LogisticsFragment extends Fragment {
                             // User is a contributor to someone's trip
                             for (DataSnapshot tripOwner : snapshot.getChildren()) {
                                 tripOwnerId = tripOwner.getKey();
-                                effectiveUserUid = tripOwnerId; // Use trip owner's UID for database operations
+                                effectiveUserUid = tripOwnerId; // Use trip owner's UID for database
                                 isContributor = true;
                                 break;
                             }
                         } else {
                             // User is not a contributor, check if they're an owner
-                            tripDatabase.child("owner").addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot ownerSnapshot) {
-                                    if (ownerSnapshot.exists()) {
-                                        tripOwnerId = ownerSnapshot.getValue(String.class);
-                                    } else {
-                                        // If no owner is set, set current user as owner
-                                        tripOwnerId = currentUserUid;
-                                        tripDatabase.child("owner").setValue(currentUserUid);
+                            tripDatabase.child("owner").addListenerForSingleValueEvent(
+                                    new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot ownerSnapshot) {
+                                        if (ownerSnapshot.exists()) {
+                                            tripOwnerId = ownerSnapshot.getValue(String.class);
+                                        } else {
+                                            // If no owner is set, set current user as owner
+                                            tripOwnerId = currentUserUid;
+                                            tripDatabase.child("owner")
+                                                    .setValue(currentUserUid);
+                                        }
+                                        effectiveUserUid = tripOwnerId;
+                                        callback.onComplete();
                                     }
-                                    effectiveUserUid = tripOwnerId;
-                                    callback.onComplete();
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    Toast.makeText(getActivity(), "Error checking owner status: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                                    callback.onComplete();
-                                }
-                            });
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Toast.makeText(getActivity(),
+                                                "Error checking owner status: "
+                                                        + error.getMessage(),
+                                                Toast.LENGTH_SHORT).show();
+                                        callback.onComplete();
+                                    }
+                                });
                         }
                         callback.onComplete();
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(getActivity(), "Error checking contributor status: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Error checking contributor status: "
+                                + error.getMessage(), Toast.LENGTH_SHORT).show();
                         callback.onComplete();
                     }
                 });
@@ -161,8 +187,7 @@ public class LogisticsFragment extends Fragment {
         DestinationViewModel destinationViewModel = new DestinationViewModel();
         UserViewModel userViewModel = new UserViewModel();
 
-        DatabaseManager.getInstance().getReference().child("users")
-                .child(effectiveUserUid).child("duration")
+        reference.child("users").child(effectiveUserUid).child("duration")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -171,54 +196,61 @@ public class LogisticsFragment extends Fragment {
                             allocatedDays[0] = snapshot.getValue(Integer.class);
                         }
                         // Use effectiveUserUid instead of currentUserUid
-                        destinationViewModel.getDestinations(effectiveUserUid, new DestinationViewModel.DestinationsCallback() {
-                            @Override
-                            public void onCallback(ArrayList<Destination> destinations) {
-                                ArrayList<Destination> list = destinationViewModel.getRecentDestinations(destinations);
-                                ArrayList<PieEntry> entries = new ArrayList<>();
-                                for (Destination destination : list) {
-                                    String location = destination.getLocation();
-                                    Integer daysPlanned;
-                                    try {
-                                        daysPlanned = userViewModel.calculateDuration(destination.getStartDate(), destination.getEndDate());
-                                    } catch (ParseException e) {
-                                        daysPlanned = 0;
+                        destinationViewModel.getDestinations(effectiveUserUid,
+                                new DestinationViewModel.DestinationsCallback() {
+                                @Override
+                                public void onCallback(ArrayList<Destination> destinations) {
+                                    ArrayList<Destination> list = destinationViewModel.
+                                            getRecentDestinations(destinations);
+                                    ArrayList<PieEntry> entries = new ArrayList<>();
+                                    for (Destination destination : list) {
+                                        String location = destination.getLocation();
+                                        Integer daysPlanned;
+                                        try {
+                                            daysPlanned = userViewModel.calculateDuration(
+                                                    destination.getStartDate(),
+                                                    destination.getEndDate());
+                                        } catch (ParseException e) {
+                                            daysPlanned = 0;
+                                        }
+                                        if (allocatedDays[0] - daysPlanned >= 0
+                                                && daysPlanned > 0) {
+                                            allocatedDays[0] -= daysPlanned;
+                                            entries.add(new PieEntry(daysPlanned, location));
+                                        } else {
+                                            break;
+                                        }
                                     }
-                                    if (allocatedDays[0] - daysPlanned >= 0 && daysPlanned > 0) {
-                                        allocatedDays[0] -= daysPlanned;
-                                        entries.add(new PieEntry(daysPlanned, location));
-                                    } else {
-                                        break;
-                                    }
+                                    entries.add(new PieEntry(allocatedDays[0],
+                                            "Alloted days"));
+
+                                    PieDataSet dataSet = new PieDataSet(entries, " ");
+                                    PieData data = new PieData(dataSet);
+
+                                    dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+                                    data.setValueTextSize(14f);
+                                    dataSet.setValueTextColor(Color.BLACK);
+                                    dataSet.setValueTextSize(16f);
+                                    dataSet.setValueLinePart1OffsetPercentage(80f);
+                                    pieChart.setEntryLabelColor(Color.BLACK);
+                                    pieChart.getDescription().setEnabled(false);
+
+                                    // Outline the entire pie chart
+                                    dataSet.setSliceSpace(2f);
+                                    pieChart.setHoleColor(Color.WHITE);
+                                    pieChart.setTransparentCircleColor(Color.BLACK);
+                                    pieChart.setTransparentCircleAlpha(110);
+                                    pieChart.setTransparentCircleRadius(55f);
+                                    pieChart.setData(data);
+                                    pieChart.invalidate();
                                 }
-                                entries.add(new PieEntry(allocatedDays[0], "Alloted days"));
-
-                                PieDataSet dataSet = new PieDataSet(entries, " ");
-                                PieData data = new PieData(dataSet);
-
-                                dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-                                data.setValueTextSize(14f);
-                                dataSet.setValueTextColor(Color.BLACK);
-                                dataSet.setValueTextSize(16f);
-                                dataSet.setValueLinePart1OffsetPercentage(80f);
-                                pieChart.setEntryLabelColor(Color.BLACK);
-                                pieChart.getDescription().setEnabled(false); // Hide the description label
-
-                                // Outline the entire pie chart
-                                dataSet.setSliceSpace(2f); // Adds spacing between slices (for outline effect)
-                                pieChart.setHoleColor(Color.WHITE); // Set hole color (background color)
-                                pieChart.setTransparentCircleColor(Color.BLACK); // Set color of the transparent outline
-                                pieChart.setTransparentCircleAlpha(110); // Set transparency for the outline
-                                pieChart.setTransparentCircleRadius(55f); // Set radius of the outline
-                                pieChart.setData(data);
-                                pieChart.invalidate();
-                            }
-                        });
+                            });
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(getActivity(), "Error loading planned days", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Error loading planned days",
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -243,7 +275,8 @@ public class LogisticsFragment extends Fragment {
 
     private void showInviteDialog() {
         if (tripOwnerId == null || !tripOwnerId.equals(currentUserUid)) {
-            Toast.makeText(getActivity(), "Only the trip owner can invite users", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Only the trip owner can invite users",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -282,19 +315,19 @@ public class LogisticsFragment extends Fragment {
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(getActivity(), "Please enter a valid email address", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Please enter a valid email address",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (tripOwnerId == null || tripOwnerId.isEmpty()) {
-            Toast.makeText(getActivity(), "Error: Trip owner not found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Error: Trip owner not found",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
         // First, check if the user exists by email
-        DatabaseManager.getInstance().getReference().child("users")
-                .orderByChild("email")
-                .equalTo(email)
+        reference.child("users").orderByChild("email").equalTo(email)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -308,7 +341,8 @@ public class LogisticsFragment extends Fragment {
                         final String invitedUserUid = userSnapshot.getKey();
 
                         if (invitedUserUid == null) {
-                            Toast.makeText(getActivity(), "Error: Invalid user data", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Error: Invalid user data",
+                                    Toast.LENGTH_SHORT).show();
                             return;
                         }
 
@@ -316,9 +350,12 @@ public class LogisticsFragment extends Fragment {
                         database.orderByChild("uid").equalTo(invitedUserUid)
                                 .addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
-                                    public void onDataChange(@NonNull DataSnapshot contributorSnapshot) {
+                                    public void onDataChange(
+                                            @NonNull DataSnapshot contributorSnapshot) {
                                         if (contributorSnapshot.exists()) {
-                                            Toast.makeText(getActivity(), "This user is already a contributor", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getActivity(),
+                                                    "This user is already a contributor",
+                                                    Toast.LENGTH_LONG).show();
                                             return;
                                         }
 
@@ -334,33 +371,37 @@ public class LogisticsFragment extends Fragment {
                                         // Generate a unique key for this contributor
                                         String contributorKey = database.push().getKey();
                                         if (contributorKey == null) {
-                                            Toast.makeText(getActivity(), "Error generating contributor key", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getActivity(),
+                                                    "Error generating contributor key",
+                                                    Toast.LENGTH_SHORT).show();
                                             return;
                                         }
 
                                         database.child(contributorKey).setValue(userMap)
                                                 .addOnSuccessListener(aVoid -> {
-                                                    // Add this trip to the invited user's shared trips
-                                                    DatabaseManager.getInstance().getReference()
-                                                            .child("users")
+                                                    // Add this trip to the invited user's trips
+                                                    reference.child("users")
                                                             .child(invitedUserUid)
                                                             .child("sharedTrips")
-                                                            .child(effectiveUserUid) // Use effectiveUserUid instead of tripOwnerId
+                                                            .child(effectiveUserUid)
                                                             .setValue(true)
                                                             .addOnSuccessListener(aVoid2 -> {
                                                                 Toast.makeText(getActivity(),
-                                                                        "User " + email + " invited successfully!",
+                                                                        "User " + email
+                                                                                + " invited"
+                                                                                + "successfully!",
                                                                         Toast.LENGTH_SHORT).show();
                                                             })
                                                             .addOnFailureListener(e -> {
                                                                 Toast.makeText(getActivity(),
-                                                                        "Failed to update user's shared trips: " + e.getMessage(),
+                                                                        "Failed updating trip",
                                                                         Toast.LENGTH_SHORT).show();
                                                             });
                                                 })
                                                 .addOnFailureListener(e -> {
                                                     Toast.makeText(getActivity(),
-                                                            "Failed to invite user: " + e.getMessage(),
+                                                            "Failed to invite user: "
+                                                                    + e.getMessage(),
                                                             Toast.LENGTH_SHORT).show();
                                                 });
                                     }
@@ -368,7 +409,8 @@ public class LogisticsFragment extends Fragment {
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) {
                                         Toast.makeText(getActivity(),
-                                                "Error checking existing contributors: " + error.getMessage(),
+                                                "Error checking existing contributors: "
+                                                        + error.getMessage(),
                                                 Toast.LENGTH_SHORT).show();
                                     }
                                 });
@@ -386,8 +428,14 @@ public class LogisticsFragment extends Fragment {
     private void showInviteErrorDialog(String email) {
         new AlertDialog.Builder(getActivity())
                 .setTitle("User Not Found")
-                .setMessage("No user account found for " + email + ". Please make sure the email address is correct and the user has registered an account.")
+                .setMessage("No user account found for " + email
+                        + ". Please make sure the email address is correct "
+                        + "and the user has registered an account.")
                 .setPositiveButton("OK", null)
                 .show();
+    }
+
+    private interface UserRoleCallback {
+        void onComplete();
     }
 }

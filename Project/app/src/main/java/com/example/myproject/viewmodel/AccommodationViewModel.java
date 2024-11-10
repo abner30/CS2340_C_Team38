@@ -4,28 +4,18 @@ import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.lifecycle.ViewModel;
 
 import com.example.myproject.database.DatabaseManager;
 import com.example.myproject.model.Accommodation;
-import com.example.myproject.model.Destination;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
-public class AccommodationViewModel{
+public class AccommodationViewModel {
     /**
      * reference to database. Initiates once.
      */
@@ -37,14 +27,8 @@ public class AccommodationViewModel{
     public AccommodationViewModel() {
     }
 
-    public interface CompletionCallback {
-        /**
-         * Called when the operation is complete.
-         */
-        void onComplete();
-    }
-
-    public void addAccommodation(Accommodation accommodation, String uid, AccommodationViewModel.CompletionCallback callback) {
+    public void addAccommodation(Accommodation accommodation, String uid,
+                                 AccommodationViewModel.CompletionCallback callback) {
         database.child("accommodations").child("counter")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -64,7 +48,7 @@ public class AccommodationViewModel{
                         }
                         HashMap<String, Object> map = new HashMap<>();
                         map.put("location", accommodation.getLocation());
-                        map.put("check-in",accommodation.getCheckIn());
+                        map.put("check-in", accommodation.getCheckIn());
                         map.put("check-out", accommodation.getCheckOut());
                         map.put("type", accommodation.getType());
                         map.put("rooms", accommodation.getRooms());
@@ -72,9 +56,7 @@ public class AccommodationViewModel{
                         database.child("accommodations").child(lodging).setValue(map)
                                 .addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
-                                        callback.onComplete(); // Call onComplete when the data is saved
-                                    } else {
-                                        // Handle failure, e.g., log error or show a message to the user
+                                        callback.onComplete();
                                     }
                                 });
                     }
@@ -84,55 +66,46 @@ public class AccommodationViewModel{
                 });
     }
 
-    /**
-     * Define a callback interface for asynchronous data retrieval
-     */
-    public interface AccommodationsCallback {
-        /**
-         * Callback method to handle retrieved destinations.
-         *
-         * @param accommodations the list of retrieved Destination objects
-         */
-        void onCallback(ArrayList<Accommodation> accommodations);
-    }
-
-    public void getAccommodations(String uid, AccommodationViewModel.AccommodationsCallback callback) {
+    public void getAccommodations(String uid,
+                                  AccommodationViewModel.AccommodationsCallback callback) {
         ArrayList<Accommodation> list = new ArrayList<>();
-        database.child("accommodations").addListenerForSingleValueEvent(new ValueEventListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    String user = userSnapshot.child("user").getValue(String.class);
-                    if (user != null && user.equals(uid)) {
-                        String location = userSnapshot.child("location").getValue(String.class);
-                        String checkIn = userSnapshot.child("check-in").getValue(String.class);
-                        String checkOut = userSnapshot.child("check-out").getValue(String.class);
-                        String type = userSnapshot.child("type").getValue(String.class);
-                        Integer rooms = userSnapshot.child("rooms").getValue(Integer.class);
-                        list.add(new Accommodation(checkIn, checkOut, location, rooms, type));
+        database.child("accommodations").addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                        String user = userSnapshot.child("user").getValue(String.class);
+                        if (user != null && user.equals(uid)) {
+                            String location = userSnapshot.child("location").getValue(String.class);
+                            String checkIn = userSnapshot.child("check-in").getValue(String.class);
+                            String checkOut = userSnapshot.child("check-out").
+                                    getValue(String.class);
+                            String type = userSnapshot.child("type").getValue(String.class);
+                            Integer rooms = userSnapshot.child("rooms").getValue(Integer.class);
+                            list.add(new Accommodation(checkIn, checkOut, location, rooms, type));
+                        }
                     }
+
+                    // Only sort if the list is not empty
+                    if (!list.isEmpty()) {
+                        sortAccommodation(list, 0, list.size() - 1);
+                    }
+
+                    // Check if each accommodation is expired
+                    for (Accommodation a : list) {
+                        a.setExpired();
+                    }
+
+                    // Pass the filled list to the callback once data retrieval is complete
+                    callback.onCallback(list);
                 }
 
-                // Only sort if the list is not empty
-                if (!list.isEmpty()) {
-                    sortAccommodation(list, 0, list.size() - 1);
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // Handle error if necessary
                 }
-
-                // Check if each accommodation is expired
-                for (Accommodation a : list) {
-                    a.setExpired();
-                }
-
-                // Pass the filled list to the callback once data retrieval is complete
-                callback.onCallback(list);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Handle error if necessary
-            }
-        });
+            });
     }
 
     private void mergeAccommodation(ArrayList<Accommodation> a, int l, int m, int r) {
@@ -201,5 +174,21 @@ public class AccommodationViewModel{
             // Merge the sorted halves
             mergeAccommodation(a, l, m, r);
         }
+    }
+
+    /**
+     * Define a callback interface for asynchronous data retrieval
+     */
+    public interface AccommodationsCallback {
+        /**
+         * Callback method to handle retrieved destinations.
+         *
+         * @param accommodations the list of retrieved Destination objects
+         */
+        void onCallback(ArrayList<Accommodation> accommodations);
+    }
+
+    public interface CompletionCallback {
+        void onComplete();
     }
 }
