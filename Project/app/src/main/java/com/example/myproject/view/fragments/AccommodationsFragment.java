@@ -145,16 +145,18 @@ public class AccommodationsFragment extends Fragment {
             @Override
             public void onComplete() {
                 Toast.makeText(getContext(), "Accommodation added successfully", Toast.LENGTH_SHORT).show();
-                populateTable();
+                // Only add the newly created accommodation to the table
+                addRowToTable(accommodation);
             }
         });
     }
 
 
+
     public void populateTable() {
         String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
         LinearLayout accommodationsList = getView().findViewById(R.id.accommodations_list);
-        accommodationsList.removeAllViews();
+        //accommodationsList.removeAllViews();
 
         accommodationViewModel.getAccommodations(uid, new AccommodationViewModel.AccommodationsCallback() {
             @Override
