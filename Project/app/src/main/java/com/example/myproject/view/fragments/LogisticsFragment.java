@@ -42,6 +42,7 @@ import java.util.Map;
 import android.app.AlertDialog;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class LogisticsFragment extends Fragment {
@@ -116,6 +117,8 @@ public class LogisticsFragment extends Fragment {
             Button inviteButton = view.findViewById(R.id.btn_invite_users);
             inviteButton.setVisibility(View.GONE); // Hide by default
 
+            Button noteButton = view.findViewById(R.id.btn_add_note);
+
             if (tripOwnerId != null && tripOwnerId.equals(currentUserUid)) {
                 inviteButton.setVisibility(View.VISIBLE);
             }
@@ -123,7 +126,11 @@ public class LogisticsFragment extends Fragment {
             Button logoutButton = view.findViewById(R.id.btn_logout);
             inviteButton.setOnClickListener(v -> showInviteDialog());
             logoutButton.setOnClickListener(v -> showLogoutDialog());
+            noteButton.setOnClickListener(v -> showNotesDialog());
         });
+
+        loadNotes(view);
+        loadContributors(view);
 
         return view;
     }
@@ -292,23 +299,18 @@ public class LogisticsFragment extends Fragment {
         emailInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         layout.addView(emailInput);
 
-        final EditText noteInput = new EditText(getActivity());
-        noteInput.setHint("Note (optional)");
-        layout.addView(noteInput);
-
         builder.setView(layout);
 
         builder.setPositiveButton("Invite", (dialog, which) -> {
             String email = emailInput.getText().toString().trim();
-            String note = noteInput.getText().toString().trim();
-            inviteUser(email, note);
+            inviteUser(email);
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
         builder.show();
     }
 
-    private void inviteUser(String email, String note) {
+    private void inviteUser(String email) {
         if (email.isEmpty()) {
             Toast.makeText(getActivity(), "Email cannot be empty", Toast.LENGTH_SHORT).show();
             return;
@@ -362,7 +364,6 @@ public class LogisticsFragment extends Fragment {
                                         // Add the user as a contributor
                                         Map<String, Object> userMap = new HashMap<>();
                                         userMap.put("email", email);
-                                        userMap.put("notes", note);
                                         userMap.put("uid", invitedUserUid);
                                         userMap.put("canEdit", true);
                                         userMap.put("invitedAt", ServerValue.TIMESTAMP);
@@ -425,6 +426,54 @@ public class LogisticsFragment extends Fragment {
                 });
     }
 
+    private void loadContributors(View view) {
+        // Get the layout where the contributors will be displayed
+        LinearLayout contributorsListLayout = view.findViewById(R.id.contributors_list);
+        contributorsListLayout.removeAllViews();  // Clear any previous data
+
+        // Retrieve the contributors list from Firebase
+        database.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Iterate through the list of contributors
+                    for (DataSnapshot contributorSnapshot : snapshot.getChildren()) {
+                        // Retrieve contributor's data
+                        String contributorEmail = contributorSnapshot.child("email").getValue(String.class);
+                        String contributorUid = contributorSnapshot.child("uid").getValue(String.class);
+
+                        if (contributorEmail != null && contributorUid != null) {
+                            // Create a TextView to display the contributor's email
+                            TextView contributorView = new TextView(getActivity());
+                            contributorView.setText(contributorEmail);
+                            contributorView.setTextSize(14f);
+                            contributorView.setPadding(10, 10, 10, 10);
+                            contributorView.setTextColor(Color.BLACK);
+
+                            // Add the contributor's TextView to the layout
+                            contributorsListLayout.addView(contributorView);
+                        }
+                    }
+                } else {
+                    // If no contributors found, show a message
+                    TextView noContributorsMessage = new TextView(getActivity());
+                    noContributorsMessage.setText("No contributors found.");
+                    noContributorsMessage.setTextSize(14f);
+                    noContributorsMessage.setPadding(10, 10, 10, 10);
+                    noContributorsMessage.setTextColor(Color.RED);
+                    contributorsListLayout.addView(noContributorsMessage);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(),
+                        "Failed to load contributors: " + error.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void showInviteErrorDialog(String email) {
         new AlertDialog.Builder(getActivity())
                 .setTitle("User Not Found")
@@ -433,6 +482,111 @@ public class LogisticsFragment extends Fragment {
                         + "and the user has registered an account.")
                 .setPositiveButton("OK", null)
                 .show();
+    }
+
+    private void showNotesDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Add a Note");
+
+        LinearLayout layout = new LinearLayout(getActivity());
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(20, 10, 20, 10);
+
+        final EditText noteInput = new EditText(getActivity());
+        noteInput.setHint("Note");
+        layout.addView(noteInput);
+
+        builder.setView(layout);
+
+        builder.setPositiveButton("Add Note", (dialog, which) -> {
+            String note = noteInput.getText().toString().trim();
+            addNote(note);
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+        builder.show();
+    }
+
+    private void addNote(String note) {
+        if (note.isEmpty()) {
+            Toast.makeText(getActivity(), "Note cannot be empty", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Create a unique key for each note entry
+        String noteKey = reference.child("tripData").child("notes").push().getKey();
+        if (noteKey == null) {
+            Toast.makeText(getActivity(), "Error adding note", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Prepare note data with note text and user ID
+        Map<String, Object> noteData = new HashMap<>();
+        noteData.put("noteText", note);
+        noteData.put("userId", currentUserUid); // Store the ID of the user who added the note
+        noteData.put("timestamp", ServerValue.TIMESTAMP); // Optionally add a timestamp for sorting
+
+        // Save note data under the generated key in Firebase
+        reference.child("tripData").child("notes").child(noteKey).setValue(noteData)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(getActivity(), "Note added successfully", Toast.LENGTH_SHORT).show();
+                    loadNotes(getView()); // Refresh the notes list after adding a new note
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getActivity(), "Failed to add note: " + e.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void loadNotes(View view) {
+        LinearLayout notesListLayout = view.findViewById(R.id.notes_list);
+        notesListLayout.removeAllViews();
+
+        reference.child("tripData").child("notes")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot noteSnapshot : snapshot.getChildren()) {
+                            String noteText = noteSnapshot.child("noteText").getValue(String.class);
+                            String userId = noteSnapshot.child("userId").getValue(String.class);
+
+                            // Retrieve the email of the user who wrote the note
+                            reference.child("users").child(userId).child("email")
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                                            String userEmail = userSnapshot.getValue(String.class);
+                                            if (userEmail == null) userEmail = "Owner";
+
+                                            // Create a TextView to display each note with the user's email
+                                            TextView noteView = new TextView(getActivity());
+                                            noteView.setText(userEmail + ": " + noteText);
+                                            noteView.setTextSize(14f);
+                                            noteView.setPadding(10, 10, 10, 10);
+                                            noteView.setTextColor(Color.BLACK);
+
+                                            // Add the note to the notes list layout
+                                            notesListLayout.addView(noteView);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            Toast.makeText(getActivity(),
+                                                    "Failed to load user email: " + error.getMessage(),
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(getActivity(),
+                                "Failed to load notes: " + error.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private interface UserRoleCallback {
