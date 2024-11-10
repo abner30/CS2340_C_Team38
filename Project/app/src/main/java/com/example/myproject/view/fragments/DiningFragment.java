@@ -24,6 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class DiningFragment extends Fragment {
@@ -55,6 +56,8 @@ public class DiningFragment extends Fragment {
                              final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dining, container, false);
         currentUserUid = DatabaseManager.getInstance().getCurrentUser().getUid();
+        database = FirebaseDatabase.getInstance().getReference("tripData").child("contributors");
+        tripDatabase = FirebaseDatabase.getInstance().getReference("tripData");
 
         // Set up invite
         //determineUserRole(() -> {
