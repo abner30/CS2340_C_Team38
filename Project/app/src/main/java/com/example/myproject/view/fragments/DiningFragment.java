@@ -8,14 +8,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
 import com.example.myproject.R;
 import com.example.myproject.database.DatabaseManager;
+import com.example.myproject.model.Destination;
+import com.example.myproject.viewmodel.DestinationViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+
 public class DiningFragment extends Fragment {
+
+    //DiningViewModel diningViewModel = new DiningViewModel();
 
     /**
      * This method runs on create.
@@ -76,4 +85,44 @@ public class DiningFragment extends Fragment {
 
         builder.show();
     }
+//
+//    public void populateTable() {
+//        String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
+//        diningViewModel.getDining(uid, new DiningViewModel.DiningCallback() {
+//            @Override
+//            public void onCallback(ArrayList<Destination> destinations) {
+//                ArrayList<Dining> list = diningViewModel.getRecentDining(destinations);
+//                tableLayout.removeAllViews();
+//                for (Dining dining : list) {
+//                    String location = dining.getLocation();
+//                    String daysPlanned;
+//                    try {
+//                        daysPlanned = String.valueOf(userViewModel.calculateDuration(dining.getStartDate(), dining.getEndDate()));
+//                    } catch (ParseException e) {
+//                        daysPlanned = "0";
+//                    }
+//                    daysPlanned += " days planned";
+//                    addRowToTable(location, daysPlanned);
+//                }
+//            }
+//        });
+//    }
+//
+//    private void addRowToTable(String time, String location, String website) {
+//        TableRow row = new TableRow(getContext());
+//        TextView destinationText = new TextView(getContext());
+//        TextView daysText = new TextView(getContext());
+//
+//        destinationText.setText(destination);
+//        daysText.setText(daysPlanned);
+//
+//        // Styling the row
+//        destinationText.setPadding(8, 8, 8, 8);
+//        daysText.setPadding(8, 8, 8, 8);
+//
+//        row.addView(destinationText);
+//        row.addView(daysText);
+//
+//        tableLayout.addView(row);
+//    }
 }
