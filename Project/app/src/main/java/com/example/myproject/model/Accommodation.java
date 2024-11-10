@@ -82,7 +82,7 @@ public class Accommodation {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-        ZoneId zonedId = ZoneId.of( "America/Georgia" );
+        ZoneId zonedId = ZoneId.of( "-05:00" );
         LocalDate today = LocalDate.now( zonedId );
         Date secondDate = null;
         try {

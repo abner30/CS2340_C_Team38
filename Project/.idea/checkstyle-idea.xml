@@ -10,7 +10,7 @@
       <list>
         <ConfigurationLocation id="bundled-sun-checks" type="BUNDLED" scope="All" description="Sun Checks">(bundled)</ConfigurationLocation>
         <ConfigurationLocation id="bundled-google-checks" type="BUNDLED" scope="All" description="Google Checks">(bundled)</ConfigurationLocation>
-        <ConfigurationLocation id="ce355413-4910-4af2-b100-f917263f55dc" type="LOCAL_FILE" scope="All" description="CS32">$PROJECT_DIR$/../../../CS 1332/Homework/CS1332-checkstyle.xml</ConfigurationLocation>
+        <ConfigurationLocation id="d2f2872c-5d12-4337-b45d-45288db0f29d" type="LOCAL_FILE" scope="All" description="CS2340">$PROJECT_DIR$/../../checkstyle-idea.xml</ConfigurationLocation>
       </list>
     </option>
   </component>
