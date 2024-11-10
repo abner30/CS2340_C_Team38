@@ -12,6 +12,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.myproject.R;
@@ -20,6 +21,7 @@ import com.example.myproject.model.Destination;
 import com.example.myproject.model.User;
 import com.example.myproject.viewmodel.DestinationViewModel;
 import com.example.myproject.viewmodel.UserViewModel;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -48,6 +50,33 @@ public class DestinationFragment extends Fragment {
     private TableLayout tableLayout;
 
     /**
+     * database reference to the full database
+     */
+    private DatabaseReference database;
+
+    /**
+     * tripDatabase reference to the tripData from firebase for ownerID
+     */
+    private DatabaseReference tripDatabase;
+    /**
+     * currentUserUid id of current user
+     */
+    private String currentUserUid;
+    /**
+     * effectiveUserUid stores the current user ID of the trip owner
+     */
+    private String effectiveUserUid;
+    /**
+     * isContributor boolean for whether user is a contributor or not
+     */
+    private boolean isContributor = false;
+    /**
+     * tripOwnerId stores the owner user ID
+     */
+
+    private String tripOwnerId;
+
+    /**
      * Inflates the layout for this fragment.
      *
      * @param inflater The LayoutInflater object that can be used to inflate
@@ -63,6 +92,10 @@ public class DestinationFragment extends Fragment {
                              final ViewGroup container,
                              final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_destination, container, false);
+        currentUserUid = DatabaseManager.getInstance().getCurrentUser().getUid();
+        database = FirebaseDatabase.getInstance().getReference("tripData")
+                .child("contributors");
+        tripDatabase = FirebaseDatabase.getInstance().getReference("tripData");
         return view;
     }
 
@@ -76,9 +109,11 @@ public class DestinationFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        initializeViews();
-        setupClickListeners();
-        populateTable();
+        determineUserRole(() -> {
+            initializeViews();
+            setupClickListeners();
+            populateTable();
+        });
     }
 
     /**
@@ -89,7 +124,25 @@ public class DestinationFragment extends Fragment {
         vacationFormLayout = getView().findViewById(R.id.vacationFormLayout);
         resultCard = getView().findViewById(R.id.resultCard);
         buttonLogTravel = getView().findViewById(R.id.buttonLogTravel);
+        if (tripOwnerId != null && tripOwnerId.equals(currentUserUid)) {
+            buttonLogTravel.setVisibility(View.VISIBLE);
+        } else if (isContributor) {
+            // Show buttons for contributors but not the trip owner
+            buttonLogTravel.setVisibility(View.VISIBLE);
+        } else {
+            // Hide buttons for non-contributors
+            buttonLogTravel.setVisibility(View.GONE);
+        }
         buttonCalculateVacationTime = getView().findViewById(R.id.buttonCalculateVacationTime);
+        if (tripOwnerId != null && tripOwnerId.equals(currentUserUid)) {
+            buttonCalculateVacationTime.setVisibility(View.VISIBLE);
+        } else if (isContributor) {
+            // Show buttons for contributors but not the trip owner
+            buttonCalculateVacationTime.setVisibility(View.VISIBLE);
+        } else {
+            // Hide buttons for non-contributors
+            buttonCalculateVacationTime.setVisibility(View.GONE);
+        }
         buttonReset = getView().findViewById(R.id.buttonReset);
         editTextTravelLocation = getView().findViewById(R.id.editTextTravelLocation);
         editTextStartDate = getView().findViewById(R.id.editTextStartDate);
@@ -103,6 +156,64 @@ public class DestinationFragment extends Fragment {
         resultDays = getView().findViewById(R.id.resultDays);
         tableLayout = getView().findViewById(R.id.tableLayout);
         // New table layout reference
+    }
+
+    private void determineUserRole(DestinationFragment.UserRoleCallback callback) {
+        // First check if the user is a contributor to any trip
+        DatabaseManager.getInstance().getReference().child("users")
+                .child(currentUserUid)
+                .child("sharedTrips")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            // User is a contributor to someone's trip
+                            for (DataSnapshot tripOwner : snapshot.getChildren()) {
+                                tripOwnerId = tripOwner.getKey();
+                                effectiveUserUid = tripOwnerId; // Use trip owner's UID for database
+                                isContributor = true;
+                                break;
+                            }
+                        } else {
+                            // User is not a contributor, check if they're an owner
+                            tripDatabase.child("owner").addListenerForSingleValueEvent(
+                                    new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot ownerSnapshot) {
+                                            if (ownerSnapshot.exists()) {
+                                                tripOwnerId = ownerSnapshot.getValue(String.class);
+                                            } else {
+                                                // If no owner is set, set current user as owner
+                                                tripOwnerId = currentUserUid;
+                                                tripDatabase.child("owner").setValue(currentUserUid);
+                                            }
+                                            effectiveUserUid = tripOwnerId;
+                                            callback.onComplete();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            Toast.makeText(getActivity(), "Error checking owner "
+                                                            + "status: " + error.getMessage(),
+                                                    Toast.LENGTH_SHORT).show();
+                                            callback.onComplete();
+                                        }
+                                    });
+                        }
+                        callback.onComplete();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(getActivity(), "Error checking contributor status: "
+                                + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        callback.onComplete();
+                    }
+                });
+    }
+
+    private interface UserRoleCallback {
+        void onComplete();
     }
 
     /**

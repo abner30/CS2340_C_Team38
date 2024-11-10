@@ -84,10 +84,18 @@ public class AccommodationsFragment extends Fragment {
         database = FirebaseDatabase.getInstance().getReference("tripData").child("contributors");
         tripDatabase = FirebaseDatabase.getInstance().getReference("tripData");
 
-        // Set up invite
-        FloatingActionButton accommodationButton = view.findViewById(R.id.btn_add_accommodation);
 
         determineUserRole(() -> {
+            FloatingActionButton accommodationButton = view.findViewById(R.id.btn_add_accommodation);
+            if (tripOwnerId != null && tripOwnerId.equals(currentUserUid)) {
+                accommodationButton.setVisibility(View.VISIBLE);
+            } else if (isContributor) {
+                // Show buttons for contributors but not the trip owner
+                accommodationButton.setVisibility(View.VISIBLE);
+            } else {
+                // Hide buttons for non-contributors
+                accommodationButton.setVisibility(View.GONE);
+            }
             accommodationButton.setOnClickListener(v -> showAccommodationDialog());
         });
 

@@ -118,10 +118,21 @@ public class LogisticsFragment extends Fragment {
             inviteButton.setVisibility(View.GONE); // Hide by default
 
             Button noteButton = view.findViewById(R.id.btn_add_note);
+            noteButton.setVisibility(View.GONE); // Hide by default
 
             if (tripOwnerId != null && tripOwnerId.equals(currentUserUid)) {
                 inviteButton.setVisibility(View.VISIBLE);
+                noteButton.setVisibility(View.VISIBLE); // Hide by default
+            } else if (isContributor) {
+                // Show buttons for contributors but not the trip owner
+                inviteButton.setVisibility(View.GONE);
+                noteButton.setVisibility(View.VISIBLE);
+            } else {
+                // Hide buttons for non-contributors
+                inviteButton.setVisibility(View.GONE);
+                noteButton.setVisibility(View.GONE);
             }
+
 
             Button logoutButton = view.findViewById(R.id.btn_logout);
             inviteButton.setOnClickListener(v -> showInviteDialog());
