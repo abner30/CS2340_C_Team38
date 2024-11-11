@@ -94,7 +94,7 @@ public class DatabaseManager {
      *
      * @param email    The new user's email address.
      * @param password The new user's password.
-     * @param listener An OnCompleteListener to handle success or failure of the registration operation.
+     * @param listener An OnCompleteListener to handle success/failure of the registration operation
      */
     public void createUser(String email, String password, OnCompleteListener<AuthResult> listener) {
         firebaseAuth.createUserWithEmailAndPassword(email, password)

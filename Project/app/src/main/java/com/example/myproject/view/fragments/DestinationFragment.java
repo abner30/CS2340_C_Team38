@@ -12,12 +12,12 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.myproject.R;
 import com.example.myproject.database.DatabaseManager;
 import com.example.myproject.model.Destination;
-import com.example.myproject.model.User;
 import com.example.myproject.viewmodel.DestinationViewModel;
 import com.example.myproject.viewmodel.UserViewModel;
 import com.google.firebase.database.DataSnapshot;
@@ -36,16 +36,52 @@ import java.util.ArrayList;
  * retrieve travel data.
  */
 public class DestinationFragment extends Fragment {
-    UserViewModel userViewModel = new UserViewModel();
-    DestinationViewModel destinationViewModel = new DestinationViewModel();
-    private LinearLayout formLayout, vacationFormLayout, resultCard;
-    private Button buttonLogTravel, buttonCalculateVacationTime, buttonReset;
-    private EditText editTextTravelLocation, editTextStartDate, editTextStopDate;
-    private Button buttonCancel, buttonSubmit;
-    private EditText editTextVacationStartDate, editTextVacationEndDate, editTextDuration;
+    private UserViewModel userViewModel = new UserViewModel();
+    private DestinationViewModel destinationViewModel = new DestinationViewModel();
+    private LinearLayout formLayout;
+    private LinearLayout vacationFormLayout;
+    private LinearLayout resultCard;
+    private Button buttonLogTravel;
+    private Button buttonCalculateVacationTime;
+    private Button buttonReset;
+    private EditText editTextTravelLocation;
+    private EditText editTextStartDate;
+    private EditText editTextStopDate;
+    private Button buttonCancel;
+    private Button buttonSubmit;
+    private EditText editTextVacationStartDate;
+    private EditText editTextVacationEndDate;
+    private EditText editTextDuration;
     private Button buttonVacationSubmit;
     private TextView resultDays;
     private TableLayout tableLayout;
+
+    /**
+     * database reference to the full database
+     */
+    private DatabaseReference database;
+
+    /**
+     * tripDatabase reference to the tripData from firebase for ownerID
+     */
+    private DatabaseReference tripDatabase;
+    /**
+     * currentUserUid id of current user
+     */
+    private String currentUserUid;
+    /**
+     * effectiveUserUid stores the current user ID of the trip owner
+     */
+    private String effectiveUserUid;
+    /**
+     * isContributor boolean for whether user is a contributor or not
+     */
+    private boolean isContributor = false;
+    /**
+     * tripOwnerId stores the owner user ID
+     */
+
+    private String tripOwnerId;
 
     /**
      * Inflates the layout for this fragment.
@@ -63,6 +99,10 @@ public class DestinationFragment extends Fragment {
                              final ViewGroup container,
                              final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_destination, container, false);
+        currentUserUid = DatabaseManager.getInstance().getCurrentUser().getUid();
+        database = FirebaseDatabase.getInstance().getReference("tripData")
+                .child("contributors");
+        tripDatabase = FirebaseDatabase.getInstance().getReference("tripData");
         return view;
     }
 
@@ -76,9 +116,11 @@ public class DestinationFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        initializeViews();
-        setupClickListeners();
-        populateTable();
+        determineUserRole(() -> {
+            initializeViews();
+            setupClickListeners();
+            populateTable();
+        });
     }
 
     /**
@@ -89,7 +131,25 @@ public class DestinationFragment extends Fragment {
         vacationFormLayout = getView().findViewById(R.id.vacationFormLayout);
         resultCard = getView().findViewById(R.id.resultCard);
         buttonLogTravel = getView().findViewById(R.id.buttonLogTravel);
+        if (tripOwnerId != null && tripOwnerId.equals(currentUserUid)) {
+            buttonLogTravel.setVisibility(View.VISIBLE);
+        } else if (isContributor) {
+            // Show buttons for contributors but not the trip owner
+            buttonLogTravel.setVisibility(View.VISIBLE);
+        } else {
+            // Hide buttons for non-contributors
+            buttonLogTravel.setVisibility(View.GONE);
+        }
         buttonCalculateVacationTime = getView().findViewById(R.id.buttonCalculateVacationTime);
+        if (tripOwnerId != null && tripOwnerId.equals(currentUserUid)) {
+            buttonCalculateVacationTime.setVisibility(View.VISIBLE);
+        } else if (isContributor) {
+            // Show buttons for contributors but not the trip owner
+            buttonCalculateVacationTime.setVisibility(View.VISIBLE);
+        } else {
+            // Hide buttons for non-contributors
+            buttonCalculateVacationTime.setVisibility(View.GONE);
+        }
         buttonReset = getView().findViewById(R.id.buttonReset);
         editTextTravelLocation = getView().findViewById(R.id.editTextTravelLocation);
         editTextStartDate = getView().findViewById(R.id.editTextStartDate);
@@ -105,6 +165,61 @@ public class DestinationFragment extends Fragment {
         // New table layout reference
     }
 
+    private void determineUserRole(DestinationFragment.UserRoleCallback callback) {
+        // First check if the user is a contributor to any trip
+        DatabaseManager.getInstance().getReference().child("users")
+                .child(currentUserUid)
+                .child("sharedTrips")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            // User is a contributor to someone's trip
+                            for (DataSnapshot tripOwner : snapshot.getChildren()) {
+                                tripOwnerId = tripOwner.getKey();
+                                effectiveUserUid = tripOwnerId; // Use trip owner's UID for database
+                                isContributor = true;
+                                break;
+                            }
+                        } else {
+                            // User is not a contributor, check if they're an owner
+                            tripDatabase.child("owner").addListenerForSingleValueEvent(
+                                    new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(
+                                                @NonNull DataSnapshot ownerSnapshot) {
+                                            if (ownerSnapshot.exists()) {
+                                                tripOwnerId = ownerSnapshot.getValue(String.class);
+                                            } else {
+                                                // If no owner is set, set current user as owner
+                                                tripOwnerId = currentUserUid;
+                                                tripDatabase.child("owner").
+                                                        setValue(currentUserUid);
+                                            }
+                                            effectiveUserUid = tripOwnerId;
+                                            callback.onComplete();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            Toast.makeText(getActivity(), "Error checking owner "
+                                                            + "status: " + error.getMessage(),
+                                                    Toast.LENGTH_SHORT).show();
+                                            callback.onComplete();
+                                        }
+                                    });
+                        }
+                        callback.onComplete();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(getActivity(), "Error checking contributor status: "
+                                + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        callback.onComplete();
+                    }
+                });
+    }
     /**
      * Sets up click listeners for various buttons to perform actions
      * like logging travel, calculating vacation time, submitting and
@@ -163,7 +278,7 @@ public class DestinationFragment extends Fragment {
             nullCount++;
         }
         int duration;
-        if (durationInput != null && !durationInput.trim().equals("")){
+        if (durationInput != null && !durationInput.trim().equals("")) {
             duration = Integer.valueOf(durationInput);
         } else {
             duration = 0;
@@ -193,7 +308,8 @@ public class DestinationFragment extends Fragment {
                 resultCard.setVisibility(View.VISIBLE);
 
             } catch (ParseException e) {
-                Toast.makeText(getContext(), "Invalid date format. Use MM/dd/yyyy.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Invalid date format. Use MM/dd/yyyy.",
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -216,7 +332,8 @@ public class DestinationFragment extends Fragment {
         String location = editTextTravelLocation.getText().toString();
         Destination destination = new Destination(location, startDate, endDate, 0);
         destinationViewModel.addDestination(destination,
-                DatabaseManager.getInstance().getCurrentUser().getUid(), new DestinationViewModel.CompletionCallback() {
+                DatabaseManager.getInstance().getCurrentUser().getUid(),
+                new DestinationViewModel.CompletionCallback() {
                     @Override
                     public void onComplete() {
                         populateTable(); // Populate the table only after data is written
@@ -236,14 +353,16 @@ public class DestinationFragment extends Fragment {
         destinationViewModel.getDestinations(uid, new DestinationViewModel.DestinationsCallback() {
             @Override
             public void onCallback(ArrayList<Destination> destinations) {
-                ArrayList<Destination> list = destinationViewModel.getRecentDestinations(destinations);
+                ArrayList<Destination> list = destinationViewModel.
+                        getRecentDestinations(destinations);
                 tableLayout.removeAllViews();
                 for (Destination destination: list) {
                     String location = destination.getLocation();
                     String daysPlanned;
                     try {
-                        daysPlanned= String.valueOf(userViewModel.calculateDuration(destination.getStartDate(), destination.getEndDate()));
-                    } catch (ParseException e){
+                        daysPlanned = String.valueOf(userViewModel.calculateDuration(
+                                destination.getStartDate(), destination.getEndDate()));
+                    } catch (ParseException e) {
                         daysPlanned = "0";
                     }
                     daysPlanned += " days planned";
@@ -275,5 +394,8 @@ public class DestinationFragment extends Fragment {
         row.addView(daysText);
 
         tableLayout.addView(row);
+    }
+    private interface UserRoleCallback {
+        void onComplete();
     }
 }

@@ -44,8 +44,11 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
     /**
-     * The method runs on create. It controls the whole activity.
-     * @param savedInstanceState the saved instance state
+     * The onCreate method is called when the activity is first created.
+     * It sets up the UI components, their actions, and handles user interactions
+     * for registration and switching to the login page.
+     *
+     * @param savedInstanceState The saved instance state, if available
      */
     @SuppressLint("WrongViewCast")
     @Override
