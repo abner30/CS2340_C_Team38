@@ -15,7 +15,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
@@ -29,13 +28,6 @@ public class DiningViewModel {
      * No args constructor.
      */
     public DiningViewModel() {
-    }
-
-    public interface CompletionCallback {
-        /**
-         * Called when the operation is complete.
-         */
-        void onComplete();
     }
 
     public void addDining(Dining dining, String uid, DiningViewModel.CompletionCallback callback) {
@@ -62,12 +54,10 @@ public class DiningViewModel {
                         map.put("time", dining.getTime());
                         map.put("date", dining.getDate());
                         map.put("user", uid);
-                        database.child("accommodations").child(restaurant).setValue(map)
+                        database.child("dinings").child(restaurant).setValue(map)
                                 .addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
-                                        callback.onComplete(); // Call onComplete when the data is saved
-                                    } else {
-                                        // Handle failure, e.g., log error or show a message to the user
+                                        callback.onComplete();
                                     }
                                 });
                     }
@@ -158,7 +148,7 @@ public class DiningViewModel {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void mergeDining(ArrayList<Dining> a, int l, int m , int r) {
+    private void mergeDining(ArrayList<Dining> a, int l, int m, int r) {
         // Find sizes of two subarrays to be merged
         int n1 = m - l + 1;
         int n2 = r - m;
@@ -168,15 +158,18 @@ public class DiningViewModel {
         ArrayList<Dining> a2 = new ArrayList<Dining>();
 
         // Copy data to temp arrays
-        for (int i = 0; i < n1; ++i)
-            a1.set(i, a.get(l+i));
-        for (int j = 0; j < n2; ++j)
+        for (int i = 0; i < n1; ++i) {
+            a1.set(i, a.get(l + i));
+        }
+        for (int j = 0; j < n2; ++j) {
             a2.set(j, a.get(m + 1 + j));
+        }
 
         // Merge the temp arrays
 
         // Initial indices of first and second subarrays
-        int i = 0, j = 0;
+        int i = 0;
+        int j = 0;
 
         // Initial index of merged subarray array
         int k = l;
@@ -184,8 +177,7 @@ public class DiningViewModel {
             if (a1.get(i).isGreater(a2.get(j))) {
                 a.set(k, a1.get(i));
                 i++;
-            }
-            else {
+            } else {
                 a.set(k, a2.get(j));
                 j++;
             }
@@ -208,8 +200,7 @@ public class DiningViewModel {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void sortDining(ArrayList<Dining> a, int l, int r)
-    {
+    private void sortDining(ArrayList<Dining> a, int l, int r) {
         if (l < r) {
 
             // Find the middle point
@@ -223,15 +214,15 @@ public class DiningViewModel {
             mergeDining(a, l, m, r);
         }
     }
-  
-   public interface CompletionCallback {
+
+    public interface CompletionCallback {
         /**
          * Called when the operation is complete.
          */
         void onComplete();
-   }
+    }
   
-   /**
+    /**
      * Define a callback interface for asynchronous data retrieval
      */
     public interface DiningCallback {
