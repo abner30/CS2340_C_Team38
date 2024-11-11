@@ -184,6 +184,21 @@ public class DiningFragment extends Fragment {
             return;
         }
 
+        // Validate date date format
+        if (!diningViewModel.isValidDate(date)) {
+            Toast.makeText(getContext(),
+                    "Date must be in MM/DD/YYYY format and be a valid date",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (!diningViewModel.isValidTime(time)) {
+            Toast.makeText(getContext(),
+                    "Time must be in HH:MM format and be a valid time",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
         String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
         Dining dining = new Dining(location, website, time, date);
         diningViewModel.addDining(dining, effectiveUserUid,
@@ -250,6 +265,7 @@ public class DiningFragment extends Fragment {
         // Add the individual dining layout to the main dinings list
         diningList.addView(diningLayout);
     }
+
 
     private interface UserRoleCallback {
         void onComplete();
