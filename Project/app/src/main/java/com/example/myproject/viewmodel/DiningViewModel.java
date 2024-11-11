@@ -27,13 +27,6 @@ public class DiningViewModel {
     public DiningViewModel() {
     }
 
-    public interface CompletionCallback {
-        /**
-         * Called when the operation is complete.
-         */
-        void onComplete();
-    }
-
     public void addDining(Dining dining, String uid, DiningViewModel.CompletionCallback callback) {
         database.child("dinings").child("counter")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -61,9 +54,7 @@ public class DiningViewModel {
                         database.child("dinings").child(restaurant).setValue(map)
                                 .addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
-                                        callback.onComplete(); // Call onComplete when the data is saved
-                                    } else {
-                                        // Handle failure, e.g., log error or show a message to the user
+                                        callback.onComplete();
                                     }
                                 });
                     }
@@ -71,18 +62,6 @@ public class DiningViewModel {
                     public void onCancelled(@NonNull DatabaseError error) {
                     }
                 });
-    }
-
-    /**
-     * Define a callback interface for asynchronous data retrieval
-     */
-    public interface DiningCallback {
-        /**
-         * Callback method to handle retrieved destinations.
-         *
-         * @param dinings the list of retrieved Destination objects
-         */
-        void onCallback(ArrayList<Dining> dinings);
     }
 
     private void mergeDining(ArrayList<Dining> a, int l, int m, int r) {
@@ -98,7 +77,9 @@ public class DiningViewModel {
             right.add(a.get(j));
         }
 
-        int i = 0, j = 0, k = l;
+        int i = 0;
+        int j = 0;
+        int k = l;
 
         // Merge the temp arrays
         while (i < left.size() && j < right.size()) {
@@ -159,7 +140,7 @@ public class DiningViewModel {
                         String website = userSnapshot.child("website").getValue(String.class);
                         String date = userSnapshot.child("date").getValue(String.class);
                         String time = userSnapshot.child("time").getValue(String.class);
-                        list.add(new Dining(location, website, time, date));  // Fixed parameter order
+                        list.add(new Dining(location, website, time, date));
                     }
                 }
 
@@ -183,5 +164,24 @@ public class DiningViewModel {
                 callback.onCallback(new ArrayList<>()); // Return empty list on error
             }
         });
+    }
+
+    public interface CompletionCallback {
+        /**
+         * Called when the operation is complete.
+         */
+        void onComplete();
+    }
+
+    /**
+     * Define a callback interface for asynchronous data retrieval
+     */
+    public interface DiningCallback {
+        /**
+         * Callback method to handle retrieved destinations.
+         *
+         * @param dinings the list of retrieved Destination objects
+         */
+        void onCallback(ArrayList<Dining> dinings);
     }
 }

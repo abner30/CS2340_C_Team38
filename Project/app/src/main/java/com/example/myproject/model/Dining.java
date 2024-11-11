@@ -32,15 +32,24 @@ public class Dining {
     }
 
     // Getters and setters remain the same
-    public String getLocation() { return location; }
-    public void setLocation(String location) { this.location = location; }
-    public String getWebsite() { return website; }
-    public void setWebsite(String website) { this.website = website; }
-    public String getDate() { return date; }
-    public void setDate(String date) { this.date = date; }
-    public String getTime() { return time; }
-    public void setTime(String time) { this.time = time; }
-    public boolean isExpired() { return expired; }
+    public String getLocation() {
+        return location; }
+    public void setLocation(String location) {
+        this.location = location; }
+    public String getWebsite() {
+        return website; }
+    public void setWebsite(String website) {
+        this.website = website; }
+    public String getDate() {
+        return date; }
+    public void setDate(String date) {
+        this.date = date; }
+    public String getTime() {
+        return time; }
+    public void setTime(String time) {
+        this.time = time; }
+    public boolean isExpired() {
+        return expired; }
 
     private boolean isTimeFormat(String input) {
         return input != null && input.matches("\\d{1,2}:\\d{2}");
@@ -95,7 +104,8 @@ public class Dining {
                 // If same day, compare times
                 try {
                     LocalTime currentTime = LocalTime.now(ZONE_ID);
-                    LocalTime eventTime = LocalTime.parse(time, DateTimeFormatter.ofPattern(TIME_FORMAT));
+                    LocalTime eventTime = LocalTime.parse(time,
+                            DateTimeFormatter.ofPattern(TIME_FORMAT));
                     this.expired = currentTime.compareTo(eventTime) >= 0;
                 } catch (DateTimeParseException e) {
                     // If we can't parse the time, consider it expired
@@ -113,13 +123,17 @@ public class Dining {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public boolean isGreater(Dining other) {
         // Handle null cases
-        if (other == null) return true;
+        if (other == null) {
+            return true;
+        }
 
         try {
             // If either date is in time format, use today's date for comparison
             LocalDate today = LocalDate.now(ZONE_ID);
-            String thisDate = isTimeFormat(this.date) ? today.format(DateTimeFormatter.ofPattern(DATE_FORMAT)) : this.date;
-            String otherDate = isTimeFormat(other.date) ? today.format(DateTimeFormatter.ofPattern(DATE_FORMAT)) : other.date;
+            String thisDate = isTimeFormat(this.date) ? today.format(DateTimeFormatter.
+                    ofPattern(DATE_FORMAT)) : this.date;
+            String otherDate = isTimeFormat(other.date) ? today.format(DateTimeFormatter.
+                    ofPattern(DATE_FORMAT)) : other.date;
 
             SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
             Date date1 = sdf.parse(thisDate);

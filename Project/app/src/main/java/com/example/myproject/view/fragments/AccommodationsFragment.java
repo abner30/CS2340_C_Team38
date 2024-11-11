@@ -87,7 +87,8 @@ public class AccommodationsFragment extends Fragment {
 
 
         determineUserRole(() -> {
-            FloatingActionButton accommodationButton = view.findViewById(R.id.btn_add_accommodation);
+            FloatingActionButton accommodationButton =
+                    view.findViewById(R.id.btn_add_accommodation);
             if (tripOwnerId != null && tripOwnerId.equals(currentUserUid)) {
                 accommodationButton.setVisibility(View.VISIBLE);
             } else if (isContributor) {

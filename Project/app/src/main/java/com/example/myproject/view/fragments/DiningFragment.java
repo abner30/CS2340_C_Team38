@@ -2,7 +2,6 @@ package com.example.myproject.view.fragments;
 
 import android.app.AlertDialog;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,13 +43,13 @@ public class DiningFragment extends Fragment {
      *
      * @param inflater           The LayoutInflater object that can be used to inflate
      *                           any views in the fragment,
-     * @param container          If non-null, this is the parent view that the fragment's
-     *                           UI should be attached to.  The fragment should not add the view itself,
+     * @param container          If non-null, this is the parent view that the fragment's UI
+     *                           should be attached to. The fragment should not add the view itself,
      *                           but this can be used to generate the LayoutParams of the view.
      * @param savedInstanceState If non-null,
      *                           this fragment is being re-constructed
      *                           from a previous saved state as given here.
-     * @return
+     * @return view
      */
     @Override
     public View onCreateView(final LayoutInflater inflater,
@@ -98,39 +97,44 @@ public class DiningFragment extends Fragment {
                             // User is a contributor to someone's trip
                             for (DataSnapshot tripOwner : snapshot.getChildren()) {
                                 tripOwnerId = tripOwner.getKey();
-                                effectiveUserUid = tripOwnerId; // Use trip owner's UID for database operations
+                                effectiveUserUid = tripOwnerId;
                                 isContributor = true;
                                 break;
                             }
                         } else {
                             // User is not a contributor, check if they're an owner
-                            tripDatabase.child("owner").addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot ownerSnapshot) {
-                                    if (ownerSnapshot.exists()) {
-                                        tripOwnerId = ownerSnapshot.getValue(String.class);
-                                    } else {
-                                        // If no owner is set, set current user as owner
-                                        tripOwnerId = currentUserUid;
-                                        tripDatabase.child("owner").setValue(currentUserUid);
+                            tripDatabase.child("owner").addListenerForSingleValueEvent(
+                                    new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot ownerSnapshot) {
+                                        if (ownerSnapshot.exists()) {
+                                            tripOwnerId = ownerSnapshot.getValue(String.class);
+                                        } else {
+                                            // If no owner is set, set current user as owner
+                                            tripOwnerId = currentUserUid;
+                                            tripDatabase.child("owner").setValue(currentUserUid);
+                                        }
+                                        effectiveUserUid = tripOwnerId;
+                                        callback.onComplete();
                                     }
-                                    effectiveUserUid = tripOwnerId;
-                                    callback.onComplete();
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    Toast.makeText(getActivity(), "Error checking owner status: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                                    callback.onComplete();
-                                }
-                            });
-                        }
-                        callback.onComplete();
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Toast.makeText(getActivity(),
+                                                "Error checking owner status: "
+                                                        + error.getMessage(),
+                                                Toast.LENGTH_SHORT).show();
+                                        callback.onComplete();
+                                    }
+                                });
+                            }
+                            callback.onComplete();
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(getActivity(), "Error checking contributor status: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Error checking contributor status: "
+                                + error.getMessage(), Toast.LENGTH_SHORT).show();
                         callback.onComplete();
                     }
                 });
@@ -182,13 +186,15 @@ public class DiningFragment extends Fragment {
 
         String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
         Dining dining = new Dining(location, website, time, date);
-        diningViewModel.addDining(dining, effectiveUserUid, new DiningViewModel.CompletionCallback() {
-            @Override
-            public void onComplete() {
-                Toast.makeText(getContext(), "Dining added successfully", Toast.LENGTH_SHORT).show();
-                addRowToTable(dining);
-            }
-        });
+        diningViewModel.addDining(dining, effectiveUserUid,
+                new DiningViewModel.CompletionCallback() {
+                @Override
+                public void onComplete() {
+                    Toast.makeText(getContext(), "Dining added successfully",
+                            Toast.LENGTH_SHORT).show();
+                    addRowToTable(dining);
+                }
+            });
     }
 
     public void populateTable() {

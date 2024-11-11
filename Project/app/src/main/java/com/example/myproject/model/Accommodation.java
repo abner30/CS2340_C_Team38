@@ -82,8 +82,8 @@ public class Accommodation {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-        ZoneId zonedId = ZoneId.of( "-05:00" );
-        LocalDate today = LocalDate.now( zonedId );
+        ZoneId zonedId = ZoneId.of("-05:00");
+        LocalDate today = LocalDate.now(zonedId);
         Date secondDate = null;
         try {
             secondDate = sdf2.parse(today.toString());
