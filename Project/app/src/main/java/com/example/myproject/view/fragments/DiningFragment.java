@@ -86,10 +86,6 @@ public class DiningFragment extends Fragment {
         });
     }
 
-    private interface UserRoleCallback {
-        void onComplete();
-    }
-
     private void determineUserRole(DiningFragment.UserRoleCallback callback) {
         // First check if the user is a contributor to any trip
         DatabaseManager.getInstance().getReference().child("users")
@@ -186,7 +182,7 @@ public class DiningFragment extends Fragment {
 
         String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
         Dining dining = new Dining(location, website, time, date);
-        diningViewModel.addDining(dining, uid, new DiningViewModel.CompletionCallback() {
+        diningViewModel.addDining(dining, effectiveUserUid, new DiningViewModel.CompletionCallback() {
             @Override
             public void onComplete() {
                 Toast.makeText(getContext(), "Dining added successfully", Toast.LENGTH_SHORT).show();
@@ -200,7 +196,7 @@ public class DiningFragment extends Fragment {
         LinearLayout diningList = getView().findViewById(R.id.dining_list);
         diningList.removeAllViews();
 
-        diningViewModel.getDining(uid, new DiningViewModel.DiningCallback() {
+        diningViewModel.getDining(effectiveUserUid, new DiningViewModel.DiningCallback() {
             @Override
             public void onCallback(ArrayList<Dining> dinings) {
                 if (diningList == null) {
@@ -232,9 +228,9 @@ public class DiningFragment extends Fragment {
         diningLayout.addView(websiteView);
 
         // Time
-        TextView dateOutView = new TextView(getContext());
-        dateOutView.setText("Time: " + dining.getTime());
-        diningLayout.addView(dateOutView);
+        TextView timeView = new TextView(getContext());
+        timeView.setText("Time: " + dining.getTime());
+        diningLayout.addView(timeView);
 
         // Date
         TextView date = new TextView(getContext());
@@ -247,6 +243,10 @@ public class DiningFragment extends Fragment {
 
         // Add the individual dining layout to the main dinings list
         diningList.addView(diningLayout);
+    }
+
+    private interface UserRoleCallback {
+        void onComplete();
     }
 
 }

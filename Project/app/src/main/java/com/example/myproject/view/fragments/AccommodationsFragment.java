@@ -236,7 +236,7 @@ public class AccommodationsFragment extends Fragment {
             return;
         }
 
-        //String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
+        String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
         Accommodation accommodation = new Accommodation(checkIn, checkOut, location, numRooms,
                 roomType);
         accommodationViewModel.addAccommodation(accommodation, effectiveUserUid,
