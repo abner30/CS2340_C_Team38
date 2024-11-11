@@ -164,29 +164,30 @@ public class LogisticsFragment extends Fragment {
                             // User is not a contributor, check if they're an owner
                             tripDatabase.child("owner").addListenerForSingleValueEvent(
                                     new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot ownerSnapshot) {
-                                        if (ownerSnapshot.exists()) {
-                                            tripOwnerId = ownerSnapshot.getValue(String.class);
-                                        } else {
-                                            // If no owner is set, set current user as owner
-                                            tripOwnerId = currentUserUid;
-                                            tripDatabase.child("owner")
-                                                    .setValue(currentUserUid);
+                                        @Override
+                                        public void onDataChange(
+                                                @NonNull DataSnapshot ownerSnapshot) {
+                                            if (ownerSnapshot.exists()) {
+                                                tripOwnerId = ownerSnapshot.getValue(String.class);
+                                            } else {
+                                                // If no owner is set, set current user as owner
+                                                tripOwnerId = currentUserUid;
+                                                tripDatabase.child("owner")
+                                                        .setValue(currentUserUid);
+                                            }
+                                            effectiveUserUid = tripOwnerId;
+                                            callback.onComplete();
                                         }
-                                        effectiveUserUid = tripOwnerId;
-                                        callback.onComplete();
-                                    }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-                                        Toast.makeText(getActivity(),
-                                                "Error checking owner status: "
-                                                        + error.getMessage(),
-                                                Toast.LENGTH_SHORT).show();
-                                        callback.onComplete();
-                                    }
-                                });
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            Toast.makeText(getActivity(),
+                                                    "Error checking owner status: "
+                                                            + error.getMessage(),
+                                                    Toast.LENGTH_SHORT).show();
+                                            callback.onComplete();
+                                        }
+                                    });
                         }
                         callback.onComplete();
                     }
@@ -216,53 +217,53 @@ public class LogisticsFragment extends Fragment {
                         // Use effectiveUserUid instead of currentUserUid
                         destinationViewModel.getDestinations(effectiveUserUid,
                                 new DestinationViewModel.DestinationsCallback() {
-                                @Override
-                                public void onCallback(ArrayList<Destination> destinations) {
-                                    ArrayList<Destination> list = destinationViewModel.
-                                            getRecentDestinations(destinations);
-                                    ArrayList<PieEntry> entries = new ArrayList<>();
-                                    for (Destination destination : list) {
-                                        String location = destination.getLocation();
-                                        Integer daysPlanned;
-                                        try {
-                                            daysPlanned = userViewModel.calculateDuration(
-                                                    destination.getStartDate(),
-                                                    destination.getEndDate());
-                                        } catch (ParseException e) {
-                                            daysPlanned = 0;
+                                    @Override
+                                    public void onCallback(ArrayList<Destination> destinations) {
+                                        ArrayList<Destination> list = destinationViewModel.
+                                                getRecentDestinations(destinations);
+                                        ArrayList<PieEntry> entries = new ArrayList<>();
+                                        for (Destination destination : list) {
+                                            String location = destination.getLocation();
+                                            Integer daysPlanned;
+                                            try {
+                                                daysPlanned = userViewModel.calculateDuration(
+                                                        destination.getStartDate(),
+                                                        destination.getEndDate());
+                                            } catch (ParseException e) {
+                                                daysPlanned = 0;
+                                            }
+                                            if (allocatedDays[0] - daysPlanned >= 0
+                                                    && daysPlanned > 0) {
+                                                allocatedDays[0] -= daysPlanned;
+                                                entries.add(new PieEntry(daysPlanned, location));
+                                            } else {
+                                                break;
+                                            }
                                         }
-                                        if (allocatedDays[0] - daysPlanned >= 0
-                                                && daysPlanned > 0) {
-                                            allocatedDays[0] -= daysPlanned;
-                                            entries.add(new PieEntry(daysPlanned, location));
-                                        } else {
-                                            break;
-                                        }
+                                        entries.add(new PieEntry(allocatedDays[0],
+                                                "Alloted days"));
+
+                                        PieDataSet dataSet = new PieDataSet(entries, " ");
+                                        PieData data = new PieData(dataSet);
+
+                                        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+                                        data.setValueTextSize(14f);
+                                        dataSet.setValueTextColor(Color.BLACK);
+                                        dataSet.setValueTextSize(16f);
+                                        dataSet.setValueLinePart1OffsetPercentage(80f);
+                                        pieChart.setEntryLabelColor(Color.BLACK);
+                                        pieChart.getDescription().setEnabled(false);
+
+                                        // Outline the entire pie chart
+                                        dataSet.setSliceSpace(2f);
+                                        pieChart.setHoleColor(Color.WHITE);
+                                        pieChart.setTransparentCircleColor(Color.BLACK);
+                                        pieChart.setTransparentCircleAlpha(110);
+                                        pieChart.setTransparentCircleRadius(55f);
+                                        pieChart.setData(data);
+                                        pieChart.invalidate();
                                     }
-                                    entries.add(new PieEntry(allocatedDays[0],
-                                            "Alloted days"));
-
-                                    PieDataSet dataSet = new PieDataSet(entries, " ");
-                                    PieData data = new PieData(dataSet);
-
-                                    dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-                                    data.setValueTextSize(14f);
-                                    dataSet.setValueTextColor(Color.BLACK);
-                                    dataSet.setValueTextSize(16f);
-                                    dataSet.setValueLinePart1OffsetPercentage(80f);
-                                    pieChart.setEntryLabelColor(Color.BLACK);
-                                    pieChart.getDescription().setEnabled(false);
-
-                                    // Outline the entire pie chart
-                                    dataSet.setSliceSpace(2f);
-                                    pieChart.setHoleColor(Color.WHITE);
-                                    pieChart.setTransparentCircleColor(Color.BLACK);
-                                    pieChart.setTransparentCircleAlpha(110);
-                                    pieChart.setTransparentCircleRadius(55f);
-                                    pieChart.setData(data);
-                                    pieChart.invalidate();
-                                }
-                            });
+                                });
                     }
 
                     @Override
