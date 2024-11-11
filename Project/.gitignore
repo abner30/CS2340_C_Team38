@@ -27,4 +27,6 @@ local.properties
 .idea/
 misc.xml
 deploymentTargetDropDown.xml
-google-services.json
+google-services.json.DS_Store
+**/.DS_Store
+.gradle/
