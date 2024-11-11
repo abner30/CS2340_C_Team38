@@ -30,3 +30,6 @@ deploymentTargetDropDown.xml
 google-services.json.DS_Store
 **/.DS_Store
 .gradle/
+.DS_Store
+**/.DS_Store
+.gradle/
