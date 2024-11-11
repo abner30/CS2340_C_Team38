@@ -1,6 +1,7 @@
 package com.example.myproject.view.fragments;
 
 import android.app.AlertDialog;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -84,10 +85,19 @@ public class AccommodationsFragment extends Fragment {
         database = FirebaseDatabase.getInstance().getReference("tripData").child("contributors");
         tripDatabase = FirebaseDatabase.getInstance().getReference("tripData");
 
-        // Set up invite
-        FloatingActionButton accommodationButton = view.findViewById(R.id.btn_add_accommodation);
 
         determineUserRole(() -> {
+            FloatingActionButton accommodationButton =
+                    view.findViewById(R.id.btn_add_accommodation);
+            if (tripOwnerId != null && tripOwnerId.equals(currentUserUid)) {
+                accommodationButton.setVisibility(View.VISIBLE);
+            } else if (isContributor) {
+                // Show buttons for contributors but not the trip owner
+                accommodationButton.setVisibility(View.VISIBLE);
+            } else {
+                // Hide buttons for non-contributors
+                accommodationButton.setVisibility(View.GONE);
+            }
             accommodationButton.setOnClickListener(v -> showAccommodationDialog());
         });
 
@@ -227,7 +237,7 @@ public class AccommodationsFragment extends Fragment {
             return;
         }
 
-        //String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
+        String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
         Accommodation accommodation = new Accommodation(checkIn, checkOut, location, numRooms,
                 roomType);
         accommodationViewModel.addAccommodation(accommodation, effectiveUserUid,
@@ -243,9 +253,9 @@ public class AccommodationsFragment extends Fragment {
     }
 
     public void populateTable() {
-        //String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
+        String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
         LinearLayout accommodationsList = getView().findViewById(R.id.accommodations_list);
-        //accommodationsList.removeAllViews();
+        accommodationsList.removeAllViews();
 
         accommodationViewModel.getAccommodations(effectiveUserUid,
                 new AccommodationViewModel.AccommodationsCallback() {
@@ -293,6 +303,10 @@ public class AccommodationsFragment extends Fragment {
         roomTypeView.setText("Room Type: " + accommodation.getType());
         roomTypeView.setPadding(8, 4, 8, 4);
         accommodationLayout.addView(roomTypeView);
+
+        if (accommodation.isExpired()) {
+            accommodationLayout.setBackgroundColor(Color.RED);
+        }
 
         // Add the individual accommodation layout to the main accommodations list
         accommodationsList.addView(accommodationLayout);

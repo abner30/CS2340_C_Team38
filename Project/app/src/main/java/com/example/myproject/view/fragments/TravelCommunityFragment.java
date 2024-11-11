@@ -21,7 +21,7 @@ public class TravelCommunityFragment extends Fragment {
      *                          this fragment is being re-constructed
      * from a previous saved state as given here.
      *
-     * @return
+     * @return view
      */
     @Override
     public View onCreateView(final LayoutInflater inflater,

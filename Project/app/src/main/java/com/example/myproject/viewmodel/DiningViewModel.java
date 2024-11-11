@@ -121,6 +121,7 @@ public class DiningViewModel {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void mergeDining(ArrayList<Dining> a, int l, int m , int r) {
         // Find sizes of two subarrays to be merged
         int n1 = m - l + 1;
@@ -170,6 +171,7 @@ public class DiningViewModel {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void sortDining(ArrayList<Dining> a, int l, int r)
     {
         if (l < r) {
