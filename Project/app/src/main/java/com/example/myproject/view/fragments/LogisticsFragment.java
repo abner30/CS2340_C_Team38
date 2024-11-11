@@ -450,8 +450,10 @@ public class LogisticsFragment extends Fragment {
                     // Iterate through the list of contributors
                     for (DataSnapshot contributorSnapshot : snapshot.getChildren()) {
                         // Retrieve contributor's data
-                        String contributorEmail = contributorSnapshot.child("email").getValue(String.class);
-                        String contributorUid = contributorSnapshot.child("uid").getValue(String.class);
+                        String contributorEmail = contributorSnapshot.child("email").
+                                getValue(String.class);
+                        String contributorUid = contributorSnapshot.child("uid").
+                                getValue(String.class);
 
                         if (contributorEmail != null && contributorUid != null) {
                             // Create a TextView to display the contributor's email
@@ -541,7 +543,8 @@ public class LogisticsFragment extends Fragment {
         // Save note data under the generated key in Firebase
         reference.child("tripData").child("notes").child(noteKey).setValue(noteData)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getActivity(), "Note added successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Note added successfully",
+                            Toast.LENGTH_SHORT).show();
                     loadNotes(getView()); // Refresh the notes list after adding a new note
                 })
                 .addOnFailureListener(e -> {
@@ -566,11 +569,14 @@ public class LogisticsFragment extends Fragment {
                             reference.child("users").child(userId).child("email")
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
-                                        public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                                        public void onDataChange(
+                                                @NonNull DataSnapshot userSnapshot) {
                                             String userEmail = userSnapshot.getValue(String.class);
-                                            if (userEmail == null) userEmail = "Owner";
+                                            if (userEmail == null) {
+                                                userEmail = "Owner";
+                                            }
 
-                                            // Create a TextView to display each note with the user's email
+                                            // Create a TextView to display each note with the email
                                             TextView noteView = new TextView(getActivity());
                                             noteView.setText(userEmail + ": " + noteText);
                                             noteView.setTextSize(14f);
@@ -584,7 +590,8 @@ public class LogisticsFragment extends Fragment {
                                         @Override
                                         public void onCancelled(@NonNull DatabaseError error) {
                                             Toast.makeText(getActivity(),
-                                                    "Failed to load user email: " + error.getMessage(),
+                                                    "Failed to load user email: "
+                                                            + error.getMessage(),
                                                     Toast.LENGTH_SHORT).show();
                                         }
                                     });

@@ -18,10 +18,8 @@ import androidx.fragment.app.Fragment;
 import com.example.myproject.R;
 import com.example.myproject.database.DatabaseManager;
 import com.example.myproject.model.Destination;
-import com.example.myproject.model.User;
 import com.example.myproject.viewmodel.DestinationViewModel;
 import com.example.myproject.viewmodel.UserViewModel;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,13 +36,22 @@ import java.util.ArrayList;
  * retrieve travel data.
  */
 public class DestinationFragment extends Fragment {
-    UserViewModel userViewModel = new UserViewModel();
-    DestinationViewModel destinationViewModel = new DestinationViewModel();
-    private LinearLayout formLayout, vacationFormLayout, resultCard;
-    private Button buttonLogTravel, buttonCalculateVacationTime, buttonReset;
-    private EditText editTextTravelLocation, editTextStartDate, editTextStopDate;
-    private Button buttonCancel, buttonSubmit;
-    private EditText editTextVacationStartDate, editTextVacationEndDate, editTextDuration;
+    private UserViewModel userViewModel = new UserViewModel();
+    private DestinationViewModel destinationViewModel = new DestinationViewModel();
+    private LinearLayout formLayout;
+    private LinearLayout vacationFormLayout;
+    private LinearLayout resultCard;
+    private Button buttonLogTravel;
+    private Button buttonCalculateVacationTime;
+    private Button buttonReset;
+    private EditText editTextTravelLocation;
+    private EditText editTextStartDate;
+    private EditText editTextStopDate;
+    private Button buttonCancel;
+    private Button buttonSubmit;
+    private EditText editTextVacationStartDate;
+    private EditText editTextVacationEndDate;
+    private EditText editTextDuration;
     private Button buttonVacationSubmit;
     private TextView resultDays;
     private TableLayout tableLayout;
@@ -179,13 +186,15 @@ public class DestinationFragment extends Fragment {
                             tripDatabase.child("owner").addListenerForSingleValueEvent(
                                     new ValueEventListener() {
                                         @Override
-                                        public void onDataChange(@NonNull DataSnapshot ownerSnapshot) {
+                                        public void onDataChange(
+                                                @NonNull DataSnapshot ownerSnapshot) {
                                             if (ownerSnapshot.exists()) {
                                                 tripOwnerId = ownerSnapshot.getValue(String.class);
                                             } else {
                                                 // If no owner is set, set current user as owner
                                                 tripOwnerId = currentUserUid;
-                                                tripDatabase.child("owner").setValue(currentUserUid);
+                                                tripDatabase.child("owner").
+                                                        setValue(currentUserUid);
                                             }
                                             effectiveUserUid = tripOwnerId;
                                             callback.onComplete();
@@ -211,11 +220,6 @@ public class DestinationFragment extends Fragment {
                     }
                 });
     }
-
-    private interface UserRoleCallback {
-        void onComplete();
-    }
-
     /**
      * Sets up click listeners for various buttons to perform actions
      * like logging travel, calculating vacation time, submitting and
@@ -274,7 +278,7 @@ public class DestinationFragment extends Fragment {
             nullCount++;
         }
         int duration;
-        if (durationInput != null && !durationInput.trim().equals("")){
+        if (durationInput != null && !durationInput.trim().equals("")) {
             duration = Integer.valueOf(durationInput);
         } else {
             duration = 0;
@@ -304,7 +308,8 @@ public class DestinationFragment extends Fragment {
                 resultCard.setVisibility(View.VISIBLE);
 
             } catch (ParseException e) {
-                Toast.makeText(getContext(), "Invalid date format. Use MM/dd/yyyy.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Invalid date format. Use MM/dd/yyyy.",
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -327,7 +332,8 @@ public class DestinationFragment extends Fragment {
         String location = editTextTravelLocation.getText().toString();
         Destination destination = new Destination(location, startDate, endDate, 0);
         destinationViewModel.addDestination(destination,
-                DatabaseManager.getInstance().getCurrentUser().getUid(), new DestinationViewModel.CompletionCallback() {
+                DatabaseManager.getInstance().getCurrentUser().getUid(),
+                new DestinationViewModel.CompletionCallback() {
                     @Override
                     public void onComplete() {
                         populateTable(); // Populate the table only after data is written
@@ -347,14 +353,16 @@ public class DestinationFragment extends Fragment {
         destinationViewModel.getDestinations(uid, new DestinationViewModel.DestinationsCallback() {
             @Override
             public void onCallback(ArrayList<Destination> destinations) {
-                ArrayList<Destination> list = destinationViewModel.getRecentDestinations(destinations);
+                ArrayList<Destination> list = destinationViewModel.
+                        getRecentDestinations(destinations);
                 tableLayout.removeAllViews();
                 for (Destination destination: list) {
                     String location = destination.getLocation();
                     String daysPlanned;
                     try {
-                        daysPlanned= String.valueOf(userViewModel.calculateDuration(destination.getStartDate(), destination.getEndDate()));
-                    } catch (ParseException e){
+                        daysPlanned = String.valueOf(userViewModel.calculateDuration(
+                                destination.getStartDate(), destination.getEndDate()));
+                    } catch (ParseException e) {
                         daysPlanned = "0";
                     }
                     daysPlanned += " days planned";
@@ -386,5 +394,8 @@ public class DestinationFragment extends Fragment {
         row.addView(daysText);
 
         tableLayout.addView(row);
+    }
+    private interface UserRoleCallback {
+        void onComplete();
     }
 }
