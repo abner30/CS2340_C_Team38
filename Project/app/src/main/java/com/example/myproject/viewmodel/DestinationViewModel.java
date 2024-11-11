@@ -27,13 +27,6 @@ public class DestinationViewModel extends ViewModel {
     public DestinationViewModel() {
     }
 
-    public interface CompletionCallback {
-        /**
-         * Called when the operation is complete.
-         */
-        void onComplete();
-    }
-
     /**
      * Adds a destination to database in following format:
      * destination(counter)
@@ -72,10 +65,12 @@ public class DestinationViewModel extends ViewModel {
                                         int counter = 0;
                                         if (dataSnapshot.exists()) {
                                             counter = dataSnapshot.getValue(Integer.class);
-                                            database.child("users").child(uid).child("destinationCounter")
+                                            database.child("users").child(uid).
+                                                    child("destinationCounter")
                                                     .setValue(counter + 1);
                                         } else {
-                                            database.child("users").child(uid).child("destinationCounter")
+                                            database.child("users").child(uid).
+                                                    child("destinationCounter")
                                                     .setValue(0);
                                         }
                                         HashMap<String, Object> map = new HashMap<>();
@@ -84,12 +79,11 @@ public class DestinationViewModel extends ViewModel {
                                         map.put("end date", destination.getEndDate());
                                         map.put("user", uid);
                                         map.put("destinationCounter", counter);
-                                        database.child("destinations").child(finalLocation).setValue(map)
+                                        database.child("destinations").
+                                                child(finalLocation).setValue(map)
                                                 .addOnCompleteListener(task -> {
                                                     if (task.isSuccessful()) {
-                                                        callback.onComplete(); // Call onComplete when the data is saved
-                                                    } else {
-                                                        // Handle failure, e.g., log error or show a message to the user
+                                                        callback.onComplete();
                                                     }
                                                 });
                                     }
@@ -106,21 +100,9 @@ public class DestinationViewModel extends ViewModel {
                 });
     }
 
-    /**
-     * Define a callback interface for asynchronous data retrieval
-     */
-    public interface DestinationsCallback {
-        /**
-         * Callback method to handle retrieved destinations.
-         *
-         * @param destinations the list of retrieved Destination objects
-         */
-        void onCallback(ArrayList<Destination> destinations);
-    }
-
     // Modify getDestinations to use a callback
     /**
-     * Asynchronously fetches all destinations associated with a given user and passes them to a callback.
+     * Asynchronously fetches all destinations of a given user and passes them to a callback.
      * @param uid User ID
      * @param callback Callback to handle the list of destinations after retrieval
      */
@@ -135,7 +117,8 @@ public class DestinationViewModel extends ViewModel {
                         String location = userSnapshot.child("location").getValue(String.class);
                         String startDate = userSnapshot.child("start date").getValue(String.class);
                         String endDate = userSnapshot.child("end date").getValue(String.class);
-                        Integer counter = userSnapshot.child("destinationCounter").getValue(Integer.class);
+                        Integer counter = userSnapshot.child("destinationCounter").
+                                getValue(Integer.class);
                         list.add(new Destination(location, startDate, endDate, counter));
                     }
                 }
@@ -182,13 +165,35 @@ public class DestinationViewModel extends ViewModel {
      * @return total days of five recent destinations.
      * @throws ParseException parse exception
      */
-    public int calculateTotalDays(ArrayList<Destination> destinationArrayList) throws ParseException {
+    public int calculateTotalDays(
+            ArrayList<Destination> destinationArrayList) throws ParseException {
         int sum = 0;
         UserViewModel userViewModel = new UserViewModel();
         for (Destination destination: destinationArrayList) {
-            int curr = userViewModel.calculateDuration(destination.getStartDate(), destination.getEndDate());
+            int curr = userViewModel.calculateDuration(destination.getStartDate(),
+                    destination.getEndDate());
             sum += curr;
         }
         return sum;
+    }
+
+
+    public interface CompletionCallback {
+        /**
+         * Called when the operation is complete.
+         */
+        void onComplete();
+    }
+
+    /**
+     * Define a callback interface for asynchronous data retrieval
+     */
+    public interface DestinationsCallback {
+        /**
+         * Callback method to handle retrieved destinations.
+         *
+         * @param destinations the list of retrieved Destination objects
+         */
+        void onCallback(ArrayList<Destination> destinations);
     }
 }

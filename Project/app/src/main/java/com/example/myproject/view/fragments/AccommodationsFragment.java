@@ -1,6 +1,7 @@
 package com.example.myproject.view.fragments;
 
 import android.app.AlertDialog;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -84,10 +85,19 @@ public class AccommodationsFragment extends Fragment {
         database = FirebaseDatabase.getInstance().getReference("tripData").child("contributors");
         tripDatabase = FirebaseDatabase.getInstance().getReference("tripData");
 
-        // Set up invite
-        FloatingActionButton accommodationButton = view.findViewById(R.id.btn_add_accommodation);
 
         determineUserRole(() -> {
+            FloatingActionButton accommodationButton =
+                    view.findViewById(R.id.btn_add_accommodation);
+            if (tripOwnerId != null && tripOwnerId.equals(currentUserUid)) {
+                accommodationButton.setVisibility(View.VISIBLE);
+            } else if (isContributor) {
+                // Show buttons for contributors but not the trip owner
+                accommodationButton.setVisibility(View.VISIBLE);
+            } else {
+                // Hide buttons for non-contributors
+                accommodationButton.setVisibility(View.GONE);
+            }
             accommodationButton.setOnClickListener(v -> showAccommodationDialog());
         });
 
@@ -204,6 +214,10 @@ public class AccommodationsFragment extends Fragment {
         roomTypeSpinner.setAdapter(typeAdapter);
         layout.addView(roomTypeSpinner);
 
+        final EditText ratingInput = new EditText(getActivity());
+        ratingInput.setHint("rating");
+        layout.addView(ratingInput);
+
         builder.setView(layout);
 
         builder.setPositiveButton("Add Accommodation", (dialog, which) -> {
@@ -213,23 +227,48 @@ public class AccommodationsFragment extends Fragment {
             String numRoomsString = numRoomsSpinner.getSelectedItem().toString();
             int numRooms = Integer.parseInt(numRoomsString);
             String roomType = roomTypeSpinner.getSelectedItem().toString();
-            addAccommodation(checkIn, checkOut, location, numRooms, roomType);
+            String rating = ratingInput.getText().toString().trim();
+            addAccommodation(checkIn, checkOut, location, numRooms, roomType, rating);
         });
 
         builder.show();
     }
 
     public void addAccommodation(String checkIn, String checkOut, String location, int numRooms,
-                                 String roomType) {
+                                 String roomType, String rating) {
         if (checkIn.isEmpty() || checkOut.isEmpty() || location.isEmpty() || numRooms <= 0
-                || roomType.isEmpty()) {
+                || roomType.isEmpty() || rating.isEmpty()) {
             Toast.makeText(getContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        //String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
+        // Validate check-in date format
+        if (!accommodationViewModel.isValidDate(checkIn)) {
+            Toast.makeText(getContext(),
+                    "Check-in date must be in MM/DD/YYYY format and be a valid date",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // Validate check-out date format
+        if (!accommodationViewModel.isValidDate(checkOut)) {
+            Toast.makeText(getContext(),
+                    "Check-out date must be in MM/DD/YYYY format and be a valid date",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // Validate that check-out is after check-in
+        if (!accommodationViewModel.isValidDateRange(checkIn, checkOut)) {
+            Toast.makeText(getContext(),
+                    "Check-out date must be after check-in date",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
         Accommodation accommodation = new Accommodation(checkIn, checkOut, location, numRooms,
-                roomType);
+                roomType, rating);
         accommodationViewModel.addAccommodation(accommodation, effectiveUserUid,
                 new AccommodationViewModel.CompletionCallback() {
                 @Override
@@ -243,9 +282,9 @@ public class AccommodationsFragment extends Fragment {
     }
 
     public void populateTable() {
-        //String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
+        String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
         LinearLayout accommodationsList = getView().findViewById(R.id.accommodations_list);
-        //accommodationsList.removeAllViews();
+        accommodationsList.removeAllViews();
 
         accommodationViewModel.getAccommodations(effectiveUserUid,
                 new AccommodationViewModel.AccommodationsCallback() {
@@ -293,6 +332,16 @@ public class AccommodationsFragment extends Fragment {
         roomTypeView.setText("Room Type: " + accommodation.getType());
         roomTypeView.setPadding(8, 4, 8, 4);
         accommodationLayout.addView(roomTypeView);
+
+        // Rating
+        TextView ratingView = new TextView(getContext());
+        ratingView.setText("Rating: " + accommodation.getRating());
+        ratingView.setPadding(8, 4, 8, 4);
+        accommodationLayout.addView(ratingView);
+
+        if (accommodation.isExpired()) {
+            accommodationLayout.setBackgroundColor(Color.RED);
+        }
 
         // Add the individual accommodation layout to the main accommodations list
         accommodationsList.addView(accommodationLayout);

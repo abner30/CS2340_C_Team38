@@ -18,13 +18,16 @@ public class Accommodation {
     private String location;
     private int rooms;
     private String type;
+    private String rating;
     private boolean expired;
-    public Accommodation(String checkIn, String checkOut, String location, int rooms, String type) {
+    public Accommodation(String checkIn, String checkOut, String location, int rooms, String type,
+                         String rating) {
         this.checkIn = checkIn;
         this.checkOut = checkOut;
         this.location = location;
         this.rooms = rooms;
         this.type = type;
+        this.rating = rating;
     }
 
     public String getCheckIn() {
@@ -67,6 +70,14 @@ public class Accommodation {
         this.type = type;
     }
 
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
+
     public boolean isExpired() {
         return expired;
     }
@@ -82,8 +93,8 @@ public class Accommodation {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-        ZoneId zonedId = ZoneId.of( "-05:00" );
-        LocalDate today = LocalDate.now( zonedId );
+        ZoneId zonedId = ZoneId.of("-05:00");
+        LocalDate today = LocalDate.now(zonedId);
         Date secondDate = null;
         try {
             secondDate = sdf2.parse(today.toString());
