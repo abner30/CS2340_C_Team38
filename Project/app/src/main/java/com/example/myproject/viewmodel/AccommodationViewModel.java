@@ -12,8 +12,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 public class AccommodationViewModel {
     /**
@@ -52,6 +56,7 @@ public class AccommodationViewModel {
                         map.put("check-out", accommodation.getCheckOut());
                         map.put("type", accommodation.getType());
                         map.put("rooms", accommodation.getRooms());
+                        map.put("rating", accommodation.getRating());
                         map.put("user", uid);
                         database.child("accommodations").child(lodging).setValue(map)
                                 .addOnCompleteListener(task -> {
@@ -83,7 +88,9 @@ public class AccommodationViewModel {
                                     getValue(String.class);
                             String type = userSnapshot.child("type").getValue(String.class);
                             Integer rooms = userSnapshot.child("rooms").getValue(Integer.class);
-                            list.add(new Accommodation(checkIn, checkOut, location, rooms, type));
+                            String rating = userSnapshot.child("rating").getValue(String.class);
+                            list.add(new Accommodation(checkIn, checkOut, location, rooms, type,
+                                    rating));
                         }
                     }
 
@@ -175,6 +182,48 @@ public class AccommodationViewModel {
             mergeAccommodation(a, l, m, r);
         }
     }
+
+    /**
+     * Validates if a date string matches the MM/DD/YYYY format and is a valid date
+     * @param dateStr The date string to validate
+     * @return true if the date is valid and matches the format, false otherwise
+     */
+    public boolean isValidDate(String dateStr) {
+        // First check the format using regex
+        String datePattern = "^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/([12][0-9]{3})$";
+        if (!Pattern.matches(datePattern, dateStr)) {
+            return false;
+        }
+
+        // Then verify it's a valid date using SimpleDateFormat
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        sdf.setLenient(false);  // This will make the date parser strict
+        try {
+            sdf.parse(dateStr);
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Validates that checkout date is after checkin date
+     * @param checkIn The check-in date string
+     * @param checkOut The check-out date string
+     * @return true if checkout is after checkin, false otherwise
+     */
+    public boolean isValidDateRange(String checkIn, String checkOut) {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        try {
+            Date checkInDate = sdf.parse(checkIn);
+            Date checkOutDate = sdf.parse(checkOut);
+            return checkOutDate.after(checkInDate);
+        } catch (ParseException e) {
+            return false;
+        }
+    }
+
+
 
     /**
      * Define a callback interface for asynchronous data retrieval

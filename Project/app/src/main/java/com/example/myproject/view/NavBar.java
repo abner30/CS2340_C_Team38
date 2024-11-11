@@ -39,23 +39,22 @@ public class NavBar extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
             switch (item.getItemId()) {
-                case R.id.logistics:
-                    selectedFragment = new LogisticsFragment();
-                    break;
-                case R.id.destination:
-                    selectedFragment = new DestinationFragment();
-                    break;
-                case R.id.dining:
-                    selectedFragment = new DiningFragment();
-                    break;
-                case R.id.accommodations:
-                    selectedFragment = new AccommodationsFragment();
-                    break;
-                case R.id.travelCommunity:
-                    selectedFragment = new TravelCommunityFragment();
-                    break;
-                default:
-                    return false;
+            case R.id.logistics: selectedFragment = new LogisticsFragment();
+                break;
+            case R.id.destination:
+                selectedFragment = new DestinationFragment();
+                break;
+            case R.id.dining:
+                selectedFragment = new DiningFragment();
+                break;
+            case R.id.accommodations:
+                selectedFragment = new AccommodationsFragment();
+                break;
+            case R.id.travelCommunity:
+                selectedFragment = new TravelCommunityFragment();
+                break;
+            default:
+                return false;
             }
             return loadFragment(selectedFragment);
         });

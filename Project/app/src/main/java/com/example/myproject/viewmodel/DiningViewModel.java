@@ -12,8 +12,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 public class DiningViewModel {
     /**
@@ -73,18 +77,6 @@ public class DiningViewModel {
                 });
     }
 
-    /**
-     * Define a callback interface for asynchronous data retrieval
-     */
-    public interface DiningCallback {
-        /**
-         * Callback method to handle retrieved destinations.
-         *
-         * @param dinings the list of retrieved Destination objects
-         */
-        void onCallback(ArrayList<Dining> dinings);
-    }
-
     public void getDining(String uid, DiningViewModel.DiningCallback callback) {
         ArrayList<Dining> list = new ArrayList<>();
         database.child("dinings").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -119,6 +111,50 @@ public class DiningViewModel {
                 // Handle error if necessary
             }
         });
+    }
+
+    /**
+     * Validates if a date string matches the MM/DD/YYYY format and is a valid date
+     * @param dateStr The date string to validate
+     * @return true if the date is valid and matches the format, false otherwise
+     */
+    public boolean isValidDate(String dateStr) {
+        // First check the format using regex
+        String datePattern = "^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/([12][0-9]{3})$";
+        if (!Pattern.matches(datePattern, dateStr)) {
+            return false;
+        }
+
+        // Then verify it's a valid date using SimpleDateFormat
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        sdf.setLenient(false);  // This will make the date parser strict
+        try {
+            sdf.parse(dateStr);
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Validates if a time string matches the HH:MM format (24-hour)
+     * @param timeStr The time string to validate
+     * @return true if the time matches HH:MM format, false otherwise
+     */
+    public boolean isValidTime(String timeStr) {
+        // Check format using regex for HH:MM (24-hour format)
+        String timePattern = "^([01][0-9]|2[0-3]):([0-5][0-9])$";
+        return Pattern.matches(timePattern, timeStr);
+    }
+
+    /**
+     * Extracts time portion from datetime string
+     * @param dateTimeStr The full datetime string
+     * @return The time portion or empty string if no time found
+     */
+    private String extractTimeFromDateTime(String dateTimeStr) {
+        String[] parts = dateTimeStr.split(" ");
+        return parts.length > 1 ? parts[1] : "";
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -186,5 +222,24 @@ public class DiningViewModel {
             // Merge the sorted halves
             mergeDining(a, l, m, r);
         }
+    }
+  
+   public interface CompletionCallback {
+        /**
+         * Called when the operation is complete.
+         */
+        void onComplete();
+   }
+  
+   /**
+     * Define a callback interface for asynchronous data retrieval
+     */
+    public interface DiningCallback {
+        /**
+         * Callback method to handle retrieved destinations.
+         *
+         * @param dinings the list of retrieved Destination objects
+         */
+        void onCallback(ArrayList<Dining> dinings);
     }
 }
