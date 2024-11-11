@@ -1,6 +1,7 @@
 package com.example.myproject.view.fragments;
 
 import android.app.AlertDialog;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -251,9 +252,9 @@ public class AccommodationsFragment extends Fragment {
     }
 
     public void populateTable() {
-        //String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
+        String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
         LinearLayout accommodationsList = getView().findViewById(R.id.accommodations_list);
-        //accommodationsList.removeAllViews();
+        accommodationsList.removeAllViews();
 
         accommodationViewModel.getAccommodations(effectiveUserUid,
                 new AccommodationViewModel.AccommodationsCallback() {
@@ -301,6 +302,10 @@ public class AccommodationsFragment extends Fragment {
         roomTypeView.setText("Room Type: " + accommodation.getType());
         roomTypeView.setPadding(8, 4, 8, 4);
         accommodationLayout.addView(roomTypeView);
+
+        if (accommodation.isExpired()) {
+            accommodationLayout.setBackgroundColor(Color.RED);
+        }
 
         // Add the individual accommodation layout to the main accommodations list
         accommodationsList.addView(accommodationLayout);
