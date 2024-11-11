@@ -27,13 +27,6 @@ public class DiningViewModel {
     public DiningViewModel() {
     }
 
-    public interface CompletionCallback {
-        /**
-         * Called when the operation is complete.
-         */
-        void onComplete();
-    }
-
     public void addDining(Dining dining, String uid, DiningViewModel.CompletionCallback callback) {
         database.child("dinings").child("counter")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -58,12 +51,10 @@ public class DiningViewModel {
                         map.put("time", dining.getTime());
                         map.put("date", dining.getDate());
                         map.put("user", uid);
-                        database.child("accommodations").child(restaurant).setValue(map)
+                        database.child("dinings").child(restaurant).setValue(map)
                                 .addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
-                                        callback.onComplete(); // Call onComplete when the data is saved
-                                    } else {
-                                        // Handle failure, e.g., log error or show a message to the user
+                                        callback.onComplete();
                                     }
                                 });
                     }
@@ -71,6 +62,115 @@ public class DiningViewModel {
                     public void onCancelled(@NonNull DatabaseError error) {
                     }
                 });
+    }
+
+    private void mergeDining(ArrayList<Dining> a, int l, int m, int r) {
+        // Create temp arrays
+        ArrayList<Dining> left = new ArrayList<>();
+        ArrayList<Dining> right = new ArrayList<>();
+
+        // Copy data to temp arrays
+        for (int i = l; i <= m; i++) {
+            left.add(a.get(i));
+        }
+        for (int j = m + 1; j <= r; j++) {
+            right.add(a.get(j));
+        }
+
+        int i = 0;
+        int j = 0;
+        int k = l;
+
+        // Merge the temp arrays
+        while (i < left.size() && j < right.size()) {
+            if (left.get(i).isGreater(right.get(j))) {
+                a.set(k, left.get(i));
+                i++;
+            } else {
+                a.set(k, right.get(j));
+                j++;
+            }
+            k++;
+        }
+
+        // Copy remaining elements of left array if any
+        while (i < left.size()) {
+            a.set(k, left.get(i));
+            i++;
+            k++;
+        }
+
+        // Copy remaining elements of right array if any
+        while (j < right.size()) {
+            a.set(k, right.get(j));
+            j++;
+            k++;
+        }
+    }
+
+    private void sortDining(ArrayList<Dining> a, int l, int r) {
+        // Don't try to sort if the list is empty or has only one element
+        if (a == null || a.size() <= 1) {
+            return;
+        }
+
+        if (l < r) {
+            int m = l + (r - l) / 2;
+            sortDining(a, l, m);
+            sortDining(a, m + 1, r);
+            mergeDining(a, l, m, r);
+        }
+    }
+
+    public void getDining(String uid, DiningViewModel.DiningCallback callback) {
+        ArrayList<Dining> list = new ArrayList<>();
+        database.child("dinings").addListenerForSingleValueEvent(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    // Skip the counter node
+                    if (userSnapshot.getKey().equals("counter")) {
+                        continue;
+                    }
+
+                    String user = userSnapshot.child("user").getValue(String.class);
+                    if (user != null && user.equals(uid)) {
+                        String location = userSnapshot.child("location").getValue(String.class);
+                        String website = userSnapshot.child("website").getValue(String.class);
+                        String date = userSnapshot.child("date").getValue(String.class);
+                        String time = userSnapshot.child("time").getValue(String.class);
+                        list.add(new Dining(location, website, time, date));
+                    }
+                }
+
+                // Only sort if there are items to sort
+                if (!list.isEmpty()) {
+                    sortDining(list, 0, list.size() - 1);
+                }
+
+                // Check if each dining is expired
+                for (Dining d : list) {
+                    d.setExpired();
+                }
+
+                // Pass the filled list to the callback
+                callback.onCallback(list);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle error if necessary
+                callback.onCallback(new ArrayList<>()); // Return empty list on error
+            }
+        });
+    }
+
+    public interface CompletionCallback {
+        /**
+         * Called when the operation is complete.
+         */
+        void onComplete();
     }
 
     /**
@@ -83,106 +183,5 @@ public class DiningViewModel {
          * @param dinings the list of retrieved Destination objects
          */
         void onCallback(ArrayList<Dining> dinings);
-    }
-
-    public void getDining(String uid, DiningViewModel.DiningCallback callback) {
-        ArrayList<Dining> list = new ArrayList<>();
-        database.child("dinings").addListenerForSingleValueEvent(new ValueEventListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    String user = userSnapshot.child("user").getValue(String.class);
-                    if (user != null && user.equals(uid)) {
-                        String location = userSnapshot.child("location").getValue(String.class);
-                        String website = userSnapshot.child("website").getValue(String.class);
-                        String date = userSnapshot.child("date").getValue(String.class);
-                        String time = userSnapshot.child("time").getValue(String.class);
-                        list.add(new Dining(location, website, date, time));
-                    }
-
-
-                }
-                //sort using helper merge sort
-                sortDining(list, 0, list.size() - 1);
-
-                //Check if each accommodation is expired.
-                for (Dining a : list) {
-                    a.setExpired();
-                }
-                // Pass the filled list to the callback once data retrieval is complete
-                callback.onCallback(list);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Handle error if necessary
-            }
-        });
-    }
-
-    private void mergeDining(ArrayList<Dining> a, int l, int m , int r) {
-        // Find sizes of two subarrays to be merged
-        int n1 = m - l + 1;
-        int n2 = r - m;
-
-        // Create temp arrays
-        ArrayList<Dining> a1 = new ArrayList<Dining>();
-        ArrayList<Dining> a2 = new ArrayList<Dining>();
-
-        // Copy data to temp arrays
-        for (int i = 0; i < n1; ++i)
-            a1.set(i, a.get(l+i));
-        for (int j = 0; j < n2; ++j)
-            a2.set(j, a.get(m + 1 + j));
-
-        // Merge the temp arrays
-
-        // Initial indices of first and second subarrays
-        int i = 0, j = 0;
-
-        // Initial index of merged subarray array
-        int k = l;
-        while (i < n1 && j < n2) {
-            if (a1.get(i).isGreater(a2.get(j))) {
-                a.set(k, a1.get(i));
-                i++;
-            }
-            else {
-                a.set(k, a2.get(j));
-                j++;
-            }
-            k++;
-        }
-
-        // Copy remaining elements of L[] if any
-        while (i < n1) {
-            a.set(k, a1.get(i));
-            i++;
-            k++;
-        }
-
-        // Copy remaining elements of R[] if any
-        while (j < n2) {
-            a.set(k, a2.get(j));
-            j++;
-            k++;
-        }
-    }
-
-    private void sortDining(ArrayList<Dining> a, int l, int r)
-    {
-        if (l < r) {
-
-            // Find the middle point
-            int m = l + (r - l) / 2;
-
-            // Sort first and second halves
-            sortDining(a, l, m);
-            sortDining(a, m + 1, r);
-
-            // Merge the sorted halves
-            mergeDining(a, l, m, r);
-        }
     }
 }
