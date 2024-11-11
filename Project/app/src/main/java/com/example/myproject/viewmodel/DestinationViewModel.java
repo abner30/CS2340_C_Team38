@@ -176,6 +176,8 @@ public class DestinationViewModel extends ViewModel {
         }
         return sum;
     }
+
+
     public interface CompletionCallback {
         /**
          * Called when the operation is complete.

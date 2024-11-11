@@ -18,13 +18,16 @@ public class Accommodation {
     private String location;
     private int rooms;
     private String type;
+    private String rating;
     private boolean expired;
-    public Accommodation(String checkIn, String checkOut, String location, int rooms, String type) {
+    public Accommodation(String checkIn, String checkOut, String location, int rooms, String type,
+                         String rating) {
         this.checkIn = checkIn;
         this.checkOut = checkOut;
         this.location = location;
         this.rooms = rooms;
         this.type = type;
+        this.rating = rating;
     }
 
     public String getCheckIn() {
@@ -65,6 +68,14 @@ public class Accommodation {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
     }
 
     public boolean isExpired() {

@@ -214,6 +214,10 @@ public class AccommodationsFragment extends Fragment {
         roomTypeSpinner.setAdapter(typeAdapter);
         layout.addView(roomTypeSpinner);
 
+        final EditText ratingInput = new EditText(getActivity());
+        ratingInput.setHint("rating");
+        layout.addView(ratingInput);
+
         builder.setView(layout);
 
         builder.setPositiveButton("Add Accommodation", (dialog, which) -> {
@@ -223,23 +227,48 @@ public class AccommodationsFragment extends Fragment {
             String numRoomsString = numRoomsSpinner.getSelectedItem().toString();
             int numRooms = Integer.parseInt(numRoomsString);
             String roomType = roomTypeSpinner.getSelectedItem().toString();
-            addAccommodation(checkIn, checkOut, location, numRooms, roomType);
+            String rating = ratingInput.getText().toString().trim();
+            addAccommodation(checkIn, checkOut, location, numRooms, roomType, rating);
         });
 
         builder.show();
     }
 
     public void addAccommodation(String checkIn, String checkOut, String location, int numRooms,
-                                 String roomType) {
+                                 String roomType, String rating) {
         if (checkIn.isEmpty() || checkOut.isEmpty() || location.isEmpty() || numRooms <= 0
-                || roomType.isEmpty()) {
+                || roomType.isEmpty() || rating.isEmpty()) {
             Toast.makeText(getContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Validate check-in date format
+        if (!accommodationViewModel.isValidDate(checkIn)) {
+            Toast.makeText(getContext(),
+                    "Check-in date must be in MM/DD/YYYY format and be a valid date",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // Validate check-out date format
+        if (!accommodationViewModel.isValidDate(checkOut)) {
+            Toast.makeText(getContext(),
+                    "Check-out date must be in MM/DD/YYYY format and be a valid date",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // Validate that check-out is after check-in
+        if (!accommodationViewModel.isValidDateRange(checkIn, checkOut)) {
+            Toast.makeText(getContext(),
+                    "Check-out date must be after check-in date",
+                    Toast.LENGTH_LONG).show();
             return;
         }
 
         String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
         Accommodation accommodation = new Accommodation(checkIn, checkOut, location, numRooms,
-                roomType);
+                roomType, rating);
         accommodationViewModel.addAccommodation(accommodation, effectiveUserUid,
                 new AccommodationViewModel.CompletionCallback() {
                 @Override
@@ -303,6 +332,12 @@ public class AccommodationsFragment extends Fragment {
         roomTypeView.setText("Room Type: " + accommodation.getType());
         roomTypeView.setPadding(8, 4, 8, 4);
         accommodationLayout.addView(roomTypeView);
+
+        // Rating
+        TextView ratingView = new TextView(getContext());
+        ratingView.setText("Rating: " + accommodation.getRating());
+        ratingView.setPadding(8, 4, 8, 4);
+        accommodationLayout.addView(ratingView);
 
         if (accommodation.isExpired()) {
             accommodationLayout.setBackgroundColor(Color.RED);
