@@ -24,6 +24,13 @@ public class Dining {
     private static final String TIME_FORMAT = "HH:mm";
     private static final ZoneId ZONE_ID = ZoneId.of("America/New_York");
 
+    /**
+     * Default no-argument constructor required for Firebase
+     */
+    public Dining() {
+        // Default constructor required for calls to DataSnapshot.getValue(Dining.class)
+    }
+
     public Dining(String location, String website, String time, String date) {
         this.location = location;
         this.website = website;
