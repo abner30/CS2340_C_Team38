@@ -266,6 +266,13 @@ public class AccommodationsFragment extends Fragment {
             return;
         }
 
+        // Validate rating is in the correct format (X/5, where X is 1-5)
+        if (!accommodationViewModel.isValidRating(rating)) {
+            Toast.makeText(getContext(), "Rating must be in #/5 format and between 1 and 5",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
         String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
         Accommodation accommodation = new Accommodation(checkIn, checkOut, location, numRooms,
                 roomType, rating);

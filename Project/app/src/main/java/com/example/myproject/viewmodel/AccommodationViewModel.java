@@ -206,6 +206,21 @@ public class AccommodationViewModel {
         }
     }
 
+    // Method to validate the rating format
+    public boolean isValidRating(String rating) {
+        try {
+            String[] parts = rating.split("/");
+            if (parts.length == 2) {
+                int num = Integer.parseInt(parts[0]);
+                int denom = Integer.parseInt(parts[1]);
+                return denom == 5 && num >= 1 && num <= 5;
+            }
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return false;
+    }
+
     /**
      * Validates that checkout date is after checkin date
      * @param checkIn The check-in date string
