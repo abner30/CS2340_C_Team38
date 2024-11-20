@@ -20,6 +20,14 @@ public class Accommodation {
     private String type;
     private String rating;
     private boolean expired;
+
+    /**
+     * Default no-argument constructor required for Firebase deserialization
+     */
+    public Accommodation() {
+        // Default constructor required for calls to DataSnapshot.getValue(Accommodation.class)
+    }
+
     public Accommodation(String checkIn, String checkOut, String location, int rooms, String type,
                          String rating) {
         this.checkIn = checkIn;
