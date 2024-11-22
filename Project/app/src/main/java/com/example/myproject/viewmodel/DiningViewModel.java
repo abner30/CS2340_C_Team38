@@ -1,6 +1,7 @@
 package com.example.myproject.viewmodel;
 
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -15,6 +16,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
@@ -86,7 +88,18 @@ public class DiningViewModel {
 
                 }
                 //sort using helper merge sort
-                sortDining(list, 0, list.size() - 1);
+                /** sortDining(list, 0, list.size() - 1); */
+                //sorting algo defective so deactivated
+
+                // personal sorting lambda:
+                Comparator<Dining> c = (d1, d2) -> {
+                    int ret  = d1.isGreater(d2) ? 1 : -1;
+                    return ret;
+                };
+                list.sort(c);
+
+
+
 
                 //Check if each accommodation is expired.
                 for (Dining a : list) {
@@ -147,6 +160,8 @@ public class DiningViewModel {
         return parts.length > 1 ? parts[1] : "";
     }
 
+    //Sorting algorithm defective. Deactivated since it will not be checked for this sprint.
+    /**
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void mergeDining(ArrayList<Dining> a, int l, int m, int r) {
         // Find sizes of two subarrays to be merged
@@ -157,8 +172,11 @@ public class DiningViewModel {
         ArrayList<Dining> a1 = new ArrayList<Dining>();
         ArrayList<Dining> a2 = new ArrayList<Dining>();
 
+
         // Copy data to temp arrays
         for (int i = 0; i < n1; ++i) {
+            Log.d("checkr", "I arrived here.");
+            Log.d("prober", "size of i: " + i + " size of j: " + (l + i));
             a1.set(i, a.get(l + i));
         }
         for (int j = 0; j < n2; ++j) {
@@ -214,7 +232,7 @@ public class DiningViewModel {
             mergeDining(a, l, m, r);
         }
     }
-
+*/
     public interface CompletionCallback {
         /**
          * Called when the operation is complete.
