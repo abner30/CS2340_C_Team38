@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Logisitics Title -->
     <TextView
         android:id="@+id/logisticsText"
         android:layout_width="wrap_content"
@@ -17,6 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
+    <!-- Logout Button -->
     <Button
         android:id="@+id/btn_logout"
         android:layout_width="wrap_content"
@@ -25,6 +27,7 @@
         android:layout_marginBottom="20dp"
         android:layout_gravity="center_horizontal" />
 
+    <!-- Geneerate Chart Button-->
     <Button
         android:id="@+id/btn_generate_chart"
         android:layout_width="wrap_content"
@@ -33,6 +36,7 @@
         android:layout_marginTop="20dp"
         android:layout_gravity="center_horizontal" />
 
+    <!-- Pie Chart -->
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pieChart"
         android:layout_width="match_parent"
@@ -40,6 +44,7 @@
         android:layout_marginTop="16dp"
         android:visibility="visible" />
 
+    <!-- Invite User Button -->
     <Button
         android:id="@+id/btn_invite_users"
         android:layout_width="wrap_content"
@@ -48,6 +53,7 @@
         android:layout_marginTop="16dp"
         android:layout_gravity="center_horizontal" />
 
+    <!-- Contributors Title -->
     <TextView
         android:id="@+id/contributors"
         android:layout_width="wrap_content"
@@ -71,6 +77,7 @@
             android:orientation="vertical" />
     </ScrollView>
 
+    <!-- Add Note Button -->
     <Button
         android:id="@+id/btn_add_note"
         android:layout_width="wrap_content"
@@ -79,6 +86,7 @@
         android:layout_marginTop="16dp"
         android:layout_gravity="center_horizontal" />
 
+    <!-- Notes Title -->
     <TextView
         android:id="@+id/notes"
         android:layout_width="wrap_content"

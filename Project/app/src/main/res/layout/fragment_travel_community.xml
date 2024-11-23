@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Travel Community Title -->
     <TextView
         android:id="@+id/travelCommunityText"
         android:layout_width="wrap_content"
@@ -17,6 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
+    <!-- List Container for Travel Community -->
     <ScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
@@ -32,6 +34,7 @@
 
     </ScrollView>
 
+    <!-- Button to Add Post -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_add_post"
         android:layout_width="wrap_content"

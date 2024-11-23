@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Dining Reservation Title -->
     <TextView
         android:id="@+id/diningReservationsText"
         android:layout_width="wrap_content"
