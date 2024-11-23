@@ -16,7 +16,8 @@
         android:textStyle="bold"
         android:layout_marginBottom="20dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_gravity="center_horizontal"/>
 
     <!-- Button to Toggle the Form Visibility -->
     <Button
