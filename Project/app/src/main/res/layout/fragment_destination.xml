@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp">
 
+    <!-- Destination Title -->
     <TextView
-        android:id="@+id/textViewDestination"
+        android:id="@+id/destinationText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Destination Fragment"
-        android:textSize="24sp"
+        android:textSize="39sp"
+        android:text="Destination"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="16dp" />
+        android:layout_gravity="center_horizontal"/>
 
     <!-- Button to Toggle the Form Visibility -->
     <Button
@@ -22,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Log Travel"
-        app:layout_constraintTop_toBottomOf="@id/textViewDestination"
+        app:layout_constraintTop_toBottomOf="@id/destinationText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="20dp" />
@@ -204,7 +207,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_gravity="center_horizontal" >
 
-        <TableRow tools:ignore="MissingConstraints">
+        <TableRow>
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -221,4 +224,4 @@
         </TableRow>
     </TableLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

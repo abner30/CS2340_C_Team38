@@ -16,9 +16,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.myproject.R;
 import com.example.myproject.database.DatabaseManager;
-import com.example.myproject.model.Accommodation;
-import com.example.myproject.model.Dining;
-import com.example.myproject.model.TravelCommunity;
 import com.example.myproject.viewmodel.TravelCommunityViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
@@ -28,7 +25,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,12 +50,14 @@ public class TravelCommunityFragment extends Fragment {
      * Creates and returns the view hierarchy associated with the fragment.
      *
      * @param inflater The LayoutInflater object that can be used to inflate views
-     * @param container If non-null, this is the parent view that the fragment's UI should be attached to
-     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state
+     * @param container If non-null, this is the parent view that the fragment's UI attached to
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous
+     *                           saved state
      * @return The View for the fragment's UI
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_travel_community, container, false);
 
         initializeComponents(view);
@@ -120,12 +118,13 @@ public class TravelCommunityFragment extends Fragment {
      * Creates and adds input fields to the dialog layout.
      *
      * @param layout The layout to add inputs to
-     * @return Array of EditText fields in order: destination, startDate, endDate, transportation, notes
+     * @return Array of EditText fields in order: destination, startDate, endDate, transportation,
+     * notes
      */
     private EditText[] createDialogInputs(LinearLayout layout) {
-        EditText[] inputs = new EditText[5];
+        EditText[] inputs = new EditText[7];
         String[] hints = {"Destination", "Start Date (MM/DD/YYYY)", "End Date (MM/DD/YYYY)",
-                "Transportation Details", "Trip Notes and Reflections"};
+                 "Transportation Details", "Accommodations", "Dining", "Trip Notes and Reflections"};
 
         for (int i = 0; i < inputs.length; i++) {
             inputs[i] = new EditText(getActivity());
@@ -146,10 +145,12 @@ public class TravelCommunityFragment extends Fragment {
         String startDate = inputs[1].getText().toString().trim();
         String endDate = inputs[2].getText().toString().trim();
         String transportation = inputs[3].getText().toString().trim();
-        String notes = inputs[4].getText().toString().trim();
+        String accommodations = inputs[4].getText().toString().trim();
+        String dinings = inputs[5].getText().toString().trim();
+        String notes = inputs[6].getText().toString().trim();
 
         if (validateInputs(destination, startDate, endDate)) {
-            createTravelPost(destination, startDate, endDate, transportation, notes);
+            createTravelPost(destination, startDate, endDate, accommodations, dinings, transportation, notes);
         }
     }
 
@@ -163,17 +164,20 @@ public class TravelCommunityFragment extends Fragment {
      */
     private boolean validateInputs(String destination, String startDate, String endDate) {
         if (destination.isEmpty() || startDate.isEmpty() || endDate.isEmpty()) {
-            Toast.makeText(getContext(), "Please fill all required fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please fill all required fields",
+                    Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (!viewModel.isValidDateFormat(startDate) || !viewModel.isValidDateFormat(endDate)) {
-            Toast.makeText(getContext(), "Please use MM/DD/YYYY date format", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please use MM/DD/YYYY date format",
+                    Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (!viewModel.isValidDateRange(startDate, endDate)) {
-            Toast.makeText(getContext(), "End date must be after start date", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "End date must be after start date",
+                    Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -190,13 +194,16 @@ public class TravelCommunityFragment extends Fragment {
      * @param notes User notes and reflections about the trip
      */
     private void createTravelPost(String destination, String startDate, String endDate,
-                                  String transportation, String notes) {
+                                  String accommodations, String dinings, String transportation,
+                                  String notes) {
         Map<String, Object> postData = new HashMap<>();
         postData.put("userId", currentUserUid);
         postData.put("destination", destination);
         postData.put("startDate", startDate);
         postData.put("endDate", endDate);
         postData.put("transportation", transportation);
+        postData.put("accommodations", accommodations);
+        postData.put("dinings", dinings);
         postData.put("notes", notes);
         postData.put("timestamp", ServerValue.TIMESTAMP);
 
@@ -251,9 +258,10 @@ public class TravelCommunityFragment extends Fragment {
         postView.setOrientation(LinearLayout.VERTICAL);
         postView.setPadding(16, 16, 16, 16);
 
-        String[] fields = {"destination", "startDate", "endDate", "transportation", "notes"};
+        String[] fields = {"destination", "startDate", "endDate", "transportation",
+                "accommodations", "dinings", "notes"};
         String[] labels = {"Destination: ", "Start Date: ", "End Date: ",
-                "Transportation: ", "Notes: "};
+                "Transportation: ", "Accommodations", "Destinations:", "Notes: "};
 
         for (int i = 0; i < fields.length; i++) {
             String value = postSnapshot.child(fields[i]).getValue(String.class);

@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Accommodations Title-->
     <TextView
         android:id="@+id/myAccommodationsText"
         android:layout_width="wrap_content"
@@ -15,9 +16,10 @@
         android:textStyle="bold"
         android:layout_marginBottom="20dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_gravity="center_horizontal"/>
 
-    <!-- List container for accommodations -->
+    <!-- List Container for Accommodations -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
