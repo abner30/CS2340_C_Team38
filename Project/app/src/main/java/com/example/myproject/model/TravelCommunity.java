@@ -16,6 +16,12 @@ public class TravelCommunity {
     /** Duration of the trip in days. */
     private int duration;
 
+    /** Start Date. */
+    private int startDate;
+
+    /** End Date. */
+    private int endDate;
+
     /** Unique identifier of the user who created the post. */
     private String userId;
 
