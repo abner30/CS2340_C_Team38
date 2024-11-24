@@ -13,6 +13,13 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Represents a dining event with a location, website, date, time, and expiration status.
+ * The class provides utility methods for handling date and time validation, expiration checks,
+ * and comparisons between different dining events.
+ * It uses both legacy `java.util.Date` and modern `java.time` APIs for handling date and time.
+ * This class is compatible with Firebase data structure.
+ */
 public class Dining {
     private String location;
     private String website;
@@ -31,6 +38,14 @@ public class Dining {
         // Default constructor required for calls to DataSnapshot.getValue(Dining.class)
     }
 
+    /**
+     * Creates a new Dining event with the given parameters.
+     *
+     * @param location the location of the dining event
+     * @param website  the website associated with the dining event
+     * @param time     the time of the dining event in HH:mm format
+     * @param date     the date of the dining event in MM/dd/yyyy format
+     */
     public Dining(String location, String website, String time, String date) {
         this.location = location;
         this.website = website;
@@ -39,29 +54,87 @@ public class Dining {
     }
 
     // Getters and setters remain the same
+    /**
+     * Gets the location of the dining event.
+     *
+     * @return the location of the dining event
+     */
     public String getLocation() {
         return location; }
+    /**
+     * Sets the location of the dining event.
+     *
+     * @param location the location of the dining event
+     */
     public void setLocation(String location) {
         this.location = location; }
+    /**
+     * Gets the website of the dining event.
+     *
+     * @return the website of the dining event
+     */
     public String getWebsite() {
         return website; }
+    /**
+     * Sets the website of the dining event.
+     *
+     * @param website the website of the dining event
+     */
     public void setWebsite(String website) {
         this.website = website; }
+    /**
+     * Gets the date of the dining event.
+     *
+     * @return the date of the dining event in MM/dd/yyyy format
+     */
     public String getDate() {
         return date; }
+    /**
+     * Sets the date of the dining event.
+     *
+     * @param date the date of the dining event in MM/dd/yyyy format
+     */
     public void setDate(String date) {
         this.date = date; }
+    /**
+     * Gets the time of the dining event.
+     *
+     * @return the time of the dining event in HH:mm format
+     */
     public String getTime() {
         return time; }
+    /**
+     * Sets the time of the dining event.
+     *
+     * @param time the time of the dining event in HH:mm format
+     */
     public void setTime(String time) {
         this.time = time; }
+    /**
+     * Checks if the dining event has expired.
+     *
+     * @return {@code true} if the event has expired, otherwise {@code false}
+     */
     public boolean isExpired() {
         return expired; }
 
+    /**
+     * Determines if a given input string follows a valid time format.
+     *
+     * @param input the string to validate
+     * @return {@code true} if the string matches the time format (HH:mm), otherwise {@code false}
+     */
     private boolean isTimeFormat(String input) {
         return input != null && input.matches("\\d{1,2}:\\d{2}");
     }
 
+    /**
+     * Updates the expiration status of the dining event.
+     * The expiration status is determined based on the current date and time in the
+     * "America/New_York" time zone.
+     * If the event date is today, it compares the event time with the current time.
+     * If the event is in the past, it is marked as expired.
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void setExpired() {
         // If date field contains a time format, swap it with the time field
@@ -127,6 +200,14 @@ public class Dining {
         }
     }
 
+    /**
+     * Compares this dining event with another dining event to determine if it is greater (later).
+     * The comparison is based on the event's date and time. If the event's date is later, or
+     * the date is the same but the time is later, it is considered greater.
+     *
+     * @param other the other dining event to compare against
+     * @return {@code true} if this dining event is later than the other, otherwise {@code false}
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public boolean isGreater(Dining other) {
         // Handle null cases
