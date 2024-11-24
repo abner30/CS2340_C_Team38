@@ -309,6 +309,8 @@ public class TravelCommunityFragment extends Fragment {
         defaultPost.put("userId", "default");
         defaultPost.put("destination", "Paris, France");
         defaultPost.put("startDate", "12/01/2024");
+        defaultPost.put("accommodations", "Yves Galleries");
+        defaultPost.put("dining", "Cafe Montblanc");
         defaultPost.put("endDate", "12/15/2024");
         defaultPost.put("transportation", "Air France Flight 123");
         defaultPost.put("notes", "Beautiful city with amazing cuisine and culture!");
