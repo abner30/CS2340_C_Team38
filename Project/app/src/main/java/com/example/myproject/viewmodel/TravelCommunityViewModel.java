@@ -1,8 +1,5 @@
 package com.example.myproject.viewmodel;
 
-import com.example.myproject.database.DatabaseManager;
-import com.google.firebase.database.DatabaseReference;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,8 +11,6 @@ import java.util.regex.Pattern;
  * This class manages data validation and processing for travel posts.
  */
 public class TravelCommunityViewModel {
-    /** Reference to the Firebase database. */
-    private DatabaseReference database = DatabaseManager.getInstance().getReference();
 
     /**
      * Validates if a date string matches the MM/DD/YYYY format and represents a valid date.
@@ -24,7 +19,7 @@ public class TravelCommunityViewModel {
      * @return true if the date is valid and matches the format, false otherwise
      */
     public boolean isValidDateFormat(String dateStr) {
-        // Check format using regex
+        // Check format
         String datePattern = "^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/([12][0-9]{3})$";
         if (!Pattern.matches(datePattern, dateStr)) {
             return false;

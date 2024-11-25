@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.regex.Pattern;
 
 public class AccommodationViewModel {
+
     /**
      * reference to database. Initiates once.
      */
@@ -38,6 +39,7 @@ public class AccommodationViewModel {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         String lodging = "lodging";
+                        // Check for previous lodging
                         if (dataSnapshot.exists()) {
                             Integer firebaseCounter = dataSnapshot.getValue(Integer.class);
                             if (firebaseCounter != null) {
@@ -67,6 +69,7 @@ public class AccommodationViewModel {
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
+                        // Handle error if necessary
                     }
                 });
     }
@@ -116,7 +119,6 @@ public class AccommodationViewModel {
     }
 
     private void mergeAccommodation(ArrayList<Accommodation> a, int l, int m, int r) {
-        // Find sizes of two subarrays to be merged
         int n1 = m - l + 1;
         int n2 = r - m;
 
@@ -124,7 +126,7 @@ public class AccommodationViewModel {
         ArrayList<Accommodation> a1 = new ArrayList<>(n1);
         ArrayList<Accommodation> a2 = new ArrayList<>(n2);
 
-        // Copy data to temp arrays using add() instead of set()
+        // Copy data to temp arrays
         for (int i = 0; i < n1; i++) {
             a1.add(a.get(l + i));
         }
@@ -132,7 +134,6 @@ public class AccommodationViewModel {
             a2.add(a.get(m + 1 + j));
         }
 
-        // Merge the temp arrays
         int i = 0; // Initial index of first subarray
         int j = 0; // Initial index of second subarray
         int k = l; // Initial index of merged subarray
@@ -149,14 +150,14 @@ public class AccommodationViewModel {
             k++;
         }
 
-        // Copy remaining elements of a1[] if any
+        // Copy remaining elements of a1[]
         while (i < n1) {
             a.set(k, a1.get(i));
             i++;
             k++;
         }
 
-        // Copy remaining elements of a2[] if any
+        // Copy remaining elements of a2[]
         while (j < n2) {
             a.set(k, a2.get(j));
             j++;
