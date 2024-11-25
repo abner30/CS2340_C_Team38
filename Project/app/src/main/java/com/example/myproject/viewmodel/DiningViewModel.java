@@ -80,7 +80,7 @@ public class DiningViewModel {
                         String website = userSnapshot.child("website").getValue(String.class);
                         String date = userSnapshot.child("date").getValue(String.class);
                         String time = userSnapshot.child("time").getValue(String.class);
-                        list.add(new Dining(location, website, date, time));
+                        list.add(new Dining(location, website, time, date));
                     }
 
 
