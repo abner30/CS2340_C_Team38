@@ -28,9 +28,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+/**
+ * Fragment for managing dining reservations within a trip.
+ * Provides functionality for contributors and trip owners to view, add, and manage dining entries.
+ */
 public class DiningFragment extends Fragment {
 
-    //private DiningViewModel diningViewModel = new DiningViewModel();
     private DiningViewModel diningViewModel = new DiningViewModel();
     private DatabaseReference database;
     private DatabaseReference tripDatabase;
@@ -38,18 +41,18 @@ public class DiningFragment extends Fragment {
     private String effectiveUserUid;
     private boolean isContributor = false;
     private String tripOwnerId;
+
     /**
-     * This method runs on create.
+     * Called to create the view hierarchy associated with the fragment.
      *
      * @param inflater           The LayoutInflater object that can be used to inflate
-     *                           any views in the fragment,
+     *                           any views in the fragment.
      * @param container          If non-null, this is the parent view that the fragment's UI
      *                           should be attached to. The fragment should not add the view itself,
      *                           but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null,
-     *                           this fragment is being re-constructed
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
      *                           from a previous saved state as given here.
-     * @return view
+     * @return The root view of the fragment.
      */
     @Override
     public View onCreateView(final LayoutInflater inflater,
@@ -65,10 +68,8 @@ public class DiningFragment extends Fragment {
             if (tripOwnerId != null && tripOwnerId.equals(currentUserUid)) {
                 diningButton.setVisibility(View.VISIBLE);
             } else if (isContributor) {
-                // Show buttons for contributors but not the trip owner
                 diningButton.setVisibility(View.VISIBLE);
             } else {
-                // Hide buttons for non-contributors
                 diningButton.setVisibility(View.GONE);
             }
             diningButton.setOnClickListener(v -> showDiningDialog());
@@ -76,6 +77,13 @@ public class DiningFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Called after the fragment's view has been created.
+     *
+     * @param view               The View returned by {@link #onCreateView}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -85,8 +93,12 @@ public class DiningFragment extends Fragment {
         });
     }
 
-    private void determineUserRole(DiningFragment.UserRoleCallback callback) {
-        // First check if the user is a contributor to any trip
+    /**
+     * Determines the role of the current user in relation to the trip (owner, contributor, or neither).
+     *
+     * @param callback A callback to be invoked once the role is determined.
+     */
+    private void determineUserRole(UserRoleCallback callback) {
         DatabaseManager.getInstance().getReference().child("users")
                 .child(currentUserUid)
                 .child("sharedTrips")
@@ -94,7 +106,6 @@ public class DiningFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
-                            // User is a contributor to someone's trip
                             for (DataSnapshot tripOwner : snapshot.getChildren()) {
                                 tripOwnerId = tripOwner.getKey();
                                 effectiveUserUid = tripOwnerId;
@@ -102,7 +113,6 @@ public class DiningFragment extends Fragment {
                                 break;
                             }
                         } else {
-                            // User is not a contributor, check if they're an owner
                             tripDatabase.child("owner").addListenerForSingleValueEvent(
                                     new ValueEventListener() {
                                     @Override
@@ -110,7 +120,6 @@ public class DiningFragment extends Fragment {
                                         if (ownerSnapshot.exists()) {
                                             tripOwnerId = ownerSnapshot.getValue(String.class);
                                         } else {
-                                            // If no owner is set, set current user as owner
                                             tripOwnerId = currentUserUid;
                                             tripDatabase.child("owner").setValue(currentUserUid);
                                         }
@@ -127,8 +136,8 @@ public class DiningFragment extends Fragment {
                                         callback.onComplete();
                                     }
                                 });
-                            }
-                            callback.onComplete();
+                        }
+                        callback.onComplete();
                     }
 
                     @Override
@@ -140,8 +149,10 @@ public class DiningFragment extends Fragment {
                 });
     }
 
+    /**
+     * Displays a dialog for adding a new dining entry.
+     */
     private void showDiningDialog() {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("New Dining");
 
@@ -149,19 +160,19 @@ public class DiningFragment extends Fragment {
         layout.setOrientation(LinearLayout.VERTICAL);
 
         final EditText locationInput = new EditText(getActivity());
-        locationInput.setHint("location");
+        locationInput.setHint("Location");
         layout.addView(locationInput);
 
         final EditText websiteInput = new EditText(getActivity());
-        websiteInput.setHint("website");
+        websiteInput.setHint("Website");
         layout.addView(websiteInput);
 
         final EditText timeInput = new EditText(getActivity());
-        timeInput.setHint("time HH:MM");
+        timeInput.setHint("Time HH:MM");
         layout.addView(timeInput);
 
         final EditText dateInput = new EditText(getActivity());
-        dateInput.setHint("date MM/DD/YYYY");
+        dateInput.setHint("Date MM/DD/YYYY");
         layout.addView(dateInput);
 
         builder.setView(layout);
@@ -177,14 +188,20 @@ public class DiningFragment extends Fragment {
         builder.show();
     }
 
+    /**
+     * Adds a new dining entry.
+     *
+     * @param location The location of the dining entry.
+     * @param website  The website of the dining location.
+     * @param time     The time of the dining reservation (HH:MM format).
+     * @param date     The date of the dining reservation (MM/DD/YYYY format).
+     */
     public void addDining(String location, String website, String time, String date) {
-        // Validate inputs
         if (date.isEmpty() || time.isEmpty() || location.isEmpty() || website.isEmpty()) {
             Toast.makeText(getContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Validate date date format
         if (!diningViewModel.isValidDate(date)) {
             Toast.makeText(getContext(),
                     "Date must be in MM/DD/YYYY format and be a valid date",
@@ -199,76 +216,69 @@ public class DiningFragment extends Fragment {
             return;
         }
 
-        String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
         Dining dining = new Dining(location, website, time, date);
-        diningViewModel.addDining(dining, effectiveUserUid,
-                new DiningViewModel.CompletionCallback() {
-                @Override
-                public void onComplete() {
-                    Toast.makeText(getContext(), "Dining added successfully",
-                            Toast.LENGTH_SHORT).show();
-                    addRowToTable(dining);
-                }
-            });
+        diningViewModel.addDining(dining, effectiveUserUid, () -> {
+            Toast.makeText(getContext(), "Dining added successfully", Toast.LENGTH_SHORT).show();
+            addRowToTable(dining);
+        });
     }
 
+    /**
+     * Populates the dining table with entries from the database.
+     */
     public void populateTable() {
-        String uid = DatabaseManager.getInstance().getCurrentUser().getUid();
         LinearLayout diningList = getView().findViewById(R.id.dining_list);
         diningList.removeAllViews();
 
-        diningViewModel.getDining(effectiveUserUid, new DiningViewModel.DiningCallback() {
-            @Override
-            public void onCallback(ArrayList<Dining> dinings) {
-                if (diningList == null) {
-                    return;
-                }
-                for (Dining dining : dinings) {
-                    addRowToTable(dining);
-                }
+        diningViewModel.getDining(effectiveUserUid, dinings -> {
+            if (diningList == null) {
+                return;
+            }
+            for (Dining dining : dinings) {
+                addRowToTable(dining);
             }
         });
     }
 
+    /**
+     * Adds a single dining entry to the table.
+     *
+     * @param dining The dining entry to add.
+     */
     public void addRowToTable(Dining dining) {
         LinearLayout diningList = getView().findViewById(R.id.dining_list);
 
-        // Create a new layout for each dining entry
         LinearLayout diningLayout = new LinearLayout(getContext());
         diningLayout.setOrientation(LinearLayout.VERTICAL);
         diningLayout.setPadding(16, 16, 16, 16);
 
-        // Location
         TextView locationView = new TextView(getContext());
-        locationView.setText("Location: " + dining.getWebsite());
+        locationView.setText("Location: " + dining.getLocation());
         diningLayout.addView(locationView);
 
-        // Website
         TextView websiteView = new TextView(getContext());
         websiteView.setText("Website: " + dining.getWebsite());
         diningLayout.addView(websiteView);
 
-        // Time
         TextView timeView = new TextView(getContext());
         timeView.setText("Time: " + dining.getTime());
         diningLayout.addView(timeView);
 
-        // Date
-        TextView date = new TextView(getContext());
-        date.setText("Date: " + dining.getDate());
-        diningLayout.addView(date);
+        TextView dateView = new TextView(getContext());
+        dateView.setText("Date: " + dining.getDate());
+        diningLayout.addView(dateView);
 
         if (dining.isExpired()) {
             diningLayout.setBackgroundColor(Color.RED);
         }
 
-        // Add the individual dining layout to the main dinings list
         diningList.addView(diningLayout);
     }
 
-
+    /**
+     * Callback interface for user role determination.
+     */
     private interface UserRoleCallback {
         void onComplete();
     }
-
 }

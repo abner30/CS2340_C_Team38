@@ -153,6 +153,75 @@ public class Sprint4TestCases {
     }
 
     /**
+     * Test that destinations in the travel post support edge cases like single destinations.
+     */
+    @Test
+    public void testSingleDestination() {
+        testPost.setDestinationOrder("Nairobi");
+        String[] destinations = testPost.getDestinationOrder().split(",");
+        assertEquals("Should have only 1 destination", 1, destinations.length);
+        assertEquals("Destination should be Nairobi", "Nairobi", destinations[0]);
+    }
+
+    /**
+     * Test accommodations list supports addition and retrieval of multiple entries.
+     */
+    @Test
+    public void testMultipleAccommodations() {
+        accommodations.add(new Accommodation(
+                "12/06/2024", "12/08/2024", "Marriott London", 2, "Deluxe Room", "5/5"));
+        accommodations.add(new Accommodation(
+                "12/08/2024", "12/10/2024", "Hotel Rome", 1, "Single Room", "4.5/5"));
+        testPost.setAccommodations(accommodations);
+
+        assertEquals("Should have 3 accommodations in total", 3, testPost.getAccommodations().size());
+        assertEquals("Last accommodation should be Hotel Rome",
+                "Hotel Rome", testPost.getAccommodations().get(2).getLocation());
+    }
+
+    /**
+     * Test dining entries handle null or incomplete data gracefully.
+     */
+    @Test
+    public void testIncompleteDiningDetails() {
+        Dining incompleteDining = new Dining(
+                "Unknown Restaurant", null, "18:00", "12/09/2024");
+        dinings.add(incompleteDining);
+        testPost.setDinings(dinings);
+
+        Dining retrievedDining = testPost.getDinings().get(1);
+        assertEquals("Location should be Unknown Restaurant", "Unknown Restaurant", retrievedDining.getLocation());
+        assertNull("Website should be null", retrievedDining.getWebsite());
+    }
+
+    /**
+     * Test default values for an empty travel post.
+     */
+    @Test
+    public void testDefaultTravelPostValues() {
+        TravelCommunity defaultPost = new TravelCommunity();
+        assertNull("Default user ID should be null", defaultPost.getUserId());
+        assertEquals("Default duration should be 0", 0, defaultPost.getDuration());
+        assertNull("Default transportation should be null", defaultPost.getTransportation());
+        assertNull("Default notes should be null", defaultPost.getNotes());
+    }
+
+    /**
+     * Test updating notes with additional information.
+     */
+    @Test
+    public void testUpdateNotes() {
+        String additionalNote = "Planning to visit Paris again in summer.";
+        testPost.setNotes(testPost.getNotes() + " " + additionalNote);
+
+        assertTrue("Notes should include original content",
+                testPost.getNotes().contains("Loved Paris!"));
+        assertTrue("Notes should include additional content",
+                testPost.getNotes().contains(additionalNote));
+    }
+
+
+    /**
      * Test adding new accommodations and dining entries.
      */
     @Test
