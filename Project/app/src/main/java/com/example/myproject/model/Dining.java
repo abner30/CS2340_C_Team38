@@ -35,7 +35,6 @@ public class Dining {
      * Default no-argument constructor required for Firebase
      */
     public Dining() {
-        // Default constructor required for calls to DataSnapshot.getValue(Dining.class)
     }
 
     /**
@@ -52,7 +51,7 @@ public class Dining {
         this.time = time;
         this.date = date;
     }
-
+  
     // Getters and setters remain the same
     /**
      * Gets the location of the dining event.
