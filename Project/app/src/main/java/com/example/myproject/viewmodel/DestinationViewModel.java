@@ -89,18 +89,17 @@ public class DestinationViewModel extends ViewModel {
                                     }
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) {
-
+                                        // Handle error if necessary
                                     }
                                 });
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
+                        // Handle error if necessary
                     }
                 });
     }
 
-    // Modify getDestinations to use a callback
     /**
      * Asynchronously fetches all destinations of a given user and passes them to a callback.
      * @param uid User ID
@@ -147,7 +146,9 @@ public class DestinationViewModel extends ViewModel {
             }
             return destinations;
         }
+
         ArrayList<Destination> output = new ArrayList<Destination>();
+
         for (Destination destination: destinations) {
             if (destination.getDestinationCounter() >= destinations.size() - 5) {
                 output.add(destination);
@@ -176,7 +177,6 @@ public class DestinationViewModel extends ViewModel {
         }
         return sum;
     }
-
 
     public interface CompletionCallback {
         /**

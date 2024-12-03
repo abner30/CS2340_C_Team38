@@ -46,7 +46,7 @@ public class DiningViewModel {
                         } else {
                             database.child("dinings").child("counter")
                                     .setValue(1);
-                            restaurant = "dining1";
+                            restaurant = "restaurant1";
                         }
                         HashMap<String, Object> map = new HashMap<>();
                         map.put("location", dining.getLocation());
@@ -80,13 +80,15 @@ public class DiningViewModel {
                         String website = userSnapshot.child("website").getValue(String.class);
                         String date = userSnapshot.child("date").getValue(String.class);
                         String time = userSnapshot.child("time").getValue(String.class);
-                        list.add(new Dining(location, website, date, time));
+                        list.add(new Dining(location, website, time, date));
                     }
 
 
                 }
                 //sort using helper merge sort
-                sortDining(list, 0, list.size() - 1);
+                if (!list.isEmpty()) {
+                    sortDining(list, 0, list.size() - 1);
+                }
 
                 //Check if each accommodation is expired.
                 for (Dining a : list) {
@@ -101,6 +103,75 @@ public class DiningViewModel {
                 // Handle error if necessary
             }
         });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void mergeDining(ArrayList<Dining> a, int l, int m, int r) {
+        // Find sizes of two subarrays to be merged
+        int n1 = m - l + 1;
+        int n2 = r - m;
+
+        // Create temp arrays
+        ArrayList<Dining> a1 = new ArrayList<>(n1);
+        ArrayList<Dining> a2 = new ArrayList<>(n2);
+
+        // Copy data to temp arrays
+        for (int i = 0; i < n1; i++) {
+            a1.add(a.get(l + i));
+        }
+        for (int j = 0; j < n2; j++) {
+            a2.add(a.get(m + 1 + j));
+        }
+
+        // Merge the temp arrays
+        int i = 0; // Initial index of first subarray
+        int j = 0; // Initial index of second subarray
+        int k = l; // Initial index of merged subarray
+
+        // Compare and merge
+        while (i < n1 && j < n2) {
+            if (a1.get(i).isGreater(a2.get(j))) {
+                a.set(k, a1.get(i));
+                i++;
+            } else {
+                a.set(k, a2.get(j));
+                j++;
+            }
+            k++;
+        }
+
+        // Copy remaining elements of a1[] if any
+        while (i < n1) {
+            a.set(k, a1.get(i));
+            i++;
+            k++;
+        }
+
+        // Copy remaining elements of a2[] if any
+        while (j < n2) {
+            a.set(k, a2.get(j));
+            j++;
+            k++;
+        }
+    }
+
+    private void sortDining(ArrayList<Dining> a, int l, int r) {
+        // Add check for empty or null list
+        if (a == null || a.isEmpty()) {
+            return;
+        }
+
+        if (l < r) {
+            // Find the middle point
+            int m = l + (r - l) / 2;
+
+            // Sort first and second halves
+            sortDining(a, l, m);
+            sortDining(a, m + 1, r);
+
+            // Merge the sorted halves
+            mergeDining(a, l, m, r);
+        }
     }
 
     /**
@@ -136,91 +207,6 @@ public class DiningViewModel {
         String timePattern = "^([01][0-9]|2[0-3]):([0-5][0-9])$";
         return Pattern.matches(timePattern, timeStr);
     }
-
-    /**
-     * Extracts time portion from datetime string
-     * @param dateTimeStr The full datetime string
-     * @return The time portion or empty string if no time found
-     */
-    private String extractTimeFromDateTime(String dateTimeStr) {
-        String[] parts = dateTimeStr.split(" ");
-        return parts.length > 1 ? parts[1] : "";
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void mergeDining(ArrayList<Dining> a, int l, int m, int r) {
-        // Find sizes of two subarrays to be merged
-        int n1 = m - l + 1;
-        int n2 = r - m;
-
-        // Create temp arrays
-        ArrayList<Dining> a1 = new ArrayList<Dining>();
-        ArrayList<Dining> a2 = new ArrayList<Dining>();
-
-        // Copy data to temp arrays
-        for (int i = 0; i < n1; ++i) {
-            a1.set(i, a.get(l + i));
-        }
-        for (int j = 0; j < n2; ++j) {
-            a2.set(j, a.get(m + 1 + j));
-        }
-
-        // Merge the temp arrays
-
-        // Initial indices of first and second subarrays
-        int i = 0;
-        int j = 0;
-
-        // Initial index of merged subarray array
-        int k = l;
-        while (i < n1 && j < n2) {
-            if (a1.get(i).isGreater(a2.get(j))) {
-                a.set(k, a1.get(i));
-                i++;
-            } else {
-                a.set(k, a2.get(j));
-                j++;
-            }
-            k++;
-        }
-
-        // Copy remaining elements of L[] if any
-        while (i < n1) {
-            a.set(k, a1.get(i));
-            i++;
-            k++;
-        }
-
-        // Copy remaining elements of R[] if any
-        while (j < n2) {
-            a.set(k, a2.get(j));
-            j++;
-            k++;
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void sortDining(ArrayList<Dining> a, int l, int r) {
-        if (l < r) {
-
-            // Find the middle point
-            int m = l + (r - l) / 2;
-
-            // Sort first and second halves
-            sortDining(a, l, m);
-            sortDining(a, m + 1, r);
-
-            // Merge the sorted halves
-            mergeDining(a, l, m, r);
-        }
-    }
-
-    public interface CompletionCallback {
-        /**
-         * Called when the operation is complete.
-         */
-        void onComplete();
-    }
   
     /**
      * Define a callback interface for asynchronous data retrieval
@@ -232,5 +218,9 @@ public class DiningViewModel {
          * @param dinings the list of retrieved Destination objects
          */
         void onCallback(ArrayList<Dining> dinings);
+    }
+
+    public interface CompletionCallback {
+        void onComplete();
     }
 }

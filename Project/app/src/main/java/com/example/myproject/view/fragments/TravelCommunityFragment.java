@@ -124,7 +124,7 @@ public class TravelCommunityFragment extends Fragment {
     private EditText[] createDialogInputs(LinearLayout layout) {
         EditText[] inputs = new EditText[7];
         String[] hints = {"Destination", "Start Date (MM/DD/YYYY)", "End Date (MM/DD/YYYY)",
-                 "Transportation Details", "Accommodations", "Dining", "Trip Notes and Reflections"};
+            "Transportation Details", "Accommodations", "Dining", "Trip Notes and Reflections"};
 
         for (int i = 0; i < inputs.length; i++) {
             inputs[i] = new EditText(getActivity());
@@ -150,7 +150,8 @@ public class TravelCommunityFragment extends Fragment {
         String notes = inputs[6].getText().toString().trim();
 
         if (validateInputs(destination, startDate, endDate)) {
-            createTravelPost(destination, startDate, endDate, accommodations, dinings, transportation, notes);
+            createTravelPost(destination, startDate, endDate, accommodations, dinings,
+                    transportation, notes);
         }
     }
 
@@ -190,6 +191,8 @@ public class TravelCommunityFragment extends Fragment {
      * @param destination The destination location
      * @param startDate The start date of the trip
      * @param endDate The end date of the trip
+     * @param accommodations The accommodations of the trip
+     * @param dinings The dinings of the trip
      * @param transportation The transportation details
      * @param notes User notes and reflections about the trip
      */
@@ -259,9 +262,9 @@ public class TravelCommunityFragment extends Fragment {
         postView.setPadding(16, 16, 16, 16);
 
         String[] fields = {"destination", "startDate", "endDate", "transportation",
-                "accommodations", "dinings", "notes"};
+            "accommodations", "dinings", "notes"};
         String[] labels = {"Destination: ", "Start Date: ", "End Date: ",
-                "Transportation: ", "Accommodations", "Destinations:", "Notes: "};
+            "Transportation: ", "Accommodations", "Destinations:", "Notes: "};
 
         for (int i = 0; i < fields.length; i++) {
             String value = postSnapshot.child(fields[i]).getValue(String.class);
@@ -309,6 +312,8 @@ public class TravelCommunityFragment extends Fragment {
         defaultPost.put("userId", "default");
         defaultPost.put("destination", "Paris, France");
         defaultPost.put("startDate", "12/01/2024");
+        defaultPost.put("accommodations", "Yves Galleries");
+        defaultPost.put("dining", "Cafe Montblanc");
         defaultPost.put("endDate", "12/15/2024");
         defaultPost.put("transportation", "Air France Flight 123");
         defaultPost.put("notes", "Beautiful city with amazing cuisine and culture!");
